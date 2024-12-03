@@ -1,0 +1,121 @@
+body {
+    background-image: url('hostel/static/images/background.jpg');
+    background-size: cover;
+    font-size: small;
+    font-family: 'Times New Roman', Times, serif;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+.rit{
+    background-color: white;
+    background-image: url("{% static 'images/rit.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    height: 35vh;
+}
+.row{
+    margin-left: 50px;
+}
+.form-group {
+    margin-bottom: 15px;
+}
+.form-control {
+    width: 200px;
+}
+.container{
+    margin-top: 30px;
+}
+.h2{
+    margin-left: 100px;
+}
+.form-all{
+    margin-top: 30px;
+
+}
+.title{
+    font-size: 20px;
+}
+.heading{
+    font-size: 35px;
+    color: red;
+    margin-left: 25px;
+}
+.PERSONALINFORMATION{
+    margin-top: 80px;
+}
+.footer{
+    background-color: #383238;
+    padding: 30px 10%;
+    width: 100%;
+    margin-right: 4REM;
+}
+.foot{
+    max-width: 15px 0;
+    margin: auto;
+    width: 100%;
+}
+.row{
+    display: flex;
+    flex-wrap: wrap;
+
+}
+.footer_col{
+    width: 25%;
+    padding:  20px  10px;
+}
+.footer_col h1{
+    font-size: 21px;
+    color: #ffffff;
+    text-transform: capitalize;
+    margin-bottom:30px;
+    font-weight: 500;
+    position: relative;
+}
+.footer_col h1::before{
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -10px;
+    background-color: #e91e63;
+    height: 2px;
+    box-sizing: border-box;
+    width: 50px;
+}
+.footer_col ul li:not(:last-child){
+    margin-bottom: 10px;
+}
+.footer_col ul li a{
+    font-size:16px;
+    text-transform: capitalize;
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 300;
+    color: #bbbbbb;
+    display: block;
+}
+.footer_col p{
+color: #ffffff;
+}
+.footer_col ul li a:hover{
+    color: #ffffff;
+    padding-left: 5px;
+}
+.footer span{
+color: #ffffff;
+justify-content: center;
+text-align: center;
+padding-left: 33%;
+}
+.footer_col a i{
+    color: #c3cabb;
+    padding: 10px;
+}
+.footer_col a i:hover{
+    color: #bd1e1e;
+    padding-right: 5px;
+}
+.ad{
+    background-color: #f8f8f8;
+    color: #0a0a0a;
+    font-size: x-large;
+}

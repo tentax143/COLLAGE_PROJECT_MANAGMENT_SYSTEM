@@ -1,0 +1,136 @@
+/* Resetting default styles and setting font-family */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Styling the header */
+  header {
+    background-color: #ddd;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  header h1 {
+    font-size: 1rem;
+    margin: 0;
+  }
+  
+  header p {
+    font-size: 0.8rem;
+    margin: 0;
+  }
+  
+  /* Styling the main content */
+  main {
+    padding: 50px;
+  }
+  
+  main h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  .heading {
+    padding-left: 10px;
+    padding-top: 2px;
+  }
+  
+  .container1,
+  .container2 {
+    padding-top: 1px;
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+  }
+  
+  .detail-value {
+    width: 100%; /* Set the width to 100% to match the width of the parent container */
+  }
+  /* Styling document containers */
+  .document-container,
+  .document-remarks,
+  .attachment-details,
+  .financial-details {
+    border: 0px;
+    padding-top: 2px auto;
+    padding-left: 2px auto;
+    margin-bottom: 20 px;
+    margin-top: 5px;
+  }
+  .approve-list {
+    border: 1px solid #ccc;
+    padding-top: 2px;
+    margin-bottom: 10px;
+  }
+  
+  /* Styling detail sections */
+  .detail-section {
+    display: flex;
+    margin-bottom: 7px;
+    padding-right: 20px;
+    padding-left: 10px;
+    padding-top: 1px auo;
+  }
+  
+  .detail-label {
+    width: 400px;
+    font-weight: normal;
+    height: 25px;
+  }
+  .detail-value {
+    width: 300px;
+    border: 1px solid #727070;
+    border-radius: 4px;
+    padding-right: 4px;
+  }
+  
+  /* Styling approval table */
+  .approval-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .approval-table th,
+  .approval-table td {
+    padding: 5px;
+    border: 1px solid #ccc;
+  }
+  
+  /* Styling the footer */
+  footer {
+    text-align: center;
+    padding: 10px;
+  }
+  
+  footer button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  @media screen and (max-width: 600px) {
+    .container1,
+    .container2 {
+      padding-top: 1px;
+      display: flex;
+      flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    }
+    .detail-section {
+      width: 100%;
+    }
+    .detail-label {
+      width: 100%;
+    }
+    .detail-value {
+      width: 100%;
+    }
+    .header {
+      width: 100%;
+    }
+    .footer {
+      width: 100%;
+    }
+  }
+  
