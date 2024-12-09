@@ -82,7 +82,25 @@ DATABASES = {
         'PASSWORD': '',                       # Leave blank if no password is set
         'HOST': '127.0.0.1',                  # Use localhost
         'PORT': '3306',                       # Default MySQL port
-    }
+    },
+    'placement_portal': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'placement_portal',               # Your database name
+        'USER': 'root',                # Your MySQL username
+        'PASSWORD': '',      # Your MySQL password
+        'HOST': 'localhost',          # Set to the address of your MySQL server
+        'PORT': '3306',
+        
+    },
+    'rit_e_approval': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rit_e_approval',               # Your database name
+        'USER': 'root',                # Your MySQL username
+        'PASSWORD': '',      # Your MySQL password
+        'HOST': 'localhost',          # Set to the address of your MySQL server
+        'PORT': '3306',
+    },
+
 }
 
 
@@ -120,9 +138,11 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
-
+import os
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'projects/static'),  # Update the path
+]
 
 
 # Default primary key field type
