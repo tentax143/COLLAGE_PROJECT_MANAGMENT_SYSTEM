@@ -1,0 +1,1926 @@
+<html lang="en-US" xmlns="http://www.w3.org/1999/xhtml" dir="ltr"><plasmo-csui></plasmo-csui><head>
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<link rel="shortcut icon" href="../css/images/logo1.png">
+	
+<link rel="stylesheet" href="../css/style.css" type="text/css" media="all">
+<link rel="stylesheet" href="../css/style1.css" type="text/css" media="all">
+
+<script src="../js/jquery-1.6.2.min.js" type="text/javascript" charset="utf-8"></script>
+
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+
+<script src="../js/jquery.jcarousel.min.js" type="text/javascript" charset="utf-8"></script>
+	
+<script src="../js/functions.js" type="text/javascript" charset="utf-8"></script>
+
+
+
+
+<style>
+#navigation li a {
+    padding-right: 10px;
+    padding-left: 5px;
+    line-height: 37px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #fff;
+    display: block;
+    text-transform: uppercase;
+}
+
+input,textarea{width:200px}
+input[type=radio],input[type=checkbox]{width:50px}
+input[type=submit],input[type=reset]{width:100px, height:22px}
+input[type=text], select {height:22px}
+td {height:30px}
+</style>
+</head>
+<body style="margin-bottom:10px;background-color: #c9bda7; 
+	background-image: url(../css/images/templatemo_body1.jpg);"><div class="w3-display-topright w3-padding">
+  	<!-- notification message -->
+  	
+    <!-- logged in user information -->
+        	
+    	     	<p> <a href="../index.php?logout='1'" style="color: red;">logout</a> 
+                       <select class="custom-select" name="role" onchange="role_fun(this.value)" style="width:150px;"> 
+            <option value="">ROLE</option>
+           <option value="faculty">FACULTY</option><option value="mentor">MENTOR</option><option value="hod">HOD</option>    </select>
+         <script>
+
+	function role_fun(str) {
+ 
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+          location.reload();
+      }
+    };
+    xmlhttp.open("GET","../getrole.php?q="+str,true);
+    xmlhttp.send();
+  
+}
+</script> </p></div>
+    	
+    	<p>User: <strong>KALIAPPAN M</strong></p>
+    
+	
+<!-- Begin Wrapper -->
+	<div id="wrapper">
+		
+<!-- Begin Header -->
+		
+<div id="header">
+			
+			
+<div class="shell" style="margin-bottom:0px;">
+<center> <img src="../css/images/logo1.png" width="" height="100" style="margin-bottom:10px;margin-left:-95px;margin-top:0px;"></center>
+</div>
+
+				
+		
+</div>
+		
+	<!-- End Header -->
+		
+<!-- Begin Navigation -->
+		
+<div id="navigation">
+			
+<!-- Begin Shell -->
+			
+<div class="shell">
+				
+<ul>
+					
+<li><a href="../index.php">Home</a></li>
+
+
+		
+<li><a href="#">SURVEY FORMS</a>
+
+	
+<div class="dd">
+							
+<ul>
+
+
+	<li><a href="../academic/pesstatus.php">PES Status</a></li>
+<li><a href="../academic/aesstatus.php">Alumni Survey Status</a></li>
+<li><a href="../academic/curriculum_feedback.php">Curricular Feedback</a></li>
+<li><a href="../courses/crf.php">Curricular Feedback Status</a></li>
+<li><a href="../courses/crf_report.php">Curricular Feedback Report</a></li>
+
+	</ul>
+
+</div>
+
+</li>
+
+<li><a href="#">Course</a>
+<div class="dd">
+<ul>
+
+	<li><a href="../courses/fbreport.php">Course Feedback Report</a></li>
+		<li><a href="../courses/search.php">Search</a></li>
+	    <li><a href="../mark/index_new.php?for=attendance">Attendance</a></li>
+    <li><a href="../courses/batch.php">Batch Allotment</a></li>
+    <li><a href="../courses/enrolmentstatus.php">Enrolment Status</a></li>
+	<li><a href="../courses/surveystatus.php">Exit Survey Status</a></li>
+	<li><a href="../courses/feedbackstatus.php">Course Feedback Status</a></li>
+	<li><a href="../courses/ces_ay.php">Course End Survey</a></li>
+    <li><a href="../courses/open_elective_status.php">Open Elective Preference Status</a></li>
+     <li><a href="../courses/open_elective_report.php">Open Elective Preference Report</a></li>
+     <li><a href="../courses/elective_report.php">Elective Preference Report</a></li>
+	    <li><a href="mark/index_new.php?for=project">Project Work</a></li>
+		
+</ul>
+
+</div>
+
+</li>
+<li><a href="#">Supports </a>
+<div class="dd">
+<ul>
+        <li><a href="library/digital_library.php">Digital Library</a></li>
+    <li><a href="../profile/admin_request.php">Admin Requests</a></li>
+	</ul>
+
+</div>
+
+</li>
+
+	    <li><a href="#">Students</a>
+    <div class="dd">
+    <ul>
+    
+	<li><a href="../student/events.php">Curricular</a></li>
+    <li><a href="../student/extra_events.php">Extra Curricular</a></li>
+    <li><a href="../courses/index.php">Performances</a></li>
+	</ul>
+
+</div>
+
+</li>
+								
+<li><a href="#">Marks</a>
+<div class="dd">
+<ul>
+        <li><a href="../mark/index_new.php">Mark Entry</a></li>
+    <li><a href="../mark/portalentry.php">Portal Entry</a></li>
+    <li><a href="../mark/consolidation.php">Class Consolidation (IAT)</a></li>
+    <li><a href="../eco/portal.php">Portal Consolidation</a></li>
+    <li><a href="../mark/attainment_year.php">Attainment Calculation</a></li>
+    <li><a href="../mark/attainment_consolidation.php">Attainment Consolidation</a></li>
+    </ul>
+</div>
+</li>
+							
+<li><a href="#">Events</a>
+<div class="dd">
+<ul>
+    <li><a href="../events/index.php">Event Organized </a></li>
+</ul>
+</div>
+</li>
+	<li><a href="#">Employee</a>
+<div class="dd">
+<ul>
+    	
+     <li><a href="../profile/leave_form.php">Leave Procedures</a></li>
+     
+    	
+     <li><a href="../profile/class_alteration.php" target="_blank">Class Alterations</a></li>
+     <li><a href="../profile/other_alteration.php" target="_blank">Other Alterations</a></li>
+     
+    	<li>
+        <div class="dd">
+<ul>    <li><a href="../faculty/events.php">Entry</a></li>
+         <li><a href="../faculty/eventview.php">View</a></li>
+     </ul>
+</div>
+        <a href="">Curricular events</a></li>
+        </ul>
+
+</div>
+</li>
+
+
+	<li><a href="#">ECO</a>
+<div class="dd">
+<ul>    
+    <li><a href="../eco/portal.php">Portal Consolidation</a></li>
+    <li><a href="../mark/consolidation.php">IAT Consolidation</a></li>
+    <li><a href="../mark/attendance_consolidation.php">Attendance Consolidation</a></li>
+    <li><a href="../eco/retest.php">Retest List</a></li>
+    <li><a href="../eco/university_result.php">University Result</a></li>
+    
+</ul>
+</div>
+</li>
+	<li><a href="#">Account</a>
+<div class="dd">
+<ul>
+    <li><a href="../profile/changepwd.php">Change Password</a></li>
+        <li><a href="../faculty/profile.php">Profile</a></li>
+         <li><a href="../profile/attendance.php">Attendance Log</a></li>
+     <li><a href="../profile/mess_bill.php">Mess Bill</a></li>
+     <li><a href="../faculty/payslip.php">Pay Slip</a></li>
+</ul>
+</div>
+</li>
+			
+</ul>
+				
+<div class="cl">&nbsp;</div> 	
+			
+</div>
+			<!-- End Shell -->
+		
+</div>
+<center>
+    <style>
+        tr {
+   line-height: 25px;
+   min-height: 25px;
+   height: 25px;
+}
+    </style>
+    	<style>
+    .btn-purple {
+    color: #fff;
+    background-color: #6f42c1;
+    border-color: #643ab0;
+}
+.modal-body div{float:left; width: 100%}
+.modal-body div p{float:left; width: 20%; font-weight: 600;}
+.modal-body div span{float:left; width: 80%}
+</style>
+      <style>
+        .navb {
+  overflow: hidden;
+  background-color: #ba730f;
+  position: relative;
+  top: 0;
+  width: 100%;
+  padding:0px 0px;
+
+}
+
+.navb a {
+  float: left;
+  display: block;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 8px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+.navb a:hover {
+  background: #ccc;
+  color: black;
+}
+#table tbody td {
+    text-align: center;
+    font: normal 12px Verdana, Arial, Helvetica;
+    width: fit-content;
+}
+#table  {
+    margin-left: auto;
+ margin-top: 10px;
+  margin-right: auto;
+}
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    background-color: transparent;
+    padding: 0px;
+}
+
+    </style>
+<title>Leave Form</title>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/dataTables.bootstrap4.min.css">
+
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.11.3/themes/smoothness/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.full.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-datetimepicker/2.5.20/jquery.datetimepicker.min.css">
+
+
+
+
+ 
+	
+	
+	
+	
+	
+	
+<div id="templatemo_main_top"></div>
+
+<div id="templatemo_main_wrapper"> 
+
+<legend><h3>Leave Form </h3></legend>
+<div class="navb" id="navb">
+  <a id="aclass" onclick="menu('class')" class="btn btn-info" style="background:#ccc;color:black">Apply Leave</a>
+  <a id="afaculty" onclick="menu('faculty')" class="btn btn-info">View Leave</a>
+  <a id="anine" onclick="menu('nine')" class="btn btn-info">OD Proofs</a>
+  <a id="athree" onclick="menu('three')" class="btn btn-info">CCL Claim</a>
+  <a id="afour" onclick="menu('four')" class="btn btn-info">Earned CCL</a>
+  <!--<a id="aten" onclick="menu('ten')" class="btn btn-info">Class Alterations</a>-->
+  <a id="afive" onclick="menu('five')" class="btn btn-info">Alterations</a>
+  <a id="asix" onclick="menu('six')" class="btn btn-info">Other Alterations</a>
+  <a id="aseven" onclick="menu('seven')" class="btn btn-info">Apply Permission</a>
+  <a id="aeight" onclick="menu('eight')" class="btn btn-info">All Permissions</a>
+</div>
+<div id="class">
+    <form id="upload_csv" action="leave_form.php" method="post" enctype="multipart/form-data"> 
+    <br>
+    
+  <table class="table table-striped" style="padding:.25rem;width:fit-content">
+  <tbody><tr style="height: 30px"><th style="padding:.8rem" class="text-center">From Date</th>  <td style="padding:.8rem">
+                          <input type="text" name="from_date" id="from_dateid" onchange="time_valid()" required="" class="hasDatepicker"> 
+                           </td><td class="text-center">
+                          <select name="from_session" id="from_session" onchange="time_valid()" required="" class="form-control">  
+                          <option value="both">Full</option>
+                          <option value="FN">FN</option>
+                          <option value="AN">AN</option>
+                          </select>
+                          </td>
+                     </tr>
+                     <tr>
+ <th style="padding:.8rem" class="text-center">To Date</th>  <td style="padding:.8rem">
+                          <input type="text" name="to_date" id="to_dateid" onchange="time_valid()" required="" class="hasDatepicker"> 
+                           </td>
+                           <td class="text-center">
+                          <select name="to_session" id="to_session" onchange="time_valid()" required="" class="form-control">  
+                          <option value="both">Full</option>
+                          <option value="FN">FN</option>
+                          <option value="AN">AN</option>
+                          </select>
+                          </td>
+                     </tr>
+                     <tr>  <th style="padding:.8rem" class="text-center">Leave Type</th><td colspan="3" class="text-center">
+                          <select name="leave_type" id="type" style="height:30px" required="" class="form-control" onchange="leave_check_rod()">  
+                          <option value="CL">CL</option>
+                          <option value="OD">OD</option>
+                                                                              <option value="LOP">LOP</option>
+                          <option value="CCL">CCL</option>
+                          <option value="ML">Maternity Leave</option>
+                          
+                          </select>
+                          </td>
+                     </tr> 
+                    
+<script>
+    function leave_check()
+	{
+	    var from_date=document.getElementById("from_dateid").value;
+        var from_session=document.getElementById("from_session").value;
+        var to_date=document.getElementById("to_dateid").value;
+        var to_session=document.getElementById("to_session").value;
+        var leave_type=document.getElementById("type").value;
+        var m=0;
+        if(from_date!='' && from_session!='' && to_date!='' && to_session!='' && leave_type!='')
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","getavailleave.php?from_date="+from_date+"&from_session="+from_session+"&to_date="+to_date+"&to_session="+to_session+"&leave_type="+leave_type,true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById(ss).innerHTML = this.responseText;
+      }
+    };
+	 }
+
+
+	 
+	 function leave_check_rod()
+	{
+	    var r="";
+	    var leave_type=document.getElementById("type").value;
+	    if(leave_type=='ROD')
+	    {
+	        
+	        var myAnchor = document.getElementById("reason");
+	        var mySpan = document.createElement("select");
+	        mySpan.setAttribute("name", "reason");
+	        mySpan.setAttribute("class", "form-control");
+	        
+	        var rt="0";
+	        if(rt>0)
+	        {
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Discussion");
+	        var t=document.createTextNode("Discussion  with Supervisor");
+	        option.appendChild(t);
+	         mySpan.appendChild(option);
+	        }
+	        
+	       var rt="0";
+	        if(rt>0)
+	        {
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Experiment");
+	        var t=document.createTextNode("Experimentation and Testing");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Register' && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Course_work");
+	        var t=document.createTextNode("Course Work");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Coursework' && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Seminar");
+	        var t=document.createTextNode("Seminar Presentation");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Coursework'  && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Confirmation_meeting");
+	        var t=document.createTextNode("Confirmation Meeting");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Provisional'  && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "DC_meeting");
+	        var t=document.createTextNode("Doctoral Committee Meeting");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Provisional' && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Synopsis_meeting");
+	        var t=document.createTextNode("Synopsis Meeting");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Synopsis' && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Thesis");
+	        var t=document.createTextNode("Thesis Submission"); 
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        var rt="0";
+	        if(r=='Thesis' && rt>0){
+	        var option=document.createElement("option");
+	        option.setAttribute("value", "Viva");
+	        var t=document.createTextNode("Viva-Voce");
+	        option.appendChild(t);
+	        mySpan.appendChild(option);
+	        }
+	        
+	        myAnchor.parentNode.replaceChild(mySpan, myAnchor);
+        var m=0;
+        
+   
+	    }
+	   /* else if(leave_type=='OD')
+	   {
+	        document.getElementById("od_pr").style.display='block';
+	        document.getElementById("_0").setAttribute("required",true);
+	    }
+	    else if(leave_type!='OD')
+	   {
+	        document.getElementById("od_pr").style.display='none';
+	        document.getElementById("_0").removeAttribute("required");
+	        
+	    }*/
+	 }
+	 
+	 
+</script>
+    
+
+                   
+                    <tr>  <th style="padding:.8rem" class="text-center">Reason</th><td colspan="3" class="text-center">
+                          <input type="text" name="reason" id="reason" placeholder="Enter the Reason" style="height:30px" required="" class="form-control">  </td>
+                     </tr>
+                                         <tr>
+                         <th colspan="2" style="padding:.8rem" class="text-center">No. of Hours to Alter</th>
+                         <td colspan="2"><input type="number" name="alteration" id="alteration" min="0" style="height:30px" onchange="textbox()" required="" class="form-control"></td>
+                     </tr>
+                     
+                     
+          
+                     
+                     </tbody></table>
+                     
+                     
+                      <span id="od_pr" style="display:none">
+                       
+                         OD Proof
+                         
+                     <input type="file" name="_0" id="_0" onchange="sizepdf('_0', 400000, '0', 'faculty')">
+                
+                    
+                  </span>
+                  <br><br>
+                     <script>
+	$(document).ready(function(){
+		var minDate=new Date();
+		var maxdate = new Date();
+		maxdate.setDate(maxdate.getDate() + 7);
+		minDate.setDate(minDate.getDate() - 1);
+		$("#from_dateid").datepicker({
+			showAnim: 'drop',
+			numberOfMonth: 1,
+			minDate: minDate,
+			maxDate: maxdate,
+			dateFormat: 'yy-mm-dd',
+			onClose: function(selectedDate){
+			   // selectedDate =new Date(selectedDate);
+			   // selectedDate=selectedDate.getFullYear()+'-' + (selectedDate.getMonth()+1) + '-'+selectedDate.getDate();
+			   // alert(selectedDate);
+				$('#to_dateid').datepicker("option","minDate",selectedDate);
+			}
+
+		});
+
+		$("#to_dateid").datepicker({
+			showAnim: 'drop',
+			numberOfMonth: 1,
+			dateFormat: 'yy-mm-dd',
+			
+
+		});
+
+	});
+	
+	
+	function textbox()
+	{
+	    var name=document.getElementById("alteration").value;
+	    var tbodyRef = document.getElementById('alter').getElementsByTagName('tbody')[0];
+    	var name1=name;
+    	if(name1>0)
+            {
+        while(tbodyRef.rows.length > name1) {
+            tbodyRef.deleteRow(-1);
+            
+            }
+        }
+        var alt=document.getElementById("alteration").value;
+		var i;
+		var course_code = ["AD3301"];
+		var course_name = ["Data Exploration and Visualization"];
+		var course_id = ["3114"];
+		var course_class = ["SECOND-AD-A"];
+		var from_date=document.getElementById("from_dateid").value;
+        var to_date=document.getElementById("to_dateid").value;
+		for(i=tbodyRef.rows.length;i<=name;i++)
+	    {
+		    var tbodyRef = document.getElementById('alter').getElementsByTagName('tbody')[0];
+            var newRow = tbodyRef.insertRow();
+             var newCell = newRow.insertCell();
+            var x = document.createElement("INPUT");
+            x.setAttribute("type", "date");
+            x.setAttribute("name", "alt_date[]");
+            x.setAttribute("min", from_date);
+            x.setAttribute("max", to_date);
+            x.setAttribute("required", '');
+            newCell.appendChild(x);
+            var newCell = newRow.insertCell();
+            var x = document.createElement("SELECT");
+            x.setAttribute("name", "alt_course[]");
+            x.setAttribute("required", '');
+            var temp="alt_fac_"+i;
+            //x.setAttribute("id", temp);
+            var pas="textbox1(this.value, '"+temp+"')";
+            x.setAttribute("onchange", pas);
+            newCell.appendChild(x);
+            var option = document.createElement("option");
+            option.value  = '';
+            option.innerHTML  = 'Select';
+            x.appendChild(option); 
+            for(var t=0;t<course_code.length;t++)
+            {
+                var option = document.createElement("option");
+                option.value  = course_id[t];
+                option.innerHTML  = course_code[t]+'-'+course_class[t];
+                x.appendChild(option); 
+            }
+            var newCell = newRow.insertCell();
+            var x = document.createElement("SELECT");
+            var temp="alt_hour_"+i;
+            x.setAttribute("id", temp);
+             x.setAttribute("name", "alt_hour[]");
+            x.setAttribute("required", '');
+            newCell.appendChild(x);
+            for(var t=1;t<9;t++)
+            {
+                var option = document.createElement("option");
+                option.value  = t;
+                option.innerHTML  = t;
+                x.appendChild(option); 
+            }
+            var newCell = newRow.insertCell();
+            var x = document.createElement("SELECT");
+            var temp="alt_fac_"+i;
+            x.setAttribute("id", temp);
+             x.setAttribute("name", "alt_fac[]");
+            x.setAttribute("required", '');
+            newCell.appendChild(x);
+            
+		}
+	 }
+	
+	
+	function textbox1(a, id)
+	{
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("GET","getaltfaculty.php?alt="+a,true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById(id).innerHTML = this.responseText;
+      }
+    };
+	 }
+	 
+	 
+	 
+
+
+
+</script>
+        <span id="alter">
+            <table border="1" title="Class Alterations">
+                <tbody>
+                    
+                    <tr>
+                        <th class="text-center">Date</th>
+                        <th class="text-center" style="width:100px">Class</th>
+                        <th class="text-center">Hour</th>
+                        <th class="text-center">Faculty</th>
+                    </tr>
+                </tbody>
+            </table>
+        </span>
+        <br>
+        
+        
+								<table border="1" id="featuressss-table">
+									<tbody><tr><td class="text-center" colspan="4"> <h5>Other Alterations</h5></td></tr>
+                                <tr>
+                                  <th class="text-center">Responsibility</th>
+                                  <th class="text-center">Altered To</th>
+                                  <th colspan="2"></th>
+                                </tr>
+                                
+                                <tr>
+                                  <td>
+                                    <input type="text" class="form-control" name="other_responsibility[]" id="other_responsibility0" style="width: 300px;height:100%" placeholder="Mentor/Adviser/Exam Duty(Date)/etc...">
+                                  </td>
+                                  <td><select name="other_alter_fac[]" id="other_alter_fac0" class="form-control">
+                                  	<option value="">Select</option>
+                                  	<option value="1102">1102 - KARTHIKEYAN G</option><option value="1104">1104 - SUBHA C</option><option value="1110">1110 - CHOCKALINGAM T</option><option value="1114">1114 - KALAIMANI R</option><option value="1115">1115 - MURUGANANTHAM R</option><option value="1116">1116 - MANICKA MAMALLAN A</option><option value="1118">1118 - DHARMAR S</option><option value="1120">1120 - LEEMA MARGRET A</option><option value="1121">1121 - RAGAVAN V</option><option value="1122">1122 - INDHUMATHI M</option><option value="1124">1124 - BHARANI BAANU B</option><option value="1125">1125 - JEEVANANTHAM V</option><option value="1202">1202 - VENKATESH R</option><option value="1204">1204 - VIJAYALAKSHMI K</option><option value="1205">1205 - VIJAYALAKSHMI B</option><option value="1206">1206 - SWARNA SUDHA M</option><option value="1216">1216 - ANUSUYA V</option><option value="1217">1217 - JOTHI THILAGA P</option><option value="1218">1218 - MANJULA S</option><option value="1220">1220 - GOMATHY NAYAGAM M</option><option value="1221">1221 - YOGARAJA C A</option><option value="1222">1222 - VIGNESH SARAVANAN K</option><option value="1223">1223 - KALIAPPAN M</option><option value="1224">1224 - NITHYA N</option><option value="1225">1225 - SAKTHI PRIYA G</option><option value="1226">1226 - GETHZI AHILA POORNIMA</option><option value="1228">1228 - SHRUTHI T</option><option value="1230">1230 - JEYA GEETHA K</option><option value="1231">1231 - JEYAKARTHIKA K</option><option value="1233">1233 - VIJAYA AMALA DEVI S</option><option value="1234">1234 - SOFIA THANGA MARY A</option><option value="1235">1235 - DHIVYA M</option><option value="1237">1237 - DEVISRI P</option><option value="1238">1238 - BALAMURUGAN R</option><option value="1239">1239 - KARTHIYAYINI G</option><option value="1240">1240 - MADHU R</option><option value="1241">1241 - MUTHUPANDI G</option><option value="1242">1242 - PRIYA K</option><option value="1243">1243 - RAJARAJESWARI P</option><option value="1301">1301 - KARTHIKEYAN K</option><option value="1302">1302 - KARTHIK PRABHU D</option><option value="1305">1305 - KANNAN S</option><option value="1307">1307 - ARUN KUMAR A</option><option value="1310">1310 - THANGAM E</option><option value="1311">1311 - MEENAKSHI SUNDARAVEL S</option><option value="1313">1313 - VIGNESHWAR A S</option><option value="1314">1314 - JEYANTHI S</option><option value="1315">1315 - SHARMILAKUMARI S</option><option value="1316">1316 - SIVAPRIYA G</option><option value="1319">1319 - PREM P</option><option value="1320">1320 - NARTHANA S</option><option value="1405">1405 - DEEPA LAKSHMI B</option><option value="1406">1406 - AZHAGU JAISUDHAN PAZHANI A</option><option value="1407">1407 - KANNAN B</option><option value="1409">1409 - RAMALAKSHMI R</option><option value="1411">1411 - GNANA PRIYA G</option><option value="1413">1413 - SRIRENGANACHIYAR V</option><option value="1416">1416 - JEEVA S</option><option value="1419">1419 - GOPINATH D</option><option value="1423">1423 - DEIVANAYAGAM R</option><option value="1424">1424 - GUNASEKARAN P</option><option value="1426">1426 - RAMESH BABU A</option><option value="1427">1427 - SIVAKUMAR G</option><option value="1428">1428 - VENKATESH P</option><option value="1429">1429 - HARINI SHRIRAM S</option><option value="1430">1430 - VAIRAPRAKASH S</option><option value="1433">1433 - LAKSHMI A</option><option value="1434">1434 - RAJALAKSHMI R</option><option value="1435">1435 - SUBHASHINI G</option><option value="1436">1436 - KRISHNAKUMARI L</option><option value="1438">1438 - CHANDRALEKHA R</option><option value="1439">1439 - ARUNACHALA PERUMAL C</option><option value="1441">1441 - RAMASAMY R</option><option value="1442">1442 - KRISHNA MEERA V</option><option value="1501">1501 - SURESHKUMAR P.</option><option value="1502">1502 - LAKSHMANAN M.</option><option value="1504">1504 - JEROLD JOHN BRITTO J</option><option value="1507">1507 - MAHA RAJAN S</option><option value="1509">1509 - SIVAGAMINATHAN ALIAS BALAJI M</option><option value="1510">1510 - ASHOK KUMAR M</option><option value="1512">1512 - GURURAJ C</option><option value="1513">1513 - VALAI GANESH S</option><option value="1516">1516 - KARTHIKEYAN L</option><option value="1517">1517 - PRABU RAM G</option><option value="1519">1519 - ARUN KUMAR R</option><option value="1521">1521 - VENKATESH R</option><option value="1522">1522 - PRABHAKARAN R</option><option value="1528">1528 - SIVAKUMAR V</option><option value="1530">1530 - RAMAR M</option><option value="1531">1531 - KATHIRAVAN S</option><option value="1603">1603 - REVATHI B</option><option value="1604">1604 - SELVA BIRUNDA S</option><option value="1605">1605 - KARPAGAVALLI C</option><option value="1606">1606 - AMUTHACHENTHIRU K</option><option value="1607">1607 - USHARANI C</option><option value="1608">1608 - RAMNATH M</option><option value="1609">1609 - JOTHI LAKSHMI S</option><option value="1610">1610 - SANKARALAKSHMI B</option><option value="1611">1611 - PRADEEPHA S</option><option value="1612">1612 - RAMANA R</option><option value="1613">1613 - SANTHIKALA M</option><option value="1614">1614 - RAJESHWARI R M</option><option value="1615">1615 - KAVITHA G</option><option value="1616">1616 - VETRIVEL P</option><option value="1617">1617 - ELAMPARITHI P</option><option value="1618">1618 - LOGAPRIYA V</option><option value="1619">1619 - MARIAPPAN E</option><option value="1620">1620 - ANGEL HEPZIBAH R</option><option value="1621">1621 - MUTHU ESHWARAN R</option><option value="1704">1704 - DHAMOTHARAN R</option><option value="1705">1705 - SAKKARAVARTHI S</option><option value="1706">1706 - BALAGANESH M V</option><option value="1707">1707 - SIVASATHIYA G</option><option value="1708">1708 - RETHINAKUMARI M</option><option value="1709">1709 - ALAGULAKSHMI A</option><option value="1710">1710 - PALRAJ K</option><option value="1803">1803 - BASARI KODI K</option><option value="1805">1805 - SUBRAMANIAN K</option><option value="1811">1811 - SENTHILKUMAR O</option><option value="1814">1814 - KARTHIKEYAN N</option><option value="1815">1815 - ANISH ALFRED VAZ M</option><option value="1817">1817 - MANIMARAN T</option><option value="1818">1818 - ANAND M</option><option value="1820">1820 - KANTHIMATHI G</option><option value="1826">1826 - REVATHI N</option><option value="1831">1831 - SUBASREE R</option><option value="1833">1833 - VIGNESWARI T</option><option value="1834">1834 - SELVARAJ G</option><option value="1835">1835 - VENKATESH PERUMAL M</option><option value="1839">1839 - SELVAGANESH T</option><option value="1840">1840 - THIRURAMANATHAN P</option><option value="1841">1841 - SRINIVASAN R</option><option value="1843">1843 - JEYAPAPPA K</option><option value="1845">1845 - GOMATHI S</option><option value="1846">1846 - SARVANAKUMAR R</option><option value="1848">1848 - SUJANTHA G S</option><option value="1849">1849 - SANTHI MAHESWARI K</option><option value="1850">1850 - KANNAN G</option><option value="1851">1851 - LEELADEVI K</option><option value="1852">1852 - RANJITHA G</option><option value="1853">1853 - MUTHU KUMAR S</option><option value="1854">1854 - NAGAMANI N</option><option value="1903">1903 - ERANA VEERAPPA DINESH S</option><option value="1904">1904 - MAREESWARI G</option><option value="1905">1905 - USHARANI K</option><option value="1906">1906 - YAZHINI B</option><option value="1907">1907 - SHABANA FATHIMA M</option><option value="1908">1908 - JEYA SUNDARI M</option><option value="1909">1909 - PREETHI RAM M</option>
+                                  </select>
+                              </td>
+                                  
+						   <td colspan="2">
+							<img src="plus.jpg" title="Add" style="cursor:pointer;" onclick="addRow4('featuressss-table', 'other_responsibility', 'other_alter_fac', '0')">
+							</td>
+						
+									</tr>
+                              </tbody></table>
+                              <script>
+                              function focus_fac(a)
+	{
+    var xmlhttp = new XMLHttpRequest();
+    var id='dummy'+a;
+    xmlhttp.open("GET","get_other_alt_fac.php?a="+a,true);
+    xmlhttp.send();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById(id).innerHTML = this.responseText;
+      }
+    };
+	 }
+	 
+                                  function addRow4(DOC_ID, ARR_METHOD, ARR_METHOD1,  COUNT)
+    {
+        
+
+        var countval = (parseFloat(COUNT) + 1);
+        var cntTr = $("#" + DOC_ID + " tr").length;
+       var temp='dummy'+countval;
+        $("#" + DOC_ID + " tr:last-child td:last-child img").remove();
+        var tdStr = '<tr>';
+        tdStr += '<td><input  type="text" placeholder="Mentor/Adviser/Exam Duty(Date)/etc..." onchange="focus_fac('+countval+')" name="' + ARR_METHOD + '[]" id="other_responsibility' + countval + '" class="form-control" style="width:300px;height:100%"> </td><td><span id="'+temp+'"</span> </td><td><img src="cross.jpg" title="Remove this Item" onClick="removeRow4(this,\'' + DOC_ID + '\')" style="cursor:pointer;" /></td><td><img src="plus.jpg" title="Add this Item" onClick="addRow4(\'' + DOC_ID + '\',\'' + ARR_METHOD + '\',\'' + ARR_METHOD1 + '\',\'' + countval + '\')" style="cursor:pointer;" /></th></td>';
+        tdStr += '</tr>';
+        $("#" + DOC_ID + "").each(
+                function ()
+           {
+            var $table = $(this);
+             if ($('tbody', this).length > 0)
+             {
+                $('tbody', this).append(tdStr);
+              } else
+            {
+           $(this).append(tdStr);
+          }
+   }
+    );
+    }
+    
+     function removeRow4(imgRef, imgid)
+ {
+    var cntTr = $("#" + imgid + " tr").length;
+    if (cntTr > 1)
+  {
+        $("#" + imgid + " tr td:last-child img").remove();
+       $(imgRef).parent().parent().remove();
+       $("#" + imgid + " tr:last-child td:last-child").html('<img src="plus.jpg" title="Add this Item" onClick="addRow4(\'' + imgid + '\',\'' + "specialty" + '\')" style="cursor:pointer;" />');
+ } else
+   {
+       alert('Last row can\'t be deleted');
+     }
+  }
+                              </script>
+                              <br>
+<div id="con">
+                          <div><input type="submit" name="fac_leave_apply" id="apply" value="Apply" style="margin-top:10px;display:none" class="btn btn-info">  </div>
+                          <div><input type="reset" name="reset" id="apply1" value="Reset" style="margin-top:10px;display:none" class="btn btn-info "> </div>  <br><br>
+     </div>   </form> 
+     <style>
+         #con div{
+    display:inline-block;
+}
+     </style>
+                <table border="1">
+                    <tbody><tr>
+                        <th class="text-center">Available CL</th>
+                        <th class="text-center">Available CCL</th>
+                         <th class="text-center">Available VL</th>
+                        <th class="text-center">Used CL</th>
+                        <th class="text-center">Used CCL</th>
+                        <th class="text-center">OD</th>
+                        <th class="text-center">LOP</th>
+                        <th class="text-center">ML</th>
+                        <th class="text-center">used VL</th>
+                        <th class="text-center">Previous CCL</th>
+                    </tr>
+                                        <tr>
+                        <td class="text-center" style="width:100px">7</td>
+                        <td class="text-center" style="width:100px">16</td>
+                        <td class="text-center" style="width:100px">12</td>
+                        <td class="text-center" style="width:100px">8</td>
+                        <td class="text-center" style="width:100px">5</td>
+                        <td class="text-center" style="width:50px">6.5</td>
+                        <td class="text-center" style="width:50px">0</td>
+                        <td class="text-center" style="width:50px">0</td>
+                        <td class="text-center" style="width:50px">2</td>
+                        <td class="text-center" style="width:50px">12</td>
+                    </tr>
+                </tbody></table>
+                <br>
+                <table border="1">
+                    <tbody><tr>
+                        <th class="text-center">AY</th>
+                        <th class="text-center">CL</th>
+                        <th class="text-center">CCL</th>
+                        <th class="text-center">VL</th>
+                        <th class="text-center">OD</th>
+                        <th class="text-center">LOP</th>
+                    </tr>
+                                        <tr>
+                        <td class="text-center" style="width:100px">2023-2024</td>
+                        <td class="text-center" style="width:100px">15</td>
+                        <td class="text-center" style="width:100px">2</td>
+                        <td class="text-center" style="width:100px">0</td>
+                        <td class="text-center" style="width:50px">8</td>
+                        <td class="text-center" style="width:50px">0</td>
+                    </tr>
+                </tbody></table>
+                </div>
+<div id="faculty" style="display:none">
+<form id="view_permission" method="post" enctype="multipart/form-data"> 
+    <center>
+      <br>  
+  <div id="tableview_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="tableview_length"><label>Show <select name="tableview_length" aria-controls="tableview" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="tableview_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="tableview"></label></div><table id="tableview" class="display mydatatable dataTable no-footer" style="width: 0px;" role="grid" aria-describedby="tableview_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="From: activate to sort column ascending" style="width: 0px;">From</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="To: activate to sort column ascending" style="width: 0px;">To</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Days: activate to sort column ascending" style="width: 0px;">Days</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Type: activate to sort column ascending" style="width: 0px;">Type</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Reason: activate to sort column ascending" style="width: 0px;">Reason</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Status</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Alteration: activate to sort column ascending">Alteration</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Alteration Pending: activate to sort column ascending">Alteration Pending</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="HOD: activate to sort column ascending">HOD</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Principal: activate to sort column ascending">Principal</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 0px;">Action</th><th class="text-center sorting" tabindex="0" aria-controls="tableview" rowspan="1" colspan="1" aria-label="AY: activate to sort column ascending" style="width: 0px;">AY</th></tr>
+        </thead>
+        
+        <tbody style="">
+                        
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+                <td class="text-center">19-11-2024 both</td>
+                <td class="text-center">23-11-2024 both</td>
+                                <td class="text-center">5</td>
+                                <td class="text-center">CCL</td>
+                <td class="text-center">Going to Tirupati </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-25-11-2024 08:48</td>
+                <td style="display:none">Approved-25-11-2024 11:17</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">2</td>
+                <td class="text-center">29-10-2024 both</td>
+                <td class="text-center">29-10-2024 both</td>
+                                <td class="text-center">1</td>
+                                <td class="text-center">OD</td>
+                <td class="text-center">External Examiner for Phd Viva at REVA University, Bangalore </td>
+                <td class="text-center">
+                Cancelled                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Pending-</td>
+                <td style="display:none">Pending-</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">3</td>
+                <td class="text-center">28-10-2024 AN</td>
+                <td class="text-center">29-10-2024 both</td>
+                                <td class="text-center">1.5</td>
+                                <td class="text-center">OD</td>
+                <td class="text-center">External Examiner for Phd Viva at REVA University, Bangalore </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-30-10-2024 09:27</td>
+                <td style="display:none">Approved-30-10-2024 10:13</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">4</td>
+                <td class="text-center">04-10-2024 both</td>
+                <td class="text-center">04-10-2024 both</td>
+                                <td class="text-center">1</td>
+                                <td class="text-center">CL</td>
+                <td class="text-center">Going to Madurai </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-04-10-2024 09:15</td>
+                <td style="display:none">Approved-04-10-2024 11:27</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">5</td>
+                <td class="text-center">25-09-2024 both</td>
+                <td class="text-center">27-09-2024 both</td>
+                                <td class="text-center">3</td>
+                                <td class="text-center">OD</td>
+                <td class="text-center">To attend India’s AI biggest Summit at Bangalore </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-28-09-2024 10:46</td>
+                <td style="display:none">Approved-28-09-2024 16:39</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">6</td>
+                <td class="text-center">02-09-2024 both</td>
+                <td class="text-center">06-09-2024 both</td>
+                                <td class="text-center">5</td>
+                                <td class="text-center">CL</td>
+                <td class="text-center">Going to temple </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-02-09-2024 10:04</td>
+                <td style="display:none">Approved-02-09-2024 17:43</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">7</td>
+                <td class="text-center">30-08-2024 both</td>
+                <td class="text-center">31-08-2024 both</td>
+                                <td class="text-center">2</td>
+                                <td class="text-center">CL</td>
+                <td class="text-center">Going to temple </td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-29-08-2024 17:04</td>
+                <td style="display:none">Approved-31-08-2024 18:53</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">8</td>
+                <td class="text-center">13-07-2024 both</td>
+                <td class="text-center">14-07-2024 both</td>
+                                <td class="text-center">2</td>
+                                <td class="text-center">VL</td>
+                <td class="text-center">vacation</td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-10-07-2024 18:22</td>
+                <td style="display:none">Approved-11-07-2024 13:44</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">9</td>
+                <td class="text-center">11-07-2024 both</td>
+                <td class="text-center">12-07-2024 both</td>
+                                <td class="text-center">2</td>
+                                <td class="text-center">OD</td>
+                <td class="text-center">Visit to NIOT, Chennai</td>
+                <td class="text-center">
+                Approved                </td>
+                <td style="display:none">0</td>
+                <td style="display:none">0(Accepted)</td>
+                <td style="display:none">Approved-15-07-2024 12:52</td>
+                <td style="display:none">Approved-18-07-2024 09:41</td>
+                <td></td>
+            <td class="text-center">2024-2025</td>
+                </tr></tbody>
+        <!--<tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>-->
+    </table><div class="dataTables_info" id="tableview_info" role="status" aria-live="polite">Showing 1 to 9 of 9 entries</div><div class="dataTables_paginate paging_simple_numbers" id="tableview_paginate"><a class="paginate_button previous disabled" aria-controls="tableview" data-dt-idx="0" tabindex="-1" id="tableview_previous">Previous</a><span><a class="paginate_button current" aria-controls="tableview" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="tableview" data-dt-idx="2" tabindex="-1" id="tableview_next">Next</a></div></div>
+    </center>
+     
+	
+	
+	
+ <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+
+
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+
+                </form>
+<script>
+
+	function course_fun() {
+		var ay=document.getElementById("ray").value;
+		var sem=document.getElementById("rsem").value;
+		var sem_no=document.getElementById("rsem_no").value;
+		var batch=document.getElementById("rbatch").value;
+		var regulation=document.getElementById("rregulation").value;
+		var department=document.getElementById("rdepartment").value;
+		var section=document.getElementById("rsection").value;
+		var result=document.getElementById("rresult").value;
+
+    var xmlhttp = new XMLHttpRequest();
+    xmlhttp.onreadystatechange = function() {
+      if (this.readyState == 4 && this.status == 200) {
+        document.getElementById("txtHint").innerHTML = this.responseText;
+      }
+    };
+    xmlhttp.open("GET","getcourse.php?ay="+ay+"&sem="+sem+"&sem_no="+sem_no+"&batch="+batch+"&regulation="+regulation+"&department="+department+"&section="+section+"&result="+result,true);
+    xmlhttp.send();
+  
+}
+</script>
+</div><br><br>
+
+<div id="nine" style="display:none">
+<form id="od_proof" method="post" enctype="multipart/form-data"> 
+    <center>
+      <br>  
+  <div id="table8_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="table8_length"><label>Show <select name="table8_length" aria-controls="table8" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="table8_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="table8"></label></div><table id="table8" class="display mydatatable dataTable no-footer" style="width:fit-content" role="grid" aria-describedby="table8_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="From: activate to sort column ascending" style="width: 0px;">From</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="To: activate to sort column ascending" style="width: 0px;">To</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="Type: activate to sort column ascending" style="width: 0px;">Type</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="Reason: activate to sort column ascending" style="width: 0px;">Reason</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="Proof Status: activate to sort column ascending" style="width: 0px;">Proof Status</th><th class="text-center sorting" tabindex="0" aria-controls="table8" rowspan="1" colspan="1" aria-label="Proof: activate to sort column ascending" style="width: 0px;">Proof</th></tr>
+        </thead>
+        
+         <tbody style="">
+                        
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+                <!--<td>KALIAPPAN M</td>-->
+                <td class="text-center">28-10-2024</td>
+                <td class="text-center">29-10-2024</td>
+                <td class="text-center">OD</td>
+                <td class="text-center">External Examiner for Phd Viva at REVA University, Bangalore </td>
+                <td class="text-center"><a>Approved</a></td>
+                <td></td>    
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">2</td>
+                <!--<td>KALIAPPAN M</td>-->
+                <td class="text-center">25-09-2024</td>
+                <td class="text-center">27-09-2024</td>
+                <td class="text-center">OD</td>
+                <td class="text-center">To attend India’s AI biggest Summit at Bangalore </td>
+                <td class="text-center"><a>Approved</a></td>
+                <td></td>    
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">3</td>
+                <!--<td>KALIAPPAN M</td>-->
+                <td class="text-center">11-07-2024</td>
+                <td class="text-center">12-07-2024</td>
+                <td class="text-center">OD</td>
+                <td class="text-center">Visit to NIOT, Chennai</td>
+                <td class="text-center"><a>Approved</a></td>
+                <td></td>    
+                </tr></tbody>
+    </table><div class="dataTables_info" id="table8_info" role="status" aria-live="polite">Showing 1 to 3 of 3 entries</div><div class="dataTables_paginate paging_simple_numbers" id="table8_paginate"><a class="paginate_button previous disabled" aria-controls="table8" data-dt-idx="0" tabindex="-1" id="table8_previous">Previous</a><span><a class="paginate_button current" aria-controls="table8" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="table8" data-dt-idx="2" tabindex="-1" id="table8_next">Next</a></div></div>
+    <br>
+    </center>
+    
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	
+                </form>
+
+</div>
+<div id="three" style="display:none">
+<form id="leave_form" method="post" enctype="multipart/form-data"> 
+    <table class="table table-striped" style="padding:.25rem;width:fit-content">
+  <tbody><tr style="height: 30px"><th style="padding:.8rem" class="text-center">Date</th>  <td style="padding:.8rem" colspan="3">
+                          <input type="text" name="from_date" id="ccl_from_date" required="" class="hasDatepicker"> 
+                           </td>
+                     </tr>
+                    
+                   
+
+                   
+                    <tr>  <th style="padding:.8rem" class="text-center">Reason</th><td colspan="3" class="text-center">
+                          <input type="text" name="reason" id="reason_ccl" placeholder="Enter the Reason" style="height:30px" required="" class="form-control">  </td>
+                     </tr> 
+                     
+          
+                     <tr>  <td colspan="4" class="text-center">
+                          <input type="submit" name="ccl_claim" value="Apply" class="btn btn-info">  </td>
+                     </tr> 
+                     </tbody></table>
+                     <br>
+  <script>
+	$(document).ready(function(){
+		var mindate=new Date();
+		var maxdate = new Date();
+		maxdate.setDate(maxdate.getDate() - 1);
+		mindate.setDate(mindate.getDate() - 50);
+		$("#ccl_from_date").datepicker({
+			showAnim: 'drop',
+			numberOfMonth: 1,
+			minDate: mindate,
+			maxDate: maxdate,
+			dateFormat: 'yy-mm-dd',
+		});
+	});
+</script>
+ </form>
+
+</div>
+<div id="four" style="display:none">
+<form id="all_permission" method="post" enctype="multipart/form-data"> 
+<center>
+      <br>  
+  <div id="earnccl_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="earnccl_length"><label>Show <select name="earnccl_length" aria-controls="earnccl" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="earnccl_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="earnccl"></label></div><table id="earnccl" class="display mydatatable dataTable no-footer" style="width: 0px;" role="grid" aria-describedby="earnccl_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending" style="width: 0px;">Date</th><th class="text-center sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Session: activate to sort column ascending" style="width: 0px;">Session</th><th class="text-center sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Reason: activate to sort column ascending" style="width: 0px;">Reason</th><th class="text-center sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Status</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="HoD: activate to sort column ascending">HoD</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending">Office</th><th style="display: none; width: 0px;" class="sorting" tabindex="0" aria-controls="earnccl" rowspan="1" colspan="1" aria-label="Principal: activate to sort column ascending">Principal</th></tr>
+        </thead>
+        
+        <tbody style="">
+                        
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+                <td class="text-center">01-12-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">Exam and record sign work to students </td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-06-12-2024 17:08-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-09-12-2024 10:08-</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">2</td>
+                <td class="text-center">30-11-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">Exam and record sign to students </td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-06-12-2024 17:08-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-09-12-2024 10:08-</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">3</td>
+                <td class="text-center">12-10-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">E-Governance software development work </td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-30-10-2024 09:47-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-30-10-2024 10:13-</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">4</td>
+                <td class="text-center">02-10-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">E-Approval &amp; Autonomous work</td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-03-10-2024 13:51-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-04-10-2024 11:27-</td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">5</td>
+                <td class="text-center">24-08-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">Admission</td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-27-08-2024 10:11-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-27-08-2024 16:30-</td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">6</td>
+                <td class="text-center">04-08-2024</td>
+                <td class="text-center">1</td>
+                <td class="text-center">Practical Examination</td>
+                <td class="text-center">Approved</td>
+                <td style="display:none">Approved-06-08-2024 11:33-</td>
+                <td style="display:none">Pending--</td>
+                <td style="display:none">Approved-06-08-2024 17:01-</td>
+                </tr></tbody>
+        <!--<tfoot>
+            <tr>
+                <th>Name</th>
+                <th>Position</th>
+                <th>Age</th>
+                <th>Start date</th>
+                <th>Salary</th>
+            </tr>
+        </tfoot>-->
+    </table><div class="dataTables_info" id="earnccl_info" role="status" aria-live="polite">Showing 1 to 6 of 6 entries</div><div class="dataTables_paginate paging_simple_numbers" id="earnccl_paginate"><a class="paginate_button previous disabled" aria-controls="earnccl" data-dt-idx="0" tabindex="-1" id="earnccl_previous">Previous</a><span><a class="paginate_button current" aria-controls="earnccl" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="earnccl" data-dt-idx="2" tabindex="-1" id="earnccl_next">Next</a></div></div>
+    </center>
+     
+	
+	
+	
+ <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+
+
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+
+
+                </form>
+
+</div>
+<div id="ten" style="display:none">
+    <form id="class_alteration_form" action="alter_class.php" method="post" enctype="multipart/form-data">
+        <br>
+        <table class="table table-striped" style="padding:.25rem; width:fit-content">
+            <tbody><tr style="height: 30px">
+                <th style="padding:.8rem" class="text-center">From Date</th>
+                <td style="padding:.8rem">
+                    <input type="text" name="from_date" id="from_dateid_class" onchange="updateDayOrder()" required="" class="hasDatepicker">
+                </td>
+                <td class="text-center">
+                    <select name="from_session" id="from_session_class" onchange="updateDayOrder()" required="" class="form-control">
+                        <option value="both">Full</option>
+                        <option value="FN">FN</option>
+                        <option value="AN">AN</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th style="padding:.8rem" class="text-center">To Date</th>
+                <td style="padding:.8rem">
+                    <input type="text" name="to_date" id="to_dateid_class" onchange="updateDayOrder()" required="" class="hasDatepicker">
+                </td>
+                <td class="text-center">
+                    <select name="to_session" id="to_session_class" onchange="updateDayOrder()" required="" class="form-control">
+                        <option value="both">Full</option>
+                        <option value="FN">FN</option>
+                        <option value="AN">AN</option>
+                    </select>
+                </td>
+            </tr>
+        </tbody></table>
+
+        <span id="class_alter">
+            <table border="1" title="Class Alterations">
+                <tbody>
+                    <tr>
+                        <th class="text-center">Date</th>
+                        <th class="text-center" style="width:100px">Class</th>
+                        <th class="text-center">Hour</th>
+                        <th class="text-center">Faculty</th>
+                    </tr>
+                </tbody>
+            </table>
+        </span>
+
+        <br>
+        <div id="con">
+            <div><input type="submit" name="class_alter_apply" id="apply_class" value="Apply" style="margin-top:10px; display:none" class="btn btn-info"></div>
+            <div><input type="reset" name="reset_class" id="apply1_class" value="Reset" style="margin-top:10px; display:none" class="btn btn-info"></div>
+        </div>
+    </form>
+
+    <script>
+        $(document).ready(function() {
+            var minDate = new Date();
+            var maxDate = new Date();
+            maxDate.setDate(maxDate.getDate() + 7);
+            minDate.setDate(minDate.getDate() - 1);
+
+            $("#from_dateid_class").datepicker({
+                showAnim: 'drop',
+                numberOfMonth: 1,
+                minDate: minDate,
+                maxDate: maxDate,
+                dateFormat: 'yy-mm-dd',
+                onClose: function(selectedDate) {
+                    $('#to_dateid_class').datepicker("option", "minDate", selectedDate);
+                }
+            });
+
+            $("#to_dateid_class").datepicker({
+                showAnim: 'drop',
+                numberOfMonth: 1,
+                dateFormat: 'yy-mm-dd'
+            });
+        });
+
+        function updateDayOrder() {
+            var fromDate = document.getElementById("from_dateid_class").value;
+            var toDate = document.getElementById("to_dateid_class").value;
+
+            if (fromDate && toDate) {
+                var xmlhttp = new XMLHttpRequest();
+                xmlhttp.open("GET", "get_day_order.php?from_date=" + fromDate + "&to_date=" + toDate, true);
+                xmlhttp.send();
+                xmlhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var response = JSON.parse(this.responseText);
+                        populateDayOrder(response);
+                    }
+                };
+            }
+        }
+
+        function populateDayOrder(dayOrders) {
+            var tbodyRef = document.getElementById('class_alter').getElementsByTagName('tbody')[0];
+            tbodyRef.innerHTML = ''; // Clear existing rows
+
+            dayOrders.forEach(function(dayOrder, index) {
+                var newRow = tbodyRef.insertRow();
+                var newCell = newRow.insertCell();
+                var dateInput = document.createElement("INPUT");
+                dateInput.setAttribute("type", "date");
+                dateInput.setAttribute("name", "alt_date[]");
+                dateInput.setAttribute("value", dayOrder.date);
+                dateInput.setAttribute("required", '');
+                newCell.appendChild(dateInput);
+
+                newCell = newRow.insertCell();
+                var classSelect = document.createElement("SELECT");
+                classSelect.setAttribute("name", "alt_course[]");
+                classSelect.setAttribute("required", '');
+                // Populate class options dynamically
+                newCell.appendChild(classSelect);
+
+                newCell = newRow.insertCell();
+                var hourSelect = document.createElement("SELECT");
+                hourSelect.setAttribute("name", "alt_hour[]");
+                hourSelect.setAttribute("required", '');
+                // Populate hour options based on dayOrder.hours
+                dayOrder.hours.forEach(function(hour) {
+                    var option = document.createElement("option");
+                    option.value = hour;
+                    option.innerHTML = hour;
+                    hourSelect.appendChild(option);
+                });
+                newCell.appendChild(hourSelect);
+
+                newCell = newRow.insertCell();
+                var facultySelect = document.createElement("SELECT");
+                facultySelect.setAttribute("name", "alt_fac[]");
+                facultySelect.setAttribute("required", '');
+                // Populate faculty options dynamically
+                newCell.appendChild(facultySelect);
+            });
+        }
+    </script>
+</div>
+
+<div id="five" style="display:none">
+<form id="alteration" method="post" enctype="multipart/form-data"> 
+    <center>
+      <br>  
+  <span id="test"></span><div id="table4_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="table4_length"><label>Show <select name="table4_length" aria-controls="table4" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="table4_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="table4"></label></div><table id="table4" class="display mydatatable dataTable no-footer" style="width:fit-content" role="grid" aria-describedby="table4_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Altered From: activate to sort column ascending" style="width: 0px;">Altered From</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Altered To: activate to sort column ascending" style="width: 0px;">Altered To</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Class: activate to sort column ascending" style="width: 0px;">Class</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending" style="width: 0px;">Date</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Hour: activate to sort column ascending" style="width: 0px;">Hour</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Status</th><th class="text-center sorting" tabindex="0" aria-controls="table4" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 0px;">Action</th></tr>
+        </thead>
+        
+        <tbody style="">
+            
+            
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+               
+                <td class="text-center">MANIMARAN T</td>
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">SECOND-AD-A</td>
+                <td class="text-center">21-09-2024</td>
+                <td class="text-center">8</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr></tbody>
+    </table><div class="dataTables_info" id="table4_info" role="status" aria-live="polite">Showing 1 to 1 of 1 entries</div><div class="dataTables_paginate paging_simple_numbers" id="table4_paginate"><a class="paginate_button previous disabled" aria-controls="table4" data-dt-idx="0" tabindex="-1" id="table4_previous">Previous</a><span><a class="paginate_button current" aria-controls="table4" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="table4" data-dt-idx="2" tabindex="-1" id="table4_next">Next</a></div></div>
+    </center>
+    
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	
+                </form>
+
+</div>
+<div id="six" style="display:none">
+<form id="other_alteration" method="post" enctype="multipart/form-data"> 
+    <center>
+      <br>  
+  <div id="table5_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="table5_length"><label>Show <select name="table5_length" aria-controls="table5" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="table5_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="table5"></label></div><table id="table5" class="display mydatatable dataTable no-footer" style="width:fit-content" role="grid" aria-describedby="table5_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="Altered From: activate to sort column ascending" style="width: 0px;">Altered From</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="Altered To: activate to sort column ascending" style="width: 0px;">Altered To</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="Responsibility: activate to sort column ascending" style="width: 0px;">Responsibility</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="From Date: activate to sort column ascending" style="width: 0px;">From Date</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="To Date: activate to sort column ascending" style="width: 0px;">To Date</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Status</th><th class="text-center sorting" tabindex="0" aria-controls="table5" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 0px;">Action</th></tr>
+        </thead>
+        
+        <tbody style="">
+                        
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">HoD Incharge</td>
+                <td class="text-center">19-11-2024</td>
+                <td class="text-center">23-11-2024</td>
+                <td class="text-center"><a>Pending</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">2</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">HOD Incharge</td>
+                <td class="text-center">28-10-2024</td>
+                <td class="text-center">29-10-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">3</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">Hod Incharge </td>
+                <td class="text-center">04-10-2024</td>
+                <td class="text-center">04-10-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">4</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">Hod Incharge </td>
+                <td class="text-center">25-09-2024</td>
+                <td class="text-center">27-09-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">5</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">Hod incharge </td>
+                <td class="text-center">02-09-2024</td>
+                <td class="text-center">06-09-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">6</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">MARIAPPAN E</td>
+                <td class="text-center">HOD Incharge </td>
+                <td class="text-center">30-08-2024</td>
+                <td class="text-center">31-08-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="odd"><td class="text-center sorting_1">7</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">RAMNATH M</td>
+                <td class="text-center">HOD incharge</td>
+                <td class="text-center">13-07-2024</td>
+                <td class="text-center">14-07-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr><tr role="row" class="even"><td class="text-center sorting_1">8</td>
+                
+                <td class="text-center">KALIAPPAN M</td>
+                <td class="text-center">RAMNATH M</td>
+                <td class="text-center">HOD incharge</td>
+                <td class="text-center">11-07-2024</td>
+                <td class="text-center">12-07-2024</td>
+                <td class="text-center"><a>Approved</a></td>
+            <td class="text-center"></td>
+                </tr></tbody>
+    </table><div class="dataTables_info" id="table5_info" role="status" aria-live="polite">Showing 1 to 8 of 8 entries</div><div class="dataTables_paginate paging_simple_numbers" id="table5_paginate"><a class="paginate_button previous disabled" aria-controls="table5" data-dt-idx="0" tabindex="-1" id="table5_previous">Previous</a><span><a class="paginate_button current" aria-controls="table5" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="table5" data-dt-idx="2" tabindex="-1" id="table5_next">Next</a></div></div>
+    </center>
+    
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	
+                </form>
+
+</div>
+<div id="seven" style="display:none">
+<form id="result_csv" action="leave_form.php" method="post" enctype="multipart/form-data"> 
+    <br>
+    <input type="hidden" name="fac_id" value="1223">
+      <input type="hidden" name="name" value="KALIAPPAN M">
+      <input type="hidden" name="department" value="AD">
+      <input type="hidden" name="type" value="faculty">
+  <table class="table table-striped" style="padding:.25rem;width:fit-content">
+                    <tbody><tr>
+                         <th style="padding:.5rem" class="text-center"> Date*</th>  <td style="padding:.5rem">
+                          <input type="date" name="perm_date" id="perm_date" class="form-control" style="height:30px" required="">
+                          </td> 
+                         <th style="padding:.5rem" class="text-center"> Reason*</th>  <td style="padding:.5rem" colspan="">
+                         <input type="text" name="perm_reason" id="perm_reason" class="form-control" style="height:30px" required="">
+                         </td>
+                     </tr>
+  
+                     <tr> <th style="padding:.5rem" class="text-center"> From*</th>  <td style="padding:.5rem">
+                          <input type="time" name="from_time" id="from_timeid" class="form-control" step="900" style="height:30px" required="" onchange="settime()">
+                          </td>
+                          <th style="padding:.5rem" class="text-center"> To*</th>  <td style="padding:.5rem">
+                          <input type="time" name="to_time" id="to_timeid" class="form-control" step="900" onchange="settime()" style="height:30px" required="">
+                          </td>
+                          
+                     </tr>
+                     
+                    
+                  
+          
+                     <tr>  <td colspan="3" class="text-center">
+                          <input type="reset" value="Clear" style="margin-top:10px;" class="btn btn-info">  </td>
+                          <td colspan="3" class="text-center">
+                          <input type="submit" name="perm_submit" id="perm_submit" value="Submit" style="margin-top:10px;" class="btn btn-info">  </td>
+                     </tr> 
+	
+	</tbody></table>
+	
+                    
+                     
+                     <br>
+                </form>
+
+</div>
+<div id="eight" style="display:none">
+<form id="view_permission" method="post" enctype="multipart/form-data"> 
+    <center>
+      <br>  
+  <div id="table7_wrapper" class="dataTables_wrapper no-footer"><div class="dataTables_length" id="table7_length"><label>Show <select name="table7_length" aria-controls="table7" class=""><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select> entries</label></div><div id="table7_filter" class="dataTables_filter"><label>Search:<input type="search" class="" placeholder="" aria-controls="table7"></label></div><table id="table7" class="display mydatatable dataTable no-footer" style="width:fit-content" role="grid" aria-describedby="table7_info"><thead>
+            <tr role="row"><th class="text-center sorting_asc" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-sort="ascending" aria-label="S.No.: activate to sort column descending" style="width: 0px;">S.No.</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="Date: activate to sort column ascending" style="width: 0px;">Date</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="From: activate to sort column ascending" style="width: 0px;">From</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="To: activate to sort column ascending" style="width: 0px;">To</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="Reason: activate to sort column ascending" style="width: 0px;">Reason</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="Status: activate to sort column ascending" style="width: 0px;">Status</th><th class="text-center sorting" tabindex="0" aria-controls="table7" rowspan="1" colspan="1" aria-label="Action: activate to sort column ascending" style="width: 0px;">Action</th></tr>
+        </thead>
+        
+        <tbody style="">
+                        
+        <tr role="row" class="odd"><td class="text-center sorting_1">1</td>
+                <!--<td>KALIAPPAN M</td>-->
+                <td class="text-center">08-11-2024</td>
+                <td class="text-center">09:00</td>
+                <td class="text-center">10:00</td>
+                <td class="text-center">attend marriage</td>
+                <td class="text-center">Approved                </td>
+                <td></td>
+                </tr></tbody>
+    </table><div class="dataTables_info" id="table7_info" role="status" aria-live="polite">Showing 1 to 1 of 1 entries</div><div class="dataTables_paginate paging_simple_numbers" id="table7_paginate"><a class="paginate_button previous disabled" aria-controls="table7" data-dt-idx="0" tabindex="-1" id="table7_previous">Previous</a><span><a class="paginate_button current" aria-controls="table7" data-dt-idx="1" tabindex="0">1</a></span><a class="paginate_button next disabled" aria-controls="table7" data-dt-idx="2" tabindex="-1" id="table7_next">Next</a></div></div>
+    </center>
+    
+      <link rel="stylesheet" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css">
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
+	<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/fixedheader/3.1.7/js/dataTables.fixedHeader.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+	
+                </form>
+
+</div>
+</div>
+<div id="templatemo_main_bottom"></div>
+
+
+<div class="modal" id="myModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Leave Details</h4>
+    </div>
+    <div class="modal-body">
+      <div class="from"><p>From: </p><span></span></div>
+      <div class="to"><p>To: </p><span></span></div>
+      <div class="duration"><p>Duration: </p><span></span></div>
+      <div class="type"><p>Leave Type: </p><span></span></div>
+      <div class="reason"><p>Reason: </p><span></span></div>
+      <div class="alteration"><p>Altered Hours: </p><span></span></div>
+      <div class="alteration_pending"><p>Alteration Status: </p><span></span></div>
+      <div class="hod"><p>HOD: </p><span></span></div>
+      <div class="princi"><p>Principal: </p><span></span></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+ 
+
+</div>
+</div>
+
+<div class="modal" id="cclmyModal" role="dialog">
+<div class="modal-dialog">
+
+  <!-- Modal content-->
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">CCL Details</h4>
+    </div>
+    <div class="modal-body">
+      <div class="from"><p>Date: </p><span></span></div>
+      <div class="to"><p>Session: </p><span></span></div>
+      <div class="reason"><p>Reason: </p><span></span></div>
+      <div class="hod"><p>HOD: </p><span></span></div>
+     <!--<div class="office"><p>Office: </p><span></span></div>-->
+      <div class="princi"><p>Principal: </p><span></span></div>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+ 
+
+</div>
+</div>
+
+                <script type="text/javascript">
+                
+                function settime()
+                {
+                     var start = document.getElementById("from_timeid").value;
+                    var end = document.getElementById("to_timeid").value;
+                    
+                    if(start && end) {
+                        start = document.getElementById("from_timeid").value; //to update time value in each input bar
+                        end = document.getElementById("to_timeid").value; //to update time value in each input bar
+                        
+                        start = start.split(":");
+                        end = end.split(":");
+                        var startDate = new Date(0, 0, 0, start[0], start[1], 0);
+                        var endDate = new Date(0, 0, 0, end[0], end[1], 0);
+                        
+                        var diff = endDate.getTime() - startDate.getTime();
+                        if(diff<0)
+                        {
+                            alert("Choose the valid time");
+                             document.getElementById("from_timeid").value="";
+                            document.getElementById("to_timeid").value="";
+                        }
+                        var hours = Math.floor(diff / 1000 / 60 / 60);
+                        var minutes = Math.floor(diff / 1000 / 60);
+                        
+                        if(minutes>60)
+                        {
+                            document.getElementById("from_timeid").value="";
+                            document.getElementById("to_timeid").value="";
+                            alert("Permission is allowed only for maximum of 60 Minutes\n\n You Trying to apply for "+minutes+" Minutes");
+                            
+                        }
+                    }
+                    
+                    
+                    
+                 }
+                
+                function time_valid(){
+                    var from_date=document.getElementById("from_dateid").value;
+                    var from_session=document.getElementById("from_session").value;
+                    var to_date=document.getElementById("to_dateid").value;
+                    var to_session=document.getElementById("to_session").value;
+                    var cdate=new Date();
+                    cdate.setDate(cdate.getDate() -1);
+                    cdate=cdate.toISOString().slice(0, 10);
+                    if(from_date<cdate)
+                    {
+                        alert("Leave can be applied within 2 days");
+                        document.getElementById("from_dateid").value="";
+                        location.reload(); 
+                    }
+                    var m=0;
+                    if(from_date!='' && from_session!='' && to_date!='' && to_session!='')
+                    {
+                    if(from_session=='FN' && from_date==to_date && to_session=='FN')
+                    {m=1;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else if(from_session=='both' && to_session=='both' && to_date>=from_date)
+                    {m=2;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else if(from_session=='both' && to_session=='FN' && to_date>from_date)
+                    {m=3;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else if(from_session=='AN' && to_session=='FN' && to_date>from_date)
+                    {m=4;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else if(from_session=='AN' && to_session=='both' && to_date>from_date)
+                    {m=5;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else if(from_session=='AN' && to_session=='AN' && to_date==from_date)
+                    {m=6;document.getElementById("apply").style.display='block';
+                    document.getElementById("apply1").style.display='block';
+                    }
+                    else
+                    {
+                    alert("Enter Valid Date/Session");
+                    document.getElementById("apply").style.display='none';
+                    document.getElementById("apply1").style.display='none';
+                    }
+                    }
+                }
+    
+    
+   function menu(val)
+    { 
+       
+        var divs = ["class", "faculty", "three", "four", "five", "six", "seven", "eight", "nine", "ten"];
+        var i;
+        for (i = 0; i < divs.length; i++) 
+        {
+            if(divs[i]==val)
+            {
+                var temp='a'+divs[i];
+                document.getElementById(divs[i]).style.display="block";
+                document.getElementById(temp).style.background="#ccc";
+                document.getElementById(temp).style.color="black";
+            }
+            else
+            {
+                var temp='a'+divs[i];
+                document.getElementById(divs[i]).style.display="none";
+                document.getElementById(temp).style.background="#17a2b8";
+                document.getElementById(temp).style.color="white";
+            }
+        }
+        /*if(val=="class")
+        {
+            document.getElementById("class").style.display="block";
+            document.getElementById("aclass").style.background="#ccc";
+            document.getElementById("aclass").style.color="black";
+            document.getElementById("faculty").style.display="none";
+            document.getElementById("afaculty").style.background="#17a2b8";
+            document.getElementById("afaculty").style.color="white";
+            document.getElementById("three").style.display="none";
+            document.getElementById("athree").style.background="#17a2b8";
+            document.getElementById("athree").style.color="white";
+            document.getElementById("four").style.display="none";
+            document.getElementById("afour").style.background="#17a2b8";
+            document.getElementById("afour").style.color="white";
+            document.getElementById("five").style.display="none";
+            document.getElementById("afive").style.background="#17a2b8";
+            document.getElementById("afive").style.color="white";
+        }
+        else if(val=="faculty")
+        {
+            document.getElementById("class").style.display="none";
+            document.getElementById("faculty").style.display="block";
+            document.getElementById("afaculty").style.background="#ccc";
+            document.getElementById("afaculty").style.color="black";
+            document.getElementById("aclass").style.background="#17a2b8";
+            document.getElementById("aclass").style.color="white";
+            document.getElementById("three").style.display="none";
+            document.getElementById("athree").style.background="#17a2b8";
+            document.getElementById("athree").style.color="white";
+            document.getElementById("four").style.display="none";
+            document.getElementById("afour").style.background="#17a2b8";
+            document.getElementById("afour").style.color="white";
+            document.getElementById("five").style.display="none";
+            document.getElementById("afive").style.background="#17a2b8";
+            document.getElementById("afive").style.color="white";
+            
+        }
+        else if(val=="three")
+        {
+            document.getElementById("class").style.display="none";
+            document.getElementById("faculty").style.display="none";
+            document.getElementById("afaculty").style.background="#17a2b8";
+            document.getElementById("afaculty").style.color="white";
+            document.getElementById("aclass").style.background="#17a2b8";
+            document.getElementById("aclass").style.color="white";
+            document.getElementById("three").style.display="block";
+            document.getElementById("athree").style.background="#ccc";
+            document.getElementById("athree").style.color="black";
+            document.getElementById("four").style.display="none";
+            document.getElementById("afour").style.background="#17a2b8";
+            document.getElementById("afour").style.color="white";
+            document.getElementById("five").style.display="none";
+            document.getElementById("afive").style.background="#17a2b8";
+            document.getElementById("afive").style.color="white";
+            
+        }
+        else if(val=="four")
+        {
+            document.getElementById("class").style.display="none";
+            document.getElementById("faculty").style.display="none";
+            document.getElementById("afaculty").style.background="#17a2b8";
+            document.getElementById("afaculty").style.color="white";
+            document.getElementById("aclass").style.background="#17a2b8";
+            document.getElementById("aclass").style.color="white";
+            document.getElementById("three").style.display="none";
+            document.getElementById("athree").style.background="#17a2b8";
+            document.getElementById("athree").style.color="white";
+            document.getElementById("four").style.display="block";
+            document.getElementById("afour").style.background="#ccc";
+            document.getElementById("afour").style.color="black";
+            document.getElementById("five").style.display="none";
+            document.getElementById("afive").style.background="#17a2b8";
+            document.getElementById("afive").style.color="white";
+            
+        }
+        else if(val=="five")
+        {
+            document.getElementById("class").style.display="none";
+            document.getElementById("faculty").style.display="none";
+            document.getElementById("afaculty").style.background="#17a2b8";
+            document.getElementById("afaculty").style.color="white";
+            document.getElementById("aclass").style.background="#17a2b8";
+            document.getElementById("aclass").style.color="white";
+            document.getElementById("three").style.display="none";
+            document.getElementById("athree").style.background="#17a2b8";
+            document.getElementById("athree").style.color="white";
+            document.getElementById("four").style.display="none";
+            document.getElementById("afour").style.background="#17a2b8";
+            document.getElementById("afour").style.color="white";
+            document.getElementById("five").style.display="block";
+            document.getElementById("afive").style.background="#ccc";
+            document.getElementById("afive").style.color="black";
+            
+        }
+        */
+
+    }
+</script>
+<script>
+        $(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+
+
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table4').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table5').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table6').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table7').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#table8').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+} );
+
+
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#earnccl').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+    $("#earnccl tbody").on('click', 'tr', function () {
+        console.log(table.row(this).data());
+        $(".modal-body div span").text("");
+        $(".from span").text(table.row(this).data()[1]);
+        $(".to span").text(table.row(this).data()[2]);
+        $(".reason span").text(table.row(this).data()[3]);
+        $(".hod span").text(table.row(this).data()[5]);
+        //$(".office span").text(table.row(this).data()[6]);
+        $(".princi span").text(table.row(this).data()[7]);
+        $("#cclmyModal").modal("show");
+    });
+} );
+
+$(function() {
+$("#exporttable").click(function(e){
+var table = $(".mydatatable");
+if(table && table.length){
+$(table).table2excel({
+exclude: ".noExl",
+name: "Excel Document Name",
+filename: "Result" + new Date().toISOString().replace(/[\-\:\.]/g, "") + ".xls",
+fileext: ".xls",
+exclude_img: true,
+exclude_links: true,
+exclude_inputs: true,
+preserveColors: false
+});
+}
+});
+
+});
+
+
+$(document).ready(function() {
+    // Setup - add a text input to each footer cell
+    //$('#table thead tr').clone(true).appendTo( '#table thead' );
+    
+ 
+    var table = $('#tableview').DataTable( {
+        orderCellsTop: true,
+        fixedHeader: true
+    } );
+    $("#tableview tbody").on('click', 'tr', function () {
+        console.log(table.row(this).data());
+        $(".modal-body div span").text("");
+        $(".from span").text(table.row(this).data()[1]);
+        $(".to span").text(table.row(this).data()[2]);
+        $(".duration span").text(table.row(this).data()[3]);
+        $(".type span").text(table.row(this).data()[4]);
+        $(".reason span").text(table.row(this).data()[5]);
+        $(".alteration span").text(table.row(this).data()[7]);
+        $(".alteration_pending span").text(table.row(this).data()[8]);
+        $(".hod span").text(table.row(this).data()[9]);
+        $(".princi span").text(table.row(this).data()[10]);
+        $("#myModal").modal("show");
+    });
+} );
+
+
+
+    </script>
+</center></div><div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div><div id="veepn-breach-alert"></div><style>@font-face{font-family:FigtreeVF;src:url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2 supports variations"),url(chrome-extension://majdfhpaihoncoakbjgbdhglocklcgno/fonts/FigtreeVF.woff2) format("woff2-variations");font-weight:100 1000;font-display:swap}</style></body></html>

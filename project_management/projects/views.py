@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User
+from .models import Student,User,faculty_master,Project
 import datetime
 from django.contrib import messages
 import hashlib
@@ -14,6 +14,9 @@ def encrypt_password(password: str) -> str:
 
 def home_page(request):
     return render(request, 'home.html')
+
+#####################student part##################################
+
 def student_login(request):
     if request.method == 'POST':
         student_regno = request.POST.get('regno')
@@ -34,6 +37,113 @@ def student_login(request):
             messages.error(request, 'Student not found')
     
     return render(request, 'student_login.html')
+def student_entry(request):
+    # Retrieve student_regno from the session
+    student_regno = request.session.get('student_regno')  # This will return None if the key doesn't exist
+    
+    if not student_regno:
+        # Handle the case where student_regno is not found in the session
+        return render(request, 'error.html', {'message': 'Student registration number not found in session.'})
+
+    # Department and batch calculation
+    filter_department = int(student_regno[6:9])
+    
+    department_mapping = {
+        243: "Artificial Intelligence and Data Science",
+        312: "Computer Science and Business Systems",
+        102: "Electrical and Electronics Engineering",
+        103: "Mechanical Engineering",
+        104: "Information Technology",
+        101: "Civil Engineering",
+    }
+    department = department_mapping.get(filter_department, "Unknown Department")
+    
+    batch1 = student_regno[4:6]
+    m = int(batch1)
+    batch = f"20{batch1}-20{m+4}"
+    lat = int(student_regno[-3])
+    entry_status = "Lateral" if lat == 3 else "Transfer" if lat == 7 else "Regular"
+    print("working", entry_status, batch, department)
+
+    title = "Student Entry"  # Defining title here
+    
+    # Fetch faculty list before POST handling
+    faculty_list = faculty_master.objects.all()
+
+    if request.method == 'POST':
+        Project_title = request.POST.get('title')  # Matches 'name="title"'
+        domain = request.POST.get('domain')  # Matches 'name="domain"'
+        project_type = request.POST.get('type')  # Matches 'name="type"'
+
+        if project_type == 'internal':
+            internal_guide_name = request.POST.get('internal_guide_name')
+        elif project_type == 'external':
+            company_name = request.POST.get('company_name')
+            location = request.POST.get('location')
+            company_guide_name = request.POST.get('company_guide_name')
+            duration = request.POST.get('duration')
+
+        print("Project Title:", Project_title)
+        print("Domain:", domain)
+        print("Project Type:", project_type)
+        print("Company Name:", company_name)
+        print("Location:", location)
+        print("Company Guide Name:", company_guide_name)
+        print("Duration:", duration)
+        print("Internal Guide Name:", internal_guide_name)
+
+        # Validate the required fields
+        if project_type == 'internal':
+            if not all([Project_title, domain, project_type, internal_guide_name]):
+                return render(request, 'student_entry.html', {
+                    'faculty_list': faculty_list,
+                    'student_regno': student_regno,
+                    'title': title,
+                    'error': 'All fields are required for internal projects.'
+                })
+        elif project_type == 'external':
+            if not all([Project_title, domain, project_type, company_name, location, company_guide_name, duration]):
+                return render(request, 'student_entry.html', {
+                    'faculty_list': faculty_list,
+                    'student_regno': student_regno,
+                    'title': title,
+                    'error': 'All fields are required for external projects.'
+                })
+
+        # Create the Project entry
+        if project_type == 'external':
+            Project.objects.create(
+                department=department,
+                batch=batch,
+                entry_status=entry_status,
+                title=Project_title,
+                domain=domain,
+                project_type=project_type,
+                company_name=company_name,
+                location=location,
+                company_guide_name=company_guide_name,
+                duration=duration,
+            )
+        elif project_type == 'internal':
+            Project.objects.create(
+                department=department,
+                batch=batch,
+                entry_status=entry_status,
+                title=Project_title,
+                domain=domain,
+                project_type=project_type,
+                internal_guide_name=internal_guide_name,
+            )
+
+    return render(request, 'student_entry.html', {'faculty_list': faculty_list, 'student_regno': student_regno, 'title': title})
+
+def view_marks(request):
+    return render(request, 'view_marks.html')
+def view_status(request):
+    return render(request, 'view_status.html')
+
+#################faculty part#######################################
+
 def faculty_login(request):
     if request.method == "POST":
         username = request.POST.get('username')  # This will map to `staff_id`
@@ -44,8 +154,6 @@ def faculty_login(request):
         # Custom authentication check
         try:
             user = User.objects.using('rit_e_approval').get(staff_id=username)
-            
-            # Manually check the password
             if encrypt_password(password)==user.Password: 
                 print(encrypt_password(password),user.Password) # Assuming passwords are hashed
                 print("Authentication successful!")
@@ -64,8 +172,7 @@ def faculty_login(request):
 
     return render(request, 'faculty_login.html')
 
-def student_entry(request):
-    return render(request, 'student_entry.html')
+
 def faculty_dashboard(request):
     return render(request, 'faculty_dashboard.html')
 
