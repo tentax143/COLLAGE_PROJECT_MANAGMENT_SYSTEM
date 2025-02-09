@@ -49,12 +49,12 @@ def student_entry(request):
     filter_department = int(student_regno[6:9])
     
     department_mapping = {
-        243: "Artificial Intelligence and Data Science",
-        312: "Computer Science and Business Systems",
-        102: "Electrical and Electronics Engineering",
-        103: "Mechanical Engineering",
-        104: "Information Technology",
-        101: "Civil Engineering",
+        243: "AI&DS",
+        312: "CSBS",
+        102: "EEE",
+        103: "MECH",
+        104: "IT",
+        101: "Civil",
     }
     department = department_mapping.get(filter_department, "Unknown Department")
     
@@ -83,14 +83,7 @@ def student_entry(request):
             company_guide_name = request.POST.get('company_guide_name')
             duration = request.POST.get('duration')
 
-        print("Project Title:", Project_title)
-        print("Domain:", domain)
-        print("Project Type:", project_type)
-        print("Company Name:", company_name)
-        print("Location:", location)
-        print("Company Guide Name:", company_guide_name)
-        print("Duration:", duration)
-        print("Internal Guide Name:", internal_guide_name)
+        
 
         # Validate the required fields
         if project_type == 'internal':
@@ -174,5 +167,6 @@ def faculty_login(request):
 
 
 def faculty_dashboard(request):
-    return render(request, 'faculty_dashboard.html')
+    projects= Project.objects.all()
+    return render(request, 'faculty_dashboard.html', {'projects': projects})
 
