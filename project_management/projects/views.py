@@ -137,6 +137,10 @@ def view_status(request):
 
 #################faculty part#######################################
 
+def hod_dashbord(request):
+    return render(request, 'hod_dashbord.html')
+
+
 def faculty_login(request):
     if request.method == "POST":
         username = request.POST.get('username')  # This will map to `staff_id`
@@ -144,18 +148,21 @@ def faculty_login(request):
 
         print(f"Attempting to log in with staff_id: {username} and password: {password}")
 
-        # Custom authentication check
         try:
             user = User.objects.using('rit_e_approval').get(staff_id=username)
-            if encrypt_password(password)==user.Password: 
-                print(encrypt_password(password),user.Password) # Assuming passwords are hashed
+            if encrypt_password(password) == user.Password:
                 print("Authentication successful!")
-                
-                # Create a session or any custom login logic
-                request.session['user_id'] = user.id  # Store user ID in session
-                request.session['role'] = user.role  # Store the role if needed
-                
-                return redirect('faculty_dashboard')  # Redirect to the appropriate page
+
+                # Store necessary details in session
+                request.session['user_id'] = user.id
+                request.session['role'] = user.role
+                request.session['department'] = user.Department  # Correct (matches your model)  # Store faculty department
+                request.session['name'] = user.Name
+                if user.role =='HOD':
+                    return redirect('hod_dashbord')
+
+
+                return redirect('faculty_dashboard')  # Redirect after successful login
             else:
                 print("Authentication failed! Incorrect password.")
         except User.DoesNotExist:
@@ -167,6 +174,26 @@ def faculty_login(request):
 
 
 def faculty_dashboard(request):
-    projects= Project.objects.all()
-    return render(request, 'faculty_dashboard.html', {'projects': projects})
+    # Ensure user is logged in and department is stored
+    if 'department' not in request.session:
+        return redirect('faculty_login')  # Redirect if session is not set
+
+    faculty_department = request.session['department']
+
+    # Fetch only projects that belong to the faculty's department
+    projects = Project.objects.filter(department=faculty_department)
+
+    # Pass session data to the template
+    context = {
+        'projects': projects,
+        'user_id': request.session.get('user_id'),
+        'role': request.session.get('role'),
+        'department': request.session.get('department'),
+        'name': request.session.get('name'),
+    }
+    print(context)
+
+    return render(request, 'faculty_dashboard.html', context)
+
+
 
