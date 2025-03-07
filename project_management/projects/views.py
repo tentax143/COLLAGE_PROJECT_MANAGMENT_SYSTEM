@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master
 import datetime
 from django.contrib import messages
 import hashlib
@@ -36,11 +36,11 @@ def student_login(request):
         except Student.DoesNotExist:
             messages.error(request, 'Student not found')
     
-    return render(request, 'student_login.html')
+    return render(request, 'student/student_login.html')
 def student_entry(request):
     # Retrieve student_regno from the session
     student_regno = request.session.get('student_regno')  # This will return None if the key doesn't exist
-    
+    print(student_regno,"dfhashfadfafaajgfas")
     if not student_regno:
         # Handle the case where student_regno is not found in the session
         return render(request, 'error.html', {'message': 'Student registration number not found in session.'})
@@ -105,7 +105,7 @@ def student_entry(request):
 
         # Create the Project entry
         if project_type == 'external':
-            Project.objects.create(
+            project = Project.objects.create(
                 department=department,
                 batch=batch,
                 entry_status=entry_status,
@@ -116,9 +116,10 @@ def student_entry(request):
                 location=location,
                 company_guide_name=company_guide_name,
                 duration=duration,
+                reg_no=student_regno,  # Store reg_no as a string
             )
         elif project_type == 'internal':
-            Project.objects.create(
+            project = Project.objects.create(
                 department=department,
                 batch=batch,
                 entry_status=entry_status,
@@ -126,19 +127,21 @@ def student_entry(request):
                 domain=domain,
                 project_type=project_type,
                 internal_guide_name=internal_guide_name,
+                reg_no=student_regno,  # Store reg_no as a string
             )
 
-    return render(request, 'student_entry.html', {'faculty_list': faculty_list, 'student_regno': student_regno, 'title': title})
+
+
+
+    return render(request, 'student/student_entry.html', {'faculty_list': faculty_list, 'student_regno': student_regno, 'title': title})
 
 def view_marks(request):
-    return render(request, 'view_marks.html')
+    return render(request, 'student/view_marks.html')
 def view_status(request):
-    return render(request, 'view_status.html')
+    return render(request, 'student/view_status.html')
 
 #################faculty part#######################################
 
-def hod_dashbord(request):
-    return render(request, 'hod_dashbord.html')
 
 
 def faculty_login(request):
@@ -170,8 +173,53 @@ def faculty_login(request):
 
         return render(request, 'faculty_login.html', {'error': 'Invalid credentials!'})
 
-    return render(request, 'faculty_login.html')
+    return render(request, 'faculty/faculty_login.html')
 
+
+def hod_dashbord(request):
+    # Retrieve session data
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+
+    projects_list = Project.objects.all()
+    
+    return render(request, 'faculty/hod_dashbord.html', {
+        'projects_list': projects_list,
+        'role': role,
+        'department': department,
+        'name': name
+    })
+# def allocate_commity(request):
+#     return render(request, 'allocate_commity.html')
+def review1(request):
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+
+    # Fetch only the projects related to the user's department
+    projects_list = Project.objects.filter(department=department)
+    regulation=regulation_master.objects.using('course_master').all()
+    print(regulation,"dfqwefrAS")
+
+    # Filter faculty members who belong to the same department
+    faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
+    print(faculty_list,"FFFFFFFFFFFFFFFFFFFF")
+
+    return render(request, 'faculty/review/review1.html', {
+        'projects_list': projects_list,
+        'role': role,
+        'department': department,
+        'name': name,
+        'faculty_list': faculty_list,
+        'regulation':regulation
+    })
+def review2(request):
+    return render(request, 'faculty/review/review2.html')
+def review3(request):
+    return render(request, 'faculty/review/review3.html')
+def guide_alocation(request):
+    return render(request, 'faculty/guide_alocation.html')
 
 def faculty_dashboard(request):
     # Ensure user is logged in and department is stored
@@ -194,6 +242,7 @@ def faculty_dashboard(request):
     print(context)
 
     return render(request, 'faculty_dashboard.html', context)
+
 
 
 

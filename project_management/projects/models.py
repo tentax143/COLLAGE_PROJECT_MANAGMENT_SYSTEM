@@ -31,6 +31,7 @@ class faculty_master(models.Model):
     department=models.CharField(max_length=300,null=True,blank=True)
 class Project(models.Model):
     department=models.CharField(max_length=300)
+    reg_no = models.CharField(max_length=20, null=True, blank=True) 
     batch=models.CharField(max_length=300)
     entry_status=models.CharField(max_length=300)
     title = models.CharField(max_length=255)
@@ -41,3 +42,38 @@ class Project(models.Model):
     company_guide_name = models.CharField(max_length=255, blank=True, null=True)
     duration = models.CharField(max_length=50, blank=True, null=True)
     internal_guide_name = models.CharField(max_length=255, blank=True, null=True)
+
+# from django.db import models
+# from django.contrib.auth.models import User  # Assuming faculty are users
+
+# class AssignedReviewers(models.Model):
+#     student_id = models.IntegerField()  # Assuming you are assigning reviewers to students
+#     reviewer1 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviewer1")
+#     reviewer2 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviewer2")
+#     reviewer3 = models.ForeignKey(User, on_delete=models.CASCADE, related_name="reviewer3")
+#     assigned_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"Reviewers for Student {self.student_id}"
+
+class assignreviewers(models.Model):
+    
+    reviewer1=models.CharField(max_length=200, null=True,blank=True)
+    reviewer2=models.CharField(max_length=200, null=True,blank=True)
+    reviewer3=models.CharField(max_length=200, null=True,blank=True)
+    assignedat=models.DateField(auto_now_add=True)
+    regulation=models.CharField(max_length=200, null=True,blank=True)
+    coursecode=models.CharField(max_length=200, null=True,blank=True)
+    coursename=models.CharField(max_length=200, null=True,blank=True)
+    batch=models.CharField(max_length=200, null=True,blank=True)
+    sem=models.IntegerField()
+
+class regulation_master(models.Model):
+    regulation_year = models.IntegerField()
+    regulation_name = models.CharField(max_length=100)
+    class Meta:
+        db_table = 'equipment_regulation_master'
+        managed = False
+
+
+

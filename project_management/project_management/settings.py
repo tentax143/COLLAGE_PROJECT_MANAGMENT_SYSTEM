@@ -100,6 +100,17 @@ DATABASES = {
         'HOST': 'localhost',          # Set to the address of your MySQL server
         'PORT': '3306',
     },
+    'course_master': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'course_master',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
+    },
 
 }
 
