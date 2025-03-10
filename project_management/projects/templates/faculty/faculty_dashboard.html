@@ -57,7 +57,34 @@
       margin-bottom: 1.5rem;
     }
     table {
-      width: 100%;
+      width: 60%;
+      margin: auto;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: #17a2b8
+      color: white;
+    }
+    input {
+      width: 50px;
+      padding: 3px;
+      font-size: 14px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    table {
+      width: 50%;
       border-collapse: collapse;
       background: #fff;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
@@ -71,7 +98,7 @@
       text-align: left;
     }
     th {
-      background-color: #4CAF50;
+      background-color: #17a2b8;
       color: white;
       text-align: center;
     }
@@ -123,17 +150,39 @@
     <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
     <ul class="nav flex-column bg-white mb-0">
       <li class="nav-item">
-        <a href="{% url 'student_entry' %}" class="nav-link bg-info text-white">
+        <a href="{% url 'faculty_dashboard' %}" class="nav-link bg-info text-white">
           <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-          student responses
+          view student
         </a>
       </li>
       <li class="nav-item">
-        <a href="{% url 'view_status' %}" class="nav-link text-dark">
-          <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-          View Status
+        <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+            Review Mark Entry
         </a>
-      </li>
+        <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+            <li class="nav-item">
+                <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                    Review 1
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                    Review 2
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                    Review 3
+                </a>
+            </li>
+        </ul>
+    </li>
+    
+
       <li class="nav-item">
         <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
           <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
@@ -182,53 +231,21 @@
       <small class="text-uppercase font-weight-bold">Menu</small>
     </button>
 
-    <h2>Project Review - III Rubric</h2>
-    <table>
-      <tr>
-        <th>Assessment Criteria</th>
-        <th>Marks (out of 10)</th>
-      </tr>
-      <tr>
-        <td>Modelling and Analysis</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Modern Tool Usage</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Project Outcomes</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Interpretation of Results</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Novelty</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Conclusion and Recommendations</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Project Documentation</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Oral and Written Communication</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Self-Learning</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-      <tr>
-        <td>Project Management and Finance</td>
-        <td><input type="number" min="0" max="10" oninput="validateInput(this)"></td>
-      </tr>
-    </table>
+    <h2 style="text-align: center;">Project Review - III Rubric</h2>
+<table>
+  <tr>
+    <th>Criteria</th>
+    <th>Marks (10)</th>
+  </tr>
+  <tr><td>Modelling</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Tool Usage</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Outcomes</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Results</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Novelty</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Conclusion</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Documentation</td><td><input type="number" min="0" max="10"></td></tr>
+  <tr><td>Communication</td><td><input type="number" min="0" max="10"></td></tr>
+</table>
   </div>
 
   <!-- Optional JavaScript function for input validation -->

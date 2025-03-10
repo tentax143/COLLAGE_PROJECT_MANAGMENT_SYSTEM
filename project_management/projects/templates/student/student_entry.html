@@ -260,98 +260,78 @@
                 <div class="row justify-content-center">
                     <div class="col-lg-6 col-md-8 col-sm-12">
                         <h2 class="text-center mb-4">Project Selection</h2>
-                        <form id="project-form" method="POST" action="{% url 'student_entry' %}" enctype="multipart/form-data">
-
-                            {% csrf_token %}
-                            <div class="form-group">
-                                <label for="title">Project Title</label>
-                                <input type="text" id="title" name="title" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="domain">Project Domain</label>
-                                <input type="text" id="domain" name="domain" class="form-control" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="type">Project Type</label>
-                                <select id="type" name="type" class="form-control" required>
-                                    <option value="">Select</option>
-                                    <option value="internal">Internal</option>
-                                    <option value="external">External</option>
-                                </select>
-                            </div>
-
-                            <div id="external-fields" class="d-none">
-                                <div class="form-group">
-                                    <label for="company-name">Company Name</label>
-                                    <input type="text" id="company-name" name="company_name" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="location">Company Location</label>
-                                    <input type="text" id="location" name="location" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="guide-name">Company Guide Name</label>
-                                    <input type="text" id="guide-name" name="company_guide_name" class="form-control">
-                                </div>
-                                <div class="form-group">
-                                    <label for="duration">Duration</label>
-                                    <select id="duration" name="duration" class="form-control">
-                                        <option value="">Select Duration</option>
-                                        <option value="1 month">  1 month</option>
-                                        <option value="2 months"> 2 months</option>
-                                        <option value="3 months"> 3 months</option>
-                                        <option value="4 months"> 4 months</option>
-                                        <option value="5 months"> 5 months</option>
-                                        <option value="6 months"> 6 months</option>
-                                        <option value="7 months"> 7 months</option>
-                                        <option value="8 months"> 8 months</option>
-                                        <option value="9 months"> 9 months</option>
-                                        <option value="10months"> 10 months</option>
-                                        <option value="11 months">11 months</option>
-                                        <option value="12 months">12 months</option>
-                                    </select>
-                                </div>
-
-
-                            </div>
-
-                            <div id="internal-fields" class="d-none">
-                                <div class="form-group">
-                                    <label for="guide-name">Choose Guide</label>
-                                    <select id="guide-name" name="internal_guide_name" class="form-control">
-                                        <option value="">Select</option>
-                                        {% for faculty in faculty_list %}
-                                            <option value="{{ faculty.faculty_name }}">{{ faculty.faculty_name }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-
-
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </form>
+                        {% if submitted %}
+    <div class="alert alert-success">
+        <h3>Project Submitted Successfully</h3>
+        <p><strong>Title:</strong> {{ project.title }}</p>
+        <p><strong>Domain:</strong> {{ project.domain }}</p>
+        <p><strong>Type:</strong> {{ project.project_type }}</p>
+        {% if project.project_type == "internal" %}
+            <p><strong>Guide:</strong> {{ project.internal_guide_name }}</p>
+        {% else %}
+            <p><strong>Company:</strong> {{ project.company_name }}</p>
+            <p><strong>Location:</strong> {{ project.location }}</p>
+            <p><strong>Company Guide:</strong> {{ project.company_guide_name }}</p>
+            <p><strong>Duration:</strong> {{ project.duration }}</p>
+        {% endif %}
+    </div>
+{% else %}
+    <form id="project-form" method="POST" action="{% url 'student_entry' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="title">Project Title</label>
+            <input type="text" name="title" id="title" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="domain">Domain</label>
+            <input type="text" name="domain" id="domain" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="type">Project Type</label>
+            <select name="type" id="type" class="form-control" required>
+                <option value="internal">Internal</option>
+                <option value="external">External</option>
+            </select>
+        </div>
+        <div id="internal-fields" style="display: none;">
+            <div class="form-group">
+                <label for="internal_guide_name">Internal Guide</label>
+                <select name="internal_guide_name" id="internal_guide_name" class="form-control">
+                    {% for faculty in faculty_list %}
+                        <option value="{{ faculty.name }}">{{ faculty.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
         </div>
-    </div>
-</div>
-
+        <div id="external-fields" style="display: none;">
+            <div class="form-group">
+                <label for="company_name">Company Name</label>
+                <input type="text" name="company_name" id="company_name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" name="location" id="location" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="company_guide_name">Company Guide</label>
+                <input type="text" name="company_guide_name" id="company_guide_name" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="duration">Duration</label>
+                <input type="text" name="duration" id="duration" class="form-control">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
     <script>
-        $(document).ready(function () {
-            $('#type').change(function () {
-                const type = $(this).val();
-                if (type === 'internal') {
-                    $('#internal-fields').removeClass('d-none');
-                    $('#external-fields').addClass('d-none');
-                } else if (type === 'external') {
-                    $('#external-fields').removeClass('d-none');
-                    $('#internal-fields').addClass('d-none');
-                } else {
-                    $('#internal-fields, #external-fields').addClass('d-none');
-                }
-            });
+        document.getElementById('type').addEventListener('change', function() {
+            var type = this.value;
+            document.getElementById('internal-fields').style.display = type === 'internal' ? 'block' : 'none';
+            document.getElementById('external-fields').style.display = type === 'external' ? 'block' : 'none';
         });
     </script>
+{% endif %}
+
 </body>
 </html>

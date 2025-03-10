@@ -105,12 +105,11 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
-        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
-                <a href="{% url 'student_entry' %}" class="nav-link bg-info text-white">
+                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    Student Responses
+                    View Guide Detail
                 </a>
             </li>
             <li class="nav-item">
@@ -139,6 +138,40 @@
                     </li>
                 </ul>
             <li class="nav-item">
+                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Guide
+                </a>
+            </li>
+        </ul>  
+        <li class="nav-item">
+            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                Review Mark Entry
+            </a>
+            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+                <li class="nav-item">
+                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 1
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 2
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 3
+                    </a>
+                </li>
+            </ul>
+        </li>
+        
+            <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">
                     <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
                     Logout
@@ -147,7 +180,8 @@
         </ul>  
     </div>
     <div class="container mt-4">
-        <div class="row">
+        <h1 class="text-center">Review 2</h1>
+        <div class="row justify-content-center">
             <!-- Regulation Dropdown -->
             <div class="col-md-4">
                 <div class="form-group">
@@ -161,7 +195,6 @@
                 </div>
             </div>
             
-    
             <!-- Reviewer 1 -->
             <div class="col-md-4">
                 <div class="form-group">
@@ -223,3 +256,5 @@
             alert("Reviewers Assigned Successfully!");
         });
     </script>
+</body>
+</html>

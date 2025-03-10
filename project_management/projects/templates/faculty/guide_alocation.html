@@ -4,6 +4,7 @@
 <head>
     <title>RIT PROJECT MANAGEMENT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS Libraries -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -21,7 +22,6 @@
             font-family: Arial, Helvetica, sans-serif;
             background-color: #f8f9fa;
         }
-
         .vertical-nav {
             width: 23rem;
             height: 100vh;
@@ -32,14 +32,12 @@
             background-color: #fff;
             z-index: 1000;
         }
-
         .page-content {
             margin-left: 23rem;
             transition: all 0.4s;
             padding: 20px;
             min-height: 100vh;
         }
-
         .table-container {
             margin-top: 20px;
             padding: 15px;
@@ -47,29 +45,24 @@
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
         }
-
         th, td {
             border: 1px solid #dee2e6;
             padding: 12px;
             text-align: left;
         }
-
         th {
             background-color: #00407b;
             color: white;
             font-weight: 600;
         }
-
         tr:nth-child(even) {
             background-color: #f8f9fa;
         }
-
         @media (max-width: 768px) {
             .vertical-nav {
                 margin-left: -23rem;
@@ -85,7 +78,6 @@
                 margin-left: 23rem;
             }
         }
-
         #sidebarCollapse {
             position: fixed;
             top: 20px;
@@ -95,7 +87,6 @@
     </style>
 </head>
 <body>
-
     <div class="vertical-nav" id="sidebar">
         <div class="py-4 px-3 mb-4 bg-light border-bottom">
             <div class="media d-flex align-items-center">
@@ -114,23 +105,13 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
-
-        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
-                <a href="{% url 'student_entry' %}" class="nav-link bg-info text-white">
+                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    Student Responses
+                    View Guide Detail
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Guide
-                </a>
-            </li>
-        </ul>  
-            
             <li class="nav-item">
                 <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
                     <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
@@ -157,6 +138,40 @@
                     </li>
                 </ul>
             <li class="nav-item">
+                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Guide
+                </a>
+            </li>
+        </ul>  
+        <li class="nav-item">
+            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                Review Mark Entry
+            </a>
+            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+                <li class="nav-item">
+                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 1
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 2
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 3
+                    </a>
+                </li>
+            </ul>
+        </li>
+        
+            <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">
                     <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
                     Logout
@@ -164,3 +179,73 @@
             </li>
         </ul>  
     </div>
+    <div class="page-content">
+        <div class="container-fluid table-container">
+            <h2 class="mb-4">Project Details</h2>
+            <!-- Wrap the table in a form -->
+            <form method="POST" action="{% url 'guide_alocation' %}">
+                {% csrf_token %}
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>Select</th>
+                            <th>Student Name</th>
+                            <th>Project Title</th>
+                            <th>External Guide Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in projects %}
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="student_ids" value="{{ project.id }}" class="student-checkbox">
+                            </td>
+                            <td>{{ project.student_name }}</td>
+                            <td>{{ project.title }}</td>
+                            <td>{{ project.company_guide_name }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center">No projects found.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <!-- Global faculty dropdown (initially hidden) -->
+                <div id="faculty-select-container" style="display: none;">
+                    <label for="faculty-select">Select Faculty to Assign:</label>
+                    <select name="faculty_id" id="faculty-select" class="form-control">
+                        <option value="">Select Guide</option>
+                        {% for faculty in faculty_list %}
+                        <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <!-- Global assign button (initially hidden) -->
+                <button type="submit" class="btn btn-primary mt-2" id="assign-button" style="display: none;">Assign</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        // Show/hide the global faculty dropdown and assign button based on checkbox selection.
+        document.addEventListener('DOMContentLoaded', function(){
+            let checkboxes = document.querySelectorAll('.student-checkbox');
+            let facultySelectContainer = document.getElementById('faculty-select-container');
+            let assignButton = document.getElementById('assign-button');
+
+            checkboxes.forEach(function(checkbox){
+                checkbox.addEventListener('change', function(){
+                    let anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                    if (anyChecked) {
+                        facultySelectContainer.style.display = 'block';
+                        assignButton.style.display = 'inline-block';
+                    } else {
+                        facultySelectContainer.style.display = 'none';
+                        assignButton.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

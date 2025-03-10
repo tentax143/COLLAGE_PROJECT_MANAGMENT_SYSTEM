@@ -14,6 +14,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             min-height: 100vh;
@@ -92,6 +93,12 @@
             left: 20px;
             z-index: 1001;
         }
+        .container {
+            margin-top: 50px;
+        }
+        .hidden { 
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -115,7 +122,7 @@
             </div>
         </div>
 
-        
+        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
                 <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
@@ -190,62 +197,171 @@
             </li>
         </ul>  
     </div>
+    <div class="container">
+        <h2 class="text-center">Select Role</h2>
+    
+        <!-- Role Selection -->
+        <div class="text-center mt-4">
+            <button id="guideBtn" class="btn btn-primary">Guide</button>
+            <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
+        </div>
+    
+        <!-- Guide Table -->
+        <div id="guideSection" class="hidden mt-4">
+            <h3>Student List</h3>
+                {% for batch in batches %}
+                    {{ batch }} <br>
+                {% endfor %}
 
-    <div class="page-content" id="content">
+            <table class="table table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Reg No</th>
+                        <th>Project Title</th>
+                        <th>Mark</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td>{{ project.student_name }}</td>
+                        <td>{{ project.reg_no }}</td>
+                        <td>{{ project.title }}</td>
+                        <td>
+                            <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                                data-student="{{ project.student_name }}" 
+                                data-reg="{{ project.reg_no }}">
+                                Enter Marks
+                            </button>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="text-center">No projects found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+        </div>
+        <!-- Mark Entry Modal -->
+        <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
+                        <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
         
-
-        <div class="table-container">
-            <h3 class="text-center mb-4">Project Details:{{ department }}</h3>
-            <div class="table-responsive">
+                        <table class="table">
+                            <tr>
+                                <th>Assessment Criteria</th>
+                                <th>Marks (10)</th>
+                            </tr>
+                            <tr><td>Literature review</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Problem Identification and definition</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Project objectives</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Project specifications and constraints</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Project work plan</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Methodology proposed</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Environmental issues consideration</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Oral and Written Communication</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                            <tr><td>Resource Planning</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success">Save Marks</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    
+        <!-- Reviewer Section (You can add content for reviewers here) -->
+        <div id="reviewerSection" class="hidden mt-4">
+            <h3>Student List</h3>
+                {% for batch in batches %}
+                    {{ batch }} <br>
+                {% endfor %}
                 <table class="table table-bordered">
-                    <thead>
+                    <thead class="thead-dark">
                         <tr>
-                            <th>Name</th>
-                            <th>Domain</th>
-                            <th>Project Type</th>
-                            <th>Company Name</th>
-                            <th>Guide Name</th>
-                            <th>Duration</th>
+                            <th>Student Name</th>
+                            <th>Reg No</th>
+                            <th>Project Title</th>
+                            <th>Mark</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in projects_list %}
+                        {% for project in projects %}
                         <tr>
-                            <td>{{project.student_name}}
-                            <td>{{ project.domain }}</td>
-                            <td>{{ project.project_type }}</td>
-                            <td>{{ project.company_name|default:"-" }}</td>
+                            <td>{{ project.student_name }}</td>
+                            <td>{{ project.reg_no }}</td>
+                            <td>{{ project.title }}</td>
                             <td>
-                                {% if project.project_type == "external" %}
-                                    {{ project.company_guide_name|default:"-" }}
-                                {% else %}
-                                    {{ project.internal_guide_name|default:"-" }}
-                                {% endif %}
+                                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                                    data-student="{{ project.student_name }}" 
+                                    data-reg="{{ project.reg_no }}">
+                                    Enter Marks
+                                </button>
                             </td>
-                            <td>{{ project.duration|default:"-" }}</td>
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="6" class="text-center">No projects found.</td>
+                            <td colspan="4" class="text-center">No projects found.</td>
                         </tr>
                         {% endfor %}
                     </tbody>
+                    
                 </table>
             </div>
         </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#sidebarCollapse').on('click', function () {
-                $('#sidebar').toggleClass('active');
-                $('#content').toggleClass('active');
-            });
+    
+<script>
+    $(document).ready(function(){
+        $("#guideBtn").click(function(){
+            $("#guideSection").removeClass("hidden").show();
+            $("#reviewerSection").addClass("hidden").hide();
         });
-    </script>
-
+    
+        $("#reviewerBtn").click(function(){
+            $("#reviewerSection").removeClass("hidden").show();
+            $("#guideSection").addClass("hidden").hide();
+        });
+    });
+    
+</script>
+<script>
+    $(document).ready(function(){
+        $(".mark-btn").click(function(){
+            var studentName = $(this).data("student");
+            var regNo = $(this).data("reg");
+            $("#modalStudentName").text(studentName);
+            $("#modalRegNo").text(regNo);
+        });
+    });
+</script>
+<script>
+    document.querySelectorAll('.mark-input').forEach(input => {
+        input.addEventListener('input', function () {
+            if (this.value > 10) {
+                alert('Max marks allowed is 10');
+                this.value = 10; // Reset value to 10
+            }
+        });
+    });
+</script>
+    
 </body>
 </html>

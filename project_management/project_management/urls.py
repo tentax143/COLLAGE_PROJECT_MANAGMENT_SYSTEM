@@ -16,8 +16,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-
+from projects.views import admin_portal
+from projects.admin import admin_site
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('rit_admin/', admin_site.urls),    
+    path('rit_admin/admin_portal',admin_portal,name="admin_portal"),
+
     path('', include('projects.urls')),  # Set 'projects' as the default app
 ]

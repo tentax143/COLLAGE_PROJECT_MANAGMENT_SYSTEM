@@ -25,7 +25,8 @@ SECRET_KEY = 'django-insecure-^e*bzkg90nw+1nkvywwnh2c5$#c6ul-dujglv8olzgbcev42(9
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.137.13', 'localhost', '127.0.0.1']
+
 
 
 # Application definition
@@ -110,6 +111,14 @@ DATABASES = {
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
         }
+    },
+    'rit_cgpatrack': {  # Add this if 'rit_cgpatrack' is a separate database
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'rit_cgpatrack',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
     },
 
 }

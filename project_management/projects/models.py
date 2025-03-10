@@ -31,6 +31,7 @@ class faculty_master(models.Model):
     department=models.CharField(max_length=300,null=True,blank=True)
 class Project(models.Model):
     department=models.CharField(max_length=300)
+    student_name=models.CharField(max_length=300, null=True,blank=True)
     reg_no = models.CharField(max_length=20, null=True, blank=True) 
     batch=models.CharField(max_length=300)
     entry_status=models.CharField(max_length=300)
@@ -42,6 +43,9 @@ class Project(models.Model):
     company_guide_name = models.CharField(max_length=255, blank=True, null=True)
     duration = models.CharField(max_length=50, blank=True, null=True)
     internal_guide_name = models.CharField(max_length=255, blank=True, null=True)
+    semester = models.IntegerField(null=True,blank=True)
+    course_code = models.CharField(max_length=10,null=True,blank=True)
+    course_title = models.CharField(max_length=255,null=True,blank=True)
 
 # from django.db import models
 # from django.contrib.auth.models import User  # Assuming faculty are users
@@ -57,7 +61,7 @@ class Project(models.Model):
 #         return f"Reviewers for Student {self.student_id}"
 
 class assignreviewers(models.Model):
-    
+    review_type=models.CharField(max_length=100,null=True,blank=True)
     reviewer1=models.CharField(max_length=200, null=True,blank=True)
     reviewer2=models.CharField(max_length=200, null=True,blank=True)
     reviewer3=models.CharField(max_length=200, null=True,blank=True)
@@ -67,6 +71,10 @@ class assignreviewers(models.Model):
     coursename=models.CharField(max_length=200, null=True,blank=True)
     batch=models.CharField(max_length=200, null=True,blank=True)
     sem=models.IntegerField()
+    department=models.CharField(max_length=200, null=True,blank=True)
+    expname=models.CharField(max_length=200, null=True,blank=True)
+    company_name=models.CharField(max_length=200, null=True,blank=True)
+    desegnation=models.CharField(max_length=200, null=True,blank=True)
 
 class regulation_master(models.Model):
     regulation_year = models.IntegerField()
@@ -74,6 +82,131 @@ class regulation_master(models.Model):
     class Meta:
         db_table = 'equipment_regulation_master'
         managed = False
+
+# class review1(models.Model):
+
+
+from django.db import models  # type: ignore
+
+
+class Student_cgpa(models.Model):
+    reg_no = models.CharField(max_length=20, primary_key=True)
+    batch = models.CharField(max_length=100)
+    student_name = models.CharField(max_length=100)
+    department = models.CharField(max_length=100)
+    section = models.CharField(
+        max_length=10, blank=True, null=True
+    )  # New field for section
+    gender = models.CharField(
+        max_length=10,
+        choices=[("Male", "Male"), ("Female", "Female")],
+        blank=True,
+        null=True,
+    )  # New field for gender
+    cgpa = models.FloatField()
+    sslc = models.FloatField()
+    hsc = models.CharField(max_length=20, blank=True, null=True)
+    diploma = models.CharField(max_length=20, blank=True, null=True)
+    bag_of_log = models.IntegerField()
+    history_of_arrear = models.IntegerField()
+    admission_type = models.CharField(max_length=100, blank=True, null=True)
+    contact_number = models.CharField(max_length=15, blank=True, null=True)
+
+    # Semester fields as CharField to store grades or GPAs
+    semester1 = models.CharField(max_length=20, blank=True, null=True)
+    semester2 = models.CharField(max_length=20, blank=True, null=True)
+    semester3 = models.CharField(max_length=20, blank=True, null=True)
+    semester4 = models.CharField(max_length=20, blank=True, null=True)
+    semester5 = models.CharField(max_length=20, blank=True, null=True)
+    semester6 = models.CharField(max_length=20, blank=True, null=True)
+    semester7 = models.CharField(max_length=20, blank=True, null=True)
+    semester8 = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        db_table = "application_student"
+        managed = False  # Since the table already exists in the database
+
+class SubjectType(models.Model):
+    type_name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        db_table = "subject_type_table"  # Custom table name
+        managed= False
+    def _str_(self):
+        return self.type_name
+
+
+
+
+
+class Category(models.Model):
+    category_name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        db_table = "category_table"  # Custom table name
+        managed= False
+    def _str_(self):
+        return self.category_name
+
+class Course(models.Model):
+
+    batch = models.CharField(max_length=50)
+    regulations = models.CharField(max_length=20)
+    # degree = models.CharField(max_length=10)
+    department = models.CharField(max_length=50)
+    semester = models.IntegerField()
+    course_code = models.CharField(max_length=10, unique=True)
+    course_title = models.CharField(max_length=255)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    subject_type = models.ForeignKey(SubjectType, on_delete=models.CASCADE)
+    lecturer = models.IntegerField()
+    tutorial = models.IntegerField()
+    practical = models.IntegerField()
+    total_contact_periods = models.IntegerField()
+    credits = models.IntegerField()
+
+    class Meta:
+        db_table = "course"
+        managed= False
+
+    def _str_(self):
+        return f"{self.course_code} - {self.course_title}"
+class review_marks_master(models.Model):
+    faculty_name=models.CharField(max_length=100)
+    faculty_role=models.CharField(max_length=100)
+    reviewer_type=models.CharField(max_length=100)
+    student_name= models.CharField(max_length=100)
+    reg_no=models.IntegerField()
+    batch = models.CharField(max_length=50)
+    review_number=models.IntegerField()
+    regulations = models.CharField(max_length=20)
+    department = models.CharField(max_length=50)
+    semester = models.IntegerField()
+    course_code = models.CharField(max_length=10, unique=True)
+    company_guide_name = models.CharField(max_length=255, blank=True, null=True)
+    internal_guide_name = models.CharField(max_length=255, blank=True, null=True)
+    criteria_1=models.IntegerField()
+    criteria_2=models.IntegerField()
+    criteria_3=models.IntegerField()
+    criteria_4=models.IntegerField()
+    criteria_5=models.IntegerField()
+    criteria_6=models.IntegerField()
+    criteria_7=models.IntegerField()
+    criteria_8=models.IntegerField()
+    criteria_9=models.IntegerField()
+    criteria_10=models.IntegerField()
+    total=models.IntegerField()
+class internal_review_mark(models.Model):
+    student_name= models.CharField(max_length=100)
+    reg_no=models.IntegerField()
+    department = models.CharField(max_length=50)
+    semester = models.IntegerField()
+    course_code = models.CharField(max_length=10, unique=True)
+    review_1=models.IntegerField()
+    review_2=models.IntegerField()
+    review_3=models.IntegerField()
+    total=models.IntegerField()
+
 
 
 
