@@ -121,7 +121,7 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
-
+    {% if role == 'HOD' %}
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
@@ -197,6 +197,8 @@
             </li>
         </ul>  
     </div>
+    {% endif %}
+
     <div class="container">
         <h2 class="text-center">Select Role</h2>
     
@@ -224,7 +226,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for project in projects %}
+                    {% for project in filtered_students_list %}
                     <tr>
                         <td>{{ project.student_name }}</td>
                         <td>{{ project.reg_no }}</td>
@@ -232,7 +234,12 @@
                         <td>
                             <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
                                 data-student="{{ project.student_name }}" 
-                                data-reg="{{ project.reg_no }}">
+                                data-reg="{{ project.reg_no }}"
+                                data-semester="{{ project.semester }}"
+                                data-course-code="{{ project.course_code }}"
+                                data-course-title="{{ project.course_title }}"
+                                data-regulations="SomeRegulationValue"
+                                data-reviewer-type="Guide">
                                 Enter Marks
                             </button>
                         </td>
@@ -246,42 +253,84 @@
                 
             </table>
         </div>
-        <!-- Mark Entry Modal -->
+        <!-- Mark Entry Modal with form -->
         <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
             <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-                        <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
+                <form method="POST" action="{% url 'review1_markentry' %}">
+                    {% csrf_token %}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
+                            <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
         
-                        <table class="table">
-                            <tr>
-                                <th>Assessment Criteria</th>
-                                <th>Marks (10)</th>
-                            </tr>
-                            <tr><td>Literature review</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Problem Identification and definition</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project objectives</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project specifications and constraints</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project work plan</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Methodology proposed</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Environmental issues consideration</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Oral and Written Communication</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Resource Planning</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                        </table>
+                            <!-- Hidden inputs to pass additional details -->
+                            <input type="hidden" name="student_name" id="inputStudentName">
+                            <input type="hidden" name="reg_no" id="inputRegNo">
+                            <input type="hidden" name="semester" id="inputSemester">
+                            <input type="hidden" name="course_code" id="inputCourseCode">
+                            <input type="hidden" name="course_title" id="inputCourseTitle">
+                            <input type="hidden" name="regulations" id="inputRegulations">
+                            <input type="hidden" name="reviewer_type" id="inputReviewerType">
+        
+                            <table class="table">
+                                <tr>
+                                    <th>Assessment Criteria</th>
+                                    <th>Marks (10)</th>
+                                </tr>
+                                <tr>
+                                    <td>Literature review</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_1" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Problem Identification and definition</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_2" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Project objectives</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_3" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Project specifications and constraints</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_4" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Project work plan</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_5" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Methodology proposed</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_6" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Environmental issues consideration</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_7" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Oral and Written Communication</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_8" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Individual and Team work - Delegation of Responsibilities</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_9" class="form-control mark-input"></td>
+                                </tr>
+                                <tr>
+                                    <td>Resource Planning</td>
+                                    <td><input type="number" min="0" max="10" name="criteria_10" class="form-control mark-input"></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Save Marks</button>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success">Save Marks</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
         
@@ -311,7 +360,12 @@
                             <td>
                                 <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
                                     data-student="{{ project.student_name }}" 
-                                    data-reg="{{ project.reg_no }}">
+                                    data-reg="{{ project.reg_no }}"
+                                    data-semester="{{ project.semester }}"
+                                    data-course-code="{{ project.course_code }}"
+                                    data-course-title="{{ project.course_title }}"
+                                    data-regulations="SomeRegulationValue"
+                                    data-reviewer-type="Reviewer">
                                     Enter Marks
                                 </button>
                             </td>
@@ -341,18 +395,28 @@
         });
     });
     
-</script>
-<script>
     $(document).ready(function(){
         $(".mark-btn").click(function(){
             var studentName = $(this).data("student");
             var regNo = $(this).data("reg");
+            var semester = $(this).data("semester");
+            var courseCode = $(this).data("course-code");
+            var courseTitle = $(this).data("course-title");
+            var regulations = $(this).data("regulations");
+            var reviewerType = $(this).data("reviewer-type");
+            
             $("#modalStudentName").text(studentName);
             $("#modalRegNo").text(regNo);
+            $("#inputStudentName").val(studentName);
+            $("#inputRegNo").val(regNo);
+            $("#inputSemester").val(semester);
+            $("#inputCourseCode").val(courseCode);
+            $("#inputCourseTitle").val(courseTitle);
+            $("#inputRegulations").val(regulations);
+            $("#inputReviewerType").val(reviewerType);
         });
     });
-</script>
-<script>
+    
     document.querySelectorAll('.mark-input').forEach(input => {
         input.addEventListener('input', function () {
             if (this.value > 10) {

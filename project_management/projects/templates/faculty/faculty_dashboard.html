@@ -143,7 +143,7 @@
       <div class="card-body text-center">
         <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
         <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">{{Department}}</p>
+        <p class="card-text">{{department}}</p>
         <p class="card-text">{{role}}</p>
       </div>
     </div>
@@ -162,59 +162,25 @@
         </a>
         <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
             <li class="nav-item">
-                <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
                     <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                     Review 1
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark">
                     <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                     Review 2
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
                     <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                     Review 3
                 </a>
             </li>
         </ul>
     </li>
-    
-
-      <li class="nav-item">
-        <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-          <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-          View Marks
-        </a>
-        <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-          <li class="nav-item">
-            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-              Review 1
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-              Review 2
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-              Review 3
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-              TOTAL
-            </a>
-          </li>
-        </ul>
-      </li>
       <li class="nav-item">
         <a href="{% url 'home_page' %}" class="nav-link text-dark">
           <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
@@ -223,37 +189,57 @@
       </li>
     </ul>  
   </div>
+  <li class="nav-item">
+    <a href="{% url 'home_page' %}" class="nav-link text-dark">
+        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+        Logout
+    </a>
+</li>
+</ul>  
+</div>
 
-  <!-- Main Page Content -->
-  <div class="page-content p-5" id="content">
-    <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4">
-      <i class="fa fa-bars mr-2"></i>
-      <small class="text-uppercase font-weight-bold">Menu</small>
-    </button>
+<div class="page-content" id="content">
 
-    <h2 style="text-align: center;">Project Review - III Rubric</h2>
-<table>
-  <tr>
-    <th>Criteria</th>
-    <th>Marks (10)</th>
-  </tr>
-  <tr><td>Modelling</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Tool Usage</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Outcomes</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Results</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Novelty</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Conclusion</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Documentation</td><td><input type="number" min="0" max="10"></td></tr>
-  <tr><td>Communication</td><td><input type="number" min="0" max="10"></td></tr>
-</table>
-  </div>
 
-  <!-- Optional JavaScript function for input validation -->
-  <script>
-    function validateInput(input) {
-      if (input.value > 10) input.value = 10;
-      if (input.value < 0) input.value = 0;
-    }
-  </script>
+<div class="table-container">
+<h3 class="text-center mb-4">Project Details:{{ department }}</h3>
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Domain</th>
+                <th>Project Type</th>
+                <th>Company Name</th>
+                <th>Guide Name</th>
+                <th>Duration</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects_list %}
+            <tr>
+                <td>{{project.student_name}}
+                <td>{{ project.domain }}</td>
+                <td>{{ project.project_type }}</td>
+                <td>{{ project.company_name|default:"-" }}</td>
+                <td>
+                    {% if project.project_type == "external" %}
+                        {{ project.company_guide_name|default:"-" }}
+                    {% else %}
+                        {{ project.internal_guide_name|default:"-" }}
+                    {% endif %}
+                </td>
+                <td>{{ project.duration|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No projects found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+</div>
+</div>
 </body>
 </html>

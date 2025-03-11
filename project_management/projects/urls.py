@@ -20,6 +20,9 @@ urlpatterns = [
     path('review1_markentry/', views.review1_markentry, name='review1_markentry'),
     path('review2_markentry/', views.review2_markentry, name='review2_markentry'),
     path('review3_markentry/', views.review3_markentry, name='review3_markentry'),
+    path('faculty_review1_markentry/', views.faculty_review1_markentry, name='faculty_review1_markentry'),
+    path('faculty_review2_markentry/', views.faculty_review2_markentry, name='faculty_review2_markentry'),
+    path('faculty_review3_markentry/', views.faculty_review3_markentry, name='faculty_review3_markentry'),
     # path("assign_reviewers/", views.assign_reviewers, name="assign_reviewers"),
 
 ]

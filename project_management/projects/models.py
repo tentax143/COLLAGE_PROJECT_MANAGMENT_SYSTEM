@@ -155,7 +155,7 @@ class Course(models.Model):
     # degree = models.CharField(max_length=10)
     department = models.CharField(max_length=50)
     semester = models.IntegerField()
-    course_code = models.CharField(max_length=10, unique=True)
+    course_code = models.CharField(max_length=10)
     course_title = models.CharField(max_length=255)
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     subject_type = models.ForeignKey(SubjectType, on_delete=models.CASCADE)
@@ -182,7 +182,7 @@ class review_marks_master(models.Model):
     regulations = models.CharField(max_length=20)
     department = models.CharField(max_length=50)
     semester = models.IntegerField()
-    course_code = models.CharField(max_length=10, unique=True)
+    course_code = models.CharField(max_length=10)
     company_guide_name = models.CharField(max_length=255, blank=True, null=True)
     internal_guide_name = models.CharField(max_length=255, blank=True, null=True)
     criteria_1=models.IntegerField()
@@ -196,6 +196,8 @@ class review_marks_master(models.Model):
     criteria_9=models.IntegerField()
     criteria_10=models.IntegerField()
     total=models.IntegerField()
+
+
 class internal_review_mark(models.Model):
     student_name= models.CharField(max_length=100)
     reg_no=models.IntegerField()
@@ -206,6 +208,17 @@ class internal_review_mark(models.Model):
     review_2=models.IntegerField()
     review_3=models.IntegerField()
     total=models.IntegerField()
+
+
+class departments(models.Model):
+    dept_code=models.CharField(max_length=200,primary_key=True)
+    department=models.CharField(max_length=500)
+    department_description=models.CharField(max_length=100)
+    degree_code=models.IntegerField()
+    class meta:
+        db='rit_e_approval'
+        db_table='application_departments'
+        manage=False
 
 
 

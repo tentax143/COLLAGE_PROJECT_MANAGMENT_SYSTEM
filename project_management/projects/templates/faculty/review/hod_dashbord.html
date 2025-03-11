@@ -115,7 +115,7 @@
             </div>
         </div>
 
-        
+    {% if role == 'HOD' %}
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
                 <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
@@ -190,7 +190,7 @@
             </li>
         </ul>  
     </div>
-
+    {% endif %}
     <div class="page-content" id="content">
         
 
