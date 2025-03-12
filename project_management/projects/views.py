@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master
 import datetime
 from django.contrib import messages
 import hashlib
@@ -187,14 +187,17 @@ def view_marks(request):
     student_regno = request.session.get('student_regno')
     student_name = request.session.get('student_name')
     department = request.session.get('department')
-    
-    student_data = review_marks_master.objects  # Adjust your query as needed
+
+    student_data = review_marks_master.objects.filter(student_name=student_name) # Convert to int
+    print(student_data, "working fetched data")
+
     return render(request, 'student/view_marks.html', {
         'student_regno': student_regno,
         'student_name': student_name,
         'department': department,
         'student_data': student_data,
     })
+
 
 def view_status(request):
     return render(request, 'student/view_status.html')
@@ -578,6 +581,7 @@ def review1_markentry(request):
         # Get student and project details from the POST data
         student_name = request.POST.get('student_name')
         reg_no = request.POST.get('reg_no')
+        reg_no=int(reg_no)
         
         # Get semester and ensure it is a number (default to 0 if not provided)
         semester_value = request.POST.get('semester')
@@ -689,6 +693,7 @@ def review2_markentry(request):
         # Get student and project details from POST data
         student_name = request.POST.get('student_name')
         reg_no = request.POST.get('reg_no')
+        reg_no=int(reg_no)
         
         # Get semester and ensure it is a number (default to 0 if not provided)
         semester_value = request.POST.get('semester')
@@ -794,7 +799,7 @@ def review3_markentry(request):
         # Get student and project details from POST data
         student_name = request.POST.get('student_name')
         reg_no = request.POST.get('reg_no')
-
+        reg_no=int(reg_no)
         # Get semester and ensure it is a number (default to 0 if not provided)
         semester_value = request.POST.get('semester')
         try:

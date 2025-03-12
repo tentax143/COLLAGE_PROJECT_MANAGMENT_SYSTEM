@@ -223,3 +223,51 @@
             </ul>
         </div>
         </div>
+        <div class="page-content" id="content">
+        
+
+            <div class="table-container">
+                <h3 class="text-center mb-4">Project Details:{{ department }}</h3>
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Reviewer Name</th>
+                                <th>project title</th>
+                                <th>regno</th>
+                                <th>Company Name</th>
+                                <th>Guide Name</th>
+                                <th>total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in student_data %}
+                            <tr>
+                                <td>{{project.student_name}}
+                                <td>{{ project.domain }}</td>
+                                <td>{{ project.project_type }}</td>
+                                <td>{{ project.company_name|default:"-" }}</td>
+                                <td>
+                                    {% if project.project_type == "external" %}
+                                        {{ project.company_guide_name|default:"-" }}
+                                    {% else %}
+                                        {{ project.internal_guide_name|default:"-" }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ project.duration|default:"-" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center">No projects found.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+        <script>
