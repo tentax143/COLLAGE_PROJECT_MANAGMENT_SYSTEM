@@ -194,8 +194,8 @@
             <div class="card-body text-center">
                 <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
                 <h5 class="card-title">{{name}}</h5>
-                <p class="card-text">{{Department}}</p>
-                <p class="card-text">{{role}}</p>
+                <p class="card-text">{{department}}</p>
+                <p class="card-text">{{student_regno}}</p>
             </div>
             </div>
 
@@ -208,43 +208,12 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{% url 'view_status' %}" class="nav-link text-dark">
+                    <a href="{% url 'view_marks' %}" class="nav-link text-dark">
                         <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                        View Status
+                        View Review marks
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                        View Marks
-                    </a>
-                    <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                        <li class="nav-item">
-                            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 1
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 2
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 3
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                TOTAL
-                            </a>
-                        </li>
-                    </ul>
-                </li>
+            </ul>
                 <li class="nav-item">
                     <a href="{% url 'home_page' %}" class="nav-link text-dark">
                         <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
@@ -252,6 +221,5 @@
                     </a>
                 </li>
             </ul>
-
         </div>
         </div>

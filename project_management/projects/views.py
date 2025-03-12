@@ -39,26 +39,18 @@ def student_login(request):
     
     return render(request, 'student/student_login.html')
 from django.db import connections
+from django.shortcuts import render, redirect
+from django.db import connections
+from .models import Project, faculty_master  # Adjust your imports as necessary
+from django.contrib import messages
 
 def student_entry(request):
     # Retrieve student_regno from the session
     student_regno = request.session.get('student_regno')
-    print(student_regno, "dfhashfadfafaajgfas")
     if not student_regno:
         return render(request, 'error.html', {'message': 'Student registration number not found in session.'})
     
-    # Use the 'rit_cgpatrack' database connection to list tables (for debugging)
-    connection = connections['rit_cgpatrack']
-    tables = connection.introspection.table_names()
-    print("Tables in rit_cgpatrack:", tables)
-    
-    # (Optional) Get columns of application_student for debugging
-    with connection.cursor() as cursor:
-        table_description = connection.introspection.get_table_description(cursor, 'application_student')
-    columns = [col.name for col in table_description]
-    print("Columns in application_student:", columns)
-    
-    # Retrieve the student's name from the application_student table using the reg_no
+    # Retrieve the student's name from the 'application_student' table in the 'rit_cgpatrack' database
     with connections['rit_cgpatrack'].cursor() as cursor:
         cursor.execute("SELECT student_name FROM application_student WHERE reg_no = %s", [student_regno])
         row = cursor.fetchone()
@@ -66,18 +58,13 @@ def student_entry(request):
         student_name = row[0]
     else:
         student_name = "Unknown"
-    print("Retrieved student_name:", student_name)
-    existing_project = Project.objects.filter(reg_no=student_regno).first()
-
-    if existing_project:
-        return render(request, 'student/student_entry.html', {
-            'student_regno': student_regno,
-            'student_name': student_name,
-            'project': existing_project,  # Pass existing project details
-            'submitted': True  # Flag to indicate form should not be shown
-        })
-    # Department and batch calculation
-    filter_department = int(student_regno[6:9])
+    
+    # Calculate Department, Batch, and Entry Status based on student_regno
+    try:
+        filter_department = int(student_regno[6:9])
+    except ValueError:
+        filter_department = None
+        
     department_mapping = {
         243: "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE",
         107: "COMPUTER SCIENCE AND BUSINESS SYSTEM",
@@ -91,12 +78,32 @@ def student_entry(request):
     department = department_mapping.get(filter_department, "Unknown Department")
     
     batch1 = student_regno[4:6]
-    m = int(batch1)
-    batch = f"20{batch1}-20{m+4}"
-    lat = int(student_regno[-3])
-    entry_status = "Lateral" if lat == 3 else "Transfer" if lat == 7 else "Regular"
-    print("working", entry_status, batch, department)
+    try:
+        m = int(batch1)
+        batch = f"20{batch1}-20{m+4}"
+    except ValueError:
+        batch = "Unknown Batch"
     
+    try:
+        lat = int(student_regno[-3])
+    except ValueError:
+        lat = 0
+    entry_status = "Lateral" if lat == 3 else "Transfer" if lat == 7 else "Regular"
+    
+    # Store student details in session for later use (e.g., in view_marks)
+    request.session['student_name'] = student_name
+    request.session['department'] = department
+
+    # Check if a project already exists for this student.
+    existing_project = Project.objects.filter(reg_no=student_regno).first()
+    if existing_project:
+        return render(request, 'student/student_entry.html', {
+            'student_regno': student_regno,
+            'student_name': student_name,
+            'project': existing_project,  # Pass existing project details
+            'submitted': True  # Flag to indicate form should not be shown
+        })
+
     title = "Student Entry"
     faculty_list = faculty_master.objects.all()
     
@@ -107,31 +114,29 @@ def student_entry(request):
     
         if project_type == 'internal':
             internal_guide_name = request.POST.get('internal_guide_name')
+            # Validate required fields for internal projects
+            if not all([Project_title, domain, project_type, internal_guide_name]):
+                messages.error(request, 'All fields are required for internal projects.')
+                return render(request, 'student/student_entry.html', {
+                    'faculty_list': faculty_list,
+                    'student_regno': student_regno,
+                    'title': title
+                })
         elif project_type == 'external':
             company_name = request.POST.get('company_name')
             location = request.POST.get('location')
             company_guide_name = request.POST.get('company_guide_name')
             duration = request.POST.get('duration')
-    
-        # Validate required fields
-        if project_type == 'internal':
-            if not all([Project_title, domain, project_type, internal_guide_name]):
-                return render(request, 'student_entry.html', {
-                    'faculty_list': faculty_list,
-                    'student_regno': student_regno,
-                    'title': title,
-                    'error': 'All fields are required for internal projects.'
-                })
-        elif project_type == 'external':
+            # Validate required fields for external projects
             if not all([Project_title, domain, project_type, company_name, location, company_guide_name, duration]):
-                return render(request, 'student_entry.html', {
+                messages.error(request, 'All fields are required for external projects.')
+                return render(request, 'student/student_entry.html', {
                     'faculty_list': faculty_list,
                     'student_regno': student_regno,
-                    'title': title,
-                    'error': 'All fields are required for external projects.'
+                    'title': title
                 })
     
-        # Create the Project entry and store the student name as well.
+        # Create the project entry based on the project type
         if project_type == 'external':
             project = Project.objects.create(
                 department=department,
@@ -160,6 +165,15 @@ def student_entry(request):
                 student_name=student_name  # Storing the retrieved student name
             )
     
+        # After creating the project, render the success page with a flag
+        return render(request, 'student/student_entry.html', {
+            'student_regno': student_regno,
+            'student_name': student_name,
+            'project': project,
+            'submitted': True
+        })
+    
+    # For GET requests, simply render the form
     return render(request, 'student/student_entry.html', {
         'faculty_list': faculty_list,
         'student_regno': student_regno,
@@ -167,8 +181,21 @@ def student_entry(request):
     })
 
 
+
 def view_marks(request):
-    return render(request, 'student/view_marks.html')
+    # Retrieve student details from the session
+    student_regno = request.session.get('student_regno')
+    student_name = request.session.get('student_name')
+    department = request.session.get('department')
+    
+    student_data = review_marks_master.objects  # Adjust your query as needed
+    return render(request, 'student/view_marks.html', {
+        'student_regno': student_regno,
+        'student_name': student_name,
+        'department': department,
+        'student_data': student_data,
+    })
+
 def view_status(request):
     return render(request, 'student/view_status.html')
 
