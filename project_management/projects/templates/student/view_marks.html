@@ -224,46 +224,96 @@
         </div>
         </div>
         <div class="page-content" id="content">
-        
-
-            <div class="table-container">
-                <h3 class="text-center mb-4">Project Details:{{ department }}</h3>
-                <div class="table-responsive">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Reviewer Name</th>
-                                <th>project title</th>
-                                <th>regno</th>
-                                <th>Company Name</th>
-                                <th>Guide Name</th>
-                                <th>total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for project in student_data %}
-                            <tr>
-                                <td>{{project.student_name}}
-                                <td>{{ project.domain }}</td>
-                                <td>{{ project.project_type }}</td>
-                                <td>{{ project.company_name|default:"-" }}</td>
-                                <td>
-                                    {% if project.project_type == "external" %}
-                                        {{ project.company_guide_name|default:"-" }}
-                                    {% else %}
-                                        {{ project.internal_guide_name|default:"-" }}
-                                    {% endif %}
-                                </td>
-                                <td>{{ project.duration|default:"-" }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="6" class="text-center">No projects found.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+            <div id="Column_container">
+                {% for review_number, marks in review_marks.items %}
+                <div class="table-columns">
+                    <h3 class="text-center mb-4">Review {{ review_number }} Marks</h3>
+                    {% if marks %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Assessment Criteria</th>
+                                    {% for mark in marks %}
+                                    <th>{{ mark.reviewer_type }} ({{ mark.faculty_name }})</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Literature Review</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_1 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Problem Identification</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_2 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Resource Planning</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_3 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Project Planning</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_4 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Presentation</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_5 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Implementation</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_6 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Results</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_7 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Documentation</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_8 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Demonstration</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_9 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr>
+                                    <td>Communication</td>
+                                    {% for mark in marks %}
+                                    <td>{{ mark.criteria_10 }}</td>
+                                    {% endfor %}
+                                </tr>
+                                <tr class="table-info">
+                                    <td><strong>Total Marks</strong></td>
+                                    {% for mark in marks %}
+                                    <td><strong>{{ mark.total }}</strong></td>
+                                    {% endfor %}
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-center">No marks available for Review {{ review_number }} yet.</p>
+                    {% endif %}
                 </div>
+                {% endfor %}
             </div>
         </div>
     

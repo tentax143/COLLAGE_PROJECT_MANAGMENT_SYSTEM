@@ -125,7 +125,7 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
-    {% if role == 'HOD' %}
+
         <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
@@ -201,235 +201,236 @@
             </li>
         </ul>  
     </div>
-    {% endif %}
 
-    <div class="container">
-        <h2 class="text-center">Select Role</h2>
-    
-        <!-- Role Selection -->
-        <div class="text-center mt-4">
-            <button id="guideBtn" class="btn btn-primary">Guide</button>
-            <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
+    <!-- Main Content -->
+    <div class="page-content">
+        <h2>Review 1 Mark Entry</h2>
+        {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
         </div>
-    
-        <!-- Guide Table -->
-        <div id="guideSection" class="hidden mt-4">
-            <h3>Student List</h3>
-                {% for batch in batches %}
-                    {{ batch }} <br>
-                {% endfor %}
+        {% endif %}
 
-            <table class="table table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Student Name</th>
-                        <th>Reg No</th>
-                        <th>Project Title</th>
-                        <th>Mark</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for project in filtered_students_list %}
-                    <tr>
-                        <td>{{ project.student_name }}</td>
-                        <td>{{ project.reg_no }}</td>
-                        <td>{{ project.title }}</td>
-                        <td>
-                            <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                                data-student="{{ project.student_name }}" 
-                                data-reg="{{ project.reg_no }}"
-                                data-semester="{{ project.semester }}"
-                                data-course-code="{{ project.course_code }}"
-                                data-course-title="{{ project.course_title }}"
-                                data-regulations="SomeRegulationValue"
-                                data-reviewer-type="Guide">
-                                Enter Marks
-                            </button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center">No projects found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+        <!-- Role Selection Buttons -->
+        <div class="card mb-4" id="roleSelection">
+            <div class="card-body text-center">
+                <h3 class="mb-4">Select Role for Mark Entry</h3>
+                {% if role == "HOD" or is_guide %}
+                <button class="btn btn-primary btn-lg mx-2 role-btn" data-role="guide">
+                    <i class="fa fa-user-tie mr-2"></i>Enter as Guide
+                </button>
+                {% endif %}
                 
-            </table>
-        </div>
-        <!-- Mark Entry Modal with form -->
-        <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <form method="POST" action="{% url 'review1_markentry' %}">
-                    {% csrf_token %}
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-                            <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
-        
-                            <!-- Hidden inputs to pass additional details -->
-                            <input type="hidden" name="student_name" id="inputStudentName">
-                            <input type="hidden" name="reg_no" id="inputRegNo">
-                            <input type="hidden" name="semester" id="inputSemester">
-                            <input type="hidden" name="course_code" id="inputCourseCode">
-                            <input type="hidden" name="course_title" id="inputCourseTitle">
-                            <input type="hidden" name="regulations" id="inputRegulations">
-                            <input type="hidden" name="reviewer_type" id="inputReviewerType">
-        
-                            <table class="table">
-                                <tr>
-                                    <th>Assessment Criteria</th>
-                                    <th>Marks (10)</th>
-                                </tr>
-                                <tr>
-                                    <td>Literature review</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_1" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Problem Identification and definition</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_2" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Project objectives</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_3" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Project specifications and constraints</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_4" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Project work plan</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_5" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Methodology proposed</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_6" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Environmental issues consideration</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_7" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Oral and Written Communication</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_8" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Individual and Team work - Delegation of Responsibilities</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_9" class="form-control mark-input"></td>
-                                </tr>
-                                <tr>
-                                    <td>Resource Planning</td>
-                                    <td><input type="number" min="0" max="10" name="criteria_10" class="form-control mark-input"></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-success">Save Marks</button>
-                        </div>
-                    </div>
-                </form>
+                {% if role == "HOD" or is_reviewer %}
+                <button class="btn btn-success btn-lg mx-2 role-btn" data-role="reviewer">
+                    <i class="fa fa-users mr-2"></i>Enter as Reviewer
+                </button>
+                {% endif %}
             </div>
         </div>
-        
-    
-        <!-- Reviewer Section (You can add content for reviewers here) -->
-        <div id="reviewerSection" class="hidden mt-4">
-            <h3>Student List</h3>
-                {% for batch in batches %}
-                    {{ batch }} <br>
-                {% endfor %}
+
+        <!-- Guide Students Table -->
+        <div class="card mb-4 d-none" id="guideTable">
+            <div class="card-header bg-primary text-white">
+                <h3 class="mb-0">
+                    <i class="fa fa-user-tie mr-2"></i>Guide Role - Student List
+                    <button class="btn btn-light float-right" onclick="showRoleSelection()">
+                        <i class="fa fa-arrow-left mr-2"></i>Back to Role Selection
+                    </button>
+                </h3>
+            </div>
+            <div class="card-body">
                 <table class="table table-bordered">
                     <thead class="thead-dark">
                         <tr>
                             <th>Student Name</th>
                             <th>Reg No</th>
                             <th>Project Title</th>
-                            <th>Mark</th>
-                            
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in projects %}
-                        <tr>
+                        {% for project in filtered_students_list %}
+                        {% if project.internal_guide_name == name %}
+                        <tr class="guide-student">
                             <td>{{ project.student_name }}</td>
                             <td>{{ project.reg_no }}</td>
                             <td>{{ project.title }}</td>
                             <td>
-                                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                                    data-student="{{ project.student_name }}" 
-                                    data-reg="{{ project.reg_no }}"
-                                    data-semester="{{ project.semester }}"
-                                    data-course-code="{{ project.course_code }}"
-                                    data-course-title="{{ project.course_title }}"
-                                    data-regulations="SomeRegulationValue"
-                                    data-reviewer-type="Reviewer">
+                                <button class="btn btn-primary enter-marks-btn" 
+                                        data-student-name="{{ project.student_name }}"
+                                        data-reg-no="{{ project.reg_no }}"
+                                        data-reviewer-type="Guide">
                                     Enter Marks
                                 </button>
                             </td>
                         </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="4" class="text-center">No projects found.</td>
-                        </tr>
+                        {% endif %}
                         {% endfor %}
                     </tbody>
-                    
                 </table>
             </div>
         </div>
+
+        <!-- Reviewer Students Table -->
+        <div class="card mb-4 d-none" id="reviewerTable">
+            <div class="card-header bg-success text-white">
+                <h3 class="mb-0">
+                    <i class="fa fa-users mr-2"></i>Reviewer Role - Student List
+                    <button class="btn btn-light float-right" onclick="showRoleSelection()">
+                        <i class="fa fa-arrow-left mr-2"></i>Back to Role Selection
+                    </button>
+                </h3>
+            </div>
+            <div class="card-body">
+                <table class="table table-bordered">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Student Name</th>
+                            <th>Reg No</th>
+                            <th>Project Title</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for project in filtered_students_list %}
+                        {% if role == "HOD" or department == project.department %}
+                        <tr class="reviewer-student">
+                            <td>{{ project.student_name }}</td>
+                            <td>{{ project.reg_no }}</td>
+                            <td>{{ project.title }}</td>
+                            <td>
+                                <button class="btn btn-success enter-marks-btn" 
+                                        data-student-name="{{ project.student_name }}"
+                                        data-reg-no="{{ project.reg_no }}"
+                                        data-reviewer-type="Reviewer">
+                                    Enter Marks
+                                </button>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mark Entry Modal -->
+        <div class="modal" id="markEntryModal" tabindex="-1" role="dialog" aria-labelledby="markEntryModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="markEntryModalLabel">Enter Review 1 Marks</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" id="markEntryForm">
+                            {% csrf_token %}
+                            <input type="hidden" name="student_name" id="modal_student_name">
+                            <input type="hidden" name="reg_no" id="modal_reg_no">
+                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
+                            
+                            <div class="form-group">
+                                <label>Literature Review (10)</label>
+                                <input type="number" name="criteria_1" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Problem Identification (10)</label>
+                                <input type="number" name="criteria_2" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Resource Planning (10)</label>
+                                <input type="number" name="criteria_3" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Project Planning (10)</label>
+                                <input type="number" name="criteria_4" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Presentation (10)</label>
+                                <input type="number" name="criteria_5" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Implementation (10)</label>
+                                <input type="number" name="criteria_6" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Results (10)</label>
+                                <input type="number" name="criteria_7" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Documentation (10)</label>
+                                <input type="number" name="criteria_8" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Demonstration (10)</label>
+                                <input type="number" name="criteria_9" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Communication (10)</label>
+                                <input type="number" name="criteria_10" class="form-control" min="0" max="10" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Marks</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
     
-<script>
-    $(document).ready(function(){
-        $("#guideBtn").click(function(){
-            $("#guideSection").removeClass("hidden").show();
-            $("#reviewerSection").addClass("hidden").hide();
-        });
-    
-        $("#reviewerBtn").click(function(){
-            $("#reviewerSection").removeClass("hidden").show();
-            $("#guideSection").addClass("hidden").hide();
-        });
-    });
-    
-    $(document).ready(function(){
-        $(".mark-btn").click(function(){
-            var studentName = $(this).data("student");
-            var regNo = $(this).data("reg");
-            var semester = $(this).data("semester");
-            var courseCode = $(this).data("course-code");
-            var courseTitle = $(this).data("course-title");
-            var regulations = $(this).data("regulations");
-            var reviewerType = $(this).data("reviewer-type");
+    <script>
+    $(document).ready(function() {
+        // Handle role selection buttons
+        $('.role-btn').click(function() {
+            var role = $(this).data('role');
+            $('#roleSelection').addClass('d-none');
             
-            $("#modalStudentName").text(studentName);
-            $("#modalRegNo").text(regNo);
-            $("#inputStudentName").val(studentName);
-            $("#inputRegNo").val(regNo);
-            $("#inputSemester").val(semester);
-            $("#inputCourseCode").val(courseCode);
-            $("#inputCourseTitle").val(courseTitle);
-            $("#inputRegulations").val(regulations);
-            $("#inputReviewerType").val(reviewerType);
-        });
-    });
-    
-    document.querySelectorAll('.mark-input').forEach(input => {
-        input.addEventListener('input', function () {
-            if (this.value > 10) {
-                alert('Max marks allowed is 10');
-                this.value = 10; // Reset value to 10
+            if (role === 'guide') {
+                $('#guideTable').removeClass('d-none');
+                $('#reviewerTable').addClass('d-none');
+            } else {
+                $('#reviewerTable').removeClass('d-none');
+                $('#guideTable').addClass('d-none');
             }
         });
+
+        // Handle mark entry buttons
+        $(document).on('click', '.enter-marks-btn', function() {
+            var studentName = $(this).data('student-name');
+            var regNo = $(this).data('reg-no');
+            var reviewerType = $(this).data('reviewer-type');
+            
+            $('#modal_student_name').val(studentName);
+            $('#modal_reg_no').val(regNo);
+            $('#modal_reviewer_type').val(reviewerType);
+            
+            // Update modal title based on reviewer type
+            $('#markEntryModalLabel').text('Enter Review 1 Marks as ' + reviewerType);
+            
+            $('#markEntryModal').modal('show');
+        });
+
+        // Ensure modal can be closed
+        $('.close').click(function() {
+            $('#markEntryModal').modal('hide');
+        });
     });
-</script>
-    
+
+    // Function to show role selection and hide tables
+    function showRoleSelection() {
+        $('#roleSelection').removeClass('d-none');
+        $('#guideTable').addClass('d-none');
+        $('#reviewerTable').addClass('d-none');
+    }
+    </script>
 </body>
 </html>

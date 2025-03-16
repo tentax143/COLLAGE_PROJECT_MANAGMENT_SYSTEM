@@ -1,371 +1,266 @@
-<!DOCTYPE html>
 {% load static %}
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <title>RIT PROJECT MANAGEMENT</title>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Review 3 Mark Entry</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f8f9fa;
-        }
-
         .vertical-nav {
-            width: 23rem;
+            min-width: 17rem;
+            width: 17rem;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
             box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            z-index: 1000;
-        }
-
-        .page-content {
-            margin-left: 23rem;
             transition: all 0.4s;
-            padding: 20px;
-            min-height: 100vh;
         }
-
-        .table-container {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        .page-content {
+            width: calc(100% - 17rem);
+            margin-left: 17rem;
+            transition: all 0.4s;
         }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .nav-link {
+            font-weight: 500;
+            color: #333;
         }
-
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 12px;
-            text-align: left;
+        .nav-link:hover {
+            background: #f3f2f2;
         }
-
-        th {
-            background-color: #00407b;
-            color: white;
-            font-weight: 600;
+        .text-primary {
+            color: #7579e7 !important;
         }
-
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
         @media (max-width: 768px) {
             .vertical-nav {
-                margin-left: -23rem;
+                margin-left: -17rem;
             }
             .vertical-nav.active {
                 margin-left: 0;
             }
             .page-content {
                 width: 100%;
-                margin-left: 0;
+                margin: 0;
             }
             .page-content.active {
-                margin-left: 23rem;
+                margin-left: 17rem;
+                width: calc(100% - 17rem);
             }
         }
-
-        #sidebarCollapse {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
+        .separator {
+            margin: 3rem 0;
+            border-bottom: 1px dashed #fff;
         }
-        .container {
-            padding-right: 50px;
-            padding-left: 90px;
-            margin-right: auto;
-            margin-left: auto;
-            margin-top: 50px;
+        .text-uppercase {
+            letter-spacing: 0.1em;
         }
-        .hidden { 
-            display: none !important;
+        .text-gray {
+            color: #aaa;
+        }
+        .nav-link {
+            text-transform: capitalize;
+        }
+        .nav-link:hover {
+            background: #f3f2f2;
+        }
+        .text-primary {
+            color: #7579e7 !important;
+        }
+        .btn-primary {
+            background-color: #7579e7;
+            border-color: #7579e7;
+        }
+        .btn-primary:hover {
+            background-color: #6064cf;
+            border-color: #6064cf;
+        }
+        .role-btn {
+            margin: 5px;
+            padding: 10px 20px;
+        }
+        .role-btn.active {
+            background-color: #6064cf;
+            border-color: #6064cf;
+        }
+        .table-container {
+            display: none;
+        }
+        .table-container.active {
+            display: block;
         }
     </style>
 </head>
 <body>
-
-    <div class="vertical-nav" id="sidebar">
-        <div class="py-4 px-3 mb-4 bg-light border-bottom">
+    <!-- Vertical navbar -->
+    <div class="vertical-nav bg-white" id="sidebar">
+        <div class="py-4 px-3 mb-4 bg-light">
             <div class="media d-flex align-items-center">
                 <div class="media-body">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                    <h4 class="m-0">RIT</h4>
-                    <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                    <h4 class="m-0">{{ faculty_name }}</h4>
+                    <p class="font-weight-normal text-muted mb-0">{{ department }}</p>
+                    <p class="font-weight-normal text-muted mb-0">{{ role }}</p>
                 </div>
             </div>
         </div>
-        <div class="border-bottom mb-2">
-            <div class="card-body text-center">
-                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-                <h5 class="card-title">{{ name }}</h5>
-                <p class="card-text">{{ department }}</p>
-                <p class="card-text">{{ role }}</p>
-            </div>
-        </div>
 
-        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
+        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Navigation</p>
+
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
-                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
-                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+                <a href="{% url 'view_guide_detail' %}" class="nav-link text-dark">
                     View Guide Detail
                 </a>
             </li>
             <li class="nav-item">
-                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate commity members
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                    <li class="nav-item">
-                        <a href="{% url 'review1' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review2' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review3' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            <li class="nav-item">
-                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Guide
+                <a href="{% url 'allocate_committee' %}" class="nav-link text-dark">
+                    Allocate Committee Members
                 </a>
             </li>
-        </ul>  
-        <li class="nav-item">
-            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                Review Mark Entry
-            </a>
-            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
-                <li class="nav-item">
-                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 1
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 2
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 3
-                    </a>
-                </li>
-            </ul>
-        </li>
-        
             <li class="nav-item">
-                <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                    Logout
+                <a href="#" class="nav-link text-dark">
+                    Review Mark Entry
                 </a>
             </li>
-        </ul>  
+        </ul>
     </div>
-    <div class="container">
-        <h2 class="text-center">Select Role</h2>
-    
-        <!-- Role Selection -->
-        <div class="text-center mt-4">
-            <button id="guideBtn" class="btn btn-primary">Guide</button>
-            <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
-        </div>
-    
-        <!-- Guide Table -->
-        <div id="guideSection" class="hidden mt-4">
-            <h3>Student List</h3>
-                {% for batch in batches %}
-                    {{ batch }} <br>
-                {% endfor %}
+    <!-- End vertical navbar -->
 
-            <table class="table table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Student Name</th>
-                        <th>Reg No</th>
-                        <th>Project Title</th>
-                        <th>Mark</th>
-                        
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for project in projects %}
-                    <tr>
-                        <td>{{ project.student_name }}</td>
-                        <td>{{ project.reg_no }}</td>
-                        <td>{{ project.title }}</td>
-                        <td>
-                            <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                                data-student="{{ project.student_name }}" 
-                                data-reg="{{ project.reg_no }}">
-                                Enter Marks
-                            </button>
-                        </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="text-center">No projects found.</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-                
-            </table>
+    <!-- Page content holder -->
+    <div class="page-content p-5" id="content">
+        <!-- Content -->
+        <h2 class="display-4 text-white">Review 3 Mark Entry</h2>
+        <div class="separator"></div>
+
+        <div class="role-selection text-center mb-4">
+            <button class="btn btn-primary role-btn" data-role="guide">Guide</button>
+            <button class="btn btn-primary role-btn" data-role="reviewer">Reviewer</button>
         </div>
-        <!-- Mark Entry Modal -->
-        <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-                        <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
-        
-                        <table class="table">
-                            <tr>
-                                <th>Assessment Criteria</th>
-                                <th>Marks (10)</th>
-                            </tr>
-                            <tr><td>Literature review</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Problem Identification and definition</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project objectives</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project specifications and constraints</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Project work plan</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Methodology proposed</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Environmental issues consideration</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Oral and Written Communication</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                            <tr><td>Resource Planning</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                        </table>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-success">Save Marks</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    
-        <!-- Reviewer Section (You can add content for reviewers here) -->
-        <div id="reviewerSection" class="hidden mt-4">
-            <h3>Student List</h3>
-                {% for batch in batches %}
-                    {{ batch }} <br>
-                {% endfor %}
-                <table class="table table-bordered">
+
+        <!-- Guide Table -->
+        <div id="guideTable" class="table-container">
+            <h3>Students Pending Mark Entry (As Guide)</h3>
+            {% if guide_students %}
+            <div class="table-responsive">
+                <table class="table table-hover">
                     <thead class="thead-dark">
                         <tr>
                             <th>Student Name</th>
-                            <th>Reg No</th>
+                            <th>Registration Number</th>
                             <th>Project Title</th>
-                            <th>Mark</th>
-                            
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in projects %}
+                        {% for student in guide_students %}
                         <tr>
-                            <td>{{ project.student_name }}</td>
-                            <td>{{ project.reg_no }}</td>
-                            <td>{{ project.title }}</td>
+                            <td>{{ student.student_name }}</td>
+                            <td>{{ student.reg_no }}</td>
+                            <td>{{ student.project_title }}</td>
                             <td>
-                                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                                    data-student="{{ project.student_name }}" 
-                                    data-reg="{{ project.reg_no }}">
+                                <button class="btn btn-primary enter-marks-btn" 
+                                        data-student-name="{{ student.student_name }}"
+                                        data-reg-no="{{ student.reg_no }}"
+                                        data-semester="{{ student.semester }}"
+                                        data-course-code="{{ student.course_code }}"
+                                        data-reviewer-type="guide">
                                     Enter Marks
                                 </button>
                             </td>
                         </tr>
-                        {% empty %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No students pending mark entry as guide.</p>
+            {% endif %}
+        </div>
+
+        <!-- Reviewer Table -->
+        <div id="reviewerTable" class="table-container">
+            <h3>Students Pending Mark Entry (As Reviewer)</h3>
+            {% if reviewer_students %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="thead-dark">
                         <tr>
-                            <td colspan="4" class="text-center">No projects found.</td>
+                            <th>Student Name</th>
+                            <th>Registration Number</th>
+                            <th>Project Title</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in reviewer_students %}
+                        <tr>
+                            <td>{{ student.student_name }}</td>
+                            <td>{{ student.reg_no }}</td>
+                            <td>{{ student.project_title }}</td>
+                            <td>
+                                <button class="btn btn-primary enter-marks-btn"
+                                        data-student-name="{{ student.student_name }}"
+                                        data-reg-no="{{ student.reg_no }}"
+                                        data-semester="{{ student.semester }}"
+                                        data-course-code="{{ student.course_code }}"
+                                        data-reviewer-type="reviewer">
+                                    Enter Marks
+                                </button>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
-                    
                 </table>
             </div>
+            {% else %}
+            <p>No students pending mark entry as reviewer.</p>
+            {% endif %}
         </div>
+
+        <!-- Mark Entry Modal -->
+        {% include 'faculty/review/mark_entry_form.html' with form_action="review3_markentry" review_number=3 %}
     </div>
-    
-<script>
-    $(document).ready(function(){
-        $("#guideBtn").click(function(){
-            $("#guideSection").removeClass("hidden").show();
-            $("#reviewerSection").addClass("hidden").hide();
+
+    <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            // Initially hide both tables
+            $('.table-container').hide();
+
+            // Role button click handler
+            $('.role-btn').click(function() {
+                $('.role-btn').removeClass('active');
+                $(this).addClass('active');
+                
+                const role = $(this).data('role');
+                $('.table-container').hide();
+                
+                if (role === 'guide') {
+                    $('#guideTable').show();
+                } else if (role === 'reviewer') {
+                    $('#reviewerTable').show();
+                }
+            });
+
+            // Enter marks button click handler
+            $('.enter-marks-btn').click(function() {
+                const studentName = $(this).data('student-name');
+                const regNo = $(this).data('reg-no');
+                const semester = $(this).data('semester');
+                const courseCode = $(this).data('course-code');
+                const reviewerType = $(this).data('reviewer-type');
+
+                $('#studentNameInput').val(studentName);
+                $('#regNoInput').val(regNo);
+                $('#semesterInput').val(semester);
+                $('#courseCodeInput').val(courseCode);
+                $('#reviewerTypeInput').val(reviewerType);
+
+                $('#markEntryModal').modal('show');
+            });
         });
-    
-        $("#reviewerBtn").click(function(){
-            $("#reviewerSection").removeClass("hidden").show();
-            $("#guideSection").addClass("hidden").hide();
-        });
-    });
-    
-</script>
-<script>
-    $(document).ready(function(){
-        $(".mark-btn").click(function(){
-            var studentName = $(this).data("student");
-            var regNo = $(this).data("reg");
-            $("#modalStudentName").text(studentName);
-            $("#modalRegNo").text(regNo);
-        });
-    });
-</script>
-<script>
-    document.querySelectorAll('.mark-input').forEach(input => {
-        input.addEventListener('input', function () {
-            if (this.value > 10) {
-                alert('Max marks allowed is 10');
-                this.value = 10; // Reset value to 10
-            }
-        });
-    });
-</script>
-    
+    </script>
 </body>
 </html>

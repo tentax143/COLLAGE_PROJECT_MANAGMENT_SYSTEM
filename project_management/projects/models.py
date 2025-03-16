@@ -176,7 +176,7 @@ class review_marks_master(models.Model):
     faculty_role=models.CharField(max_length=100)
     reviewer_type=models.CharField(max_length=100)
     student_name= models.CharField(max_length=100)
-    reg_no=models.IntegerField()
+    reg_no=models.CharField(max_length=20)
     batch = models.CharField(max_length=50)
     review_number=models.IntegerField()
     regulations = models.CharField(max_length=20)
