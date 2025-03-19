@@ -182,27 +182,18 @@
         </ul>
       </li>
       <li class="nav-item">
+        <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+          <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+          Manual
+        </a>
+      </li>
+      <li class="nav-item">
         <a href="{% url 'home_page' %}" class="nav-link text-dark">
           <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
           Logout
         </a>
       </li>
     </ul>  
-  </div>
-  {% load static %}
-            <li class="nav-item">
-                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                    Manual
-                </a>
-            </li>
-  <li class="nav-item">
-    <a href="{% url 'home_page' %}" class="nav-link text-dark">
-        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-        Logout
-    </a>
-  </li>
-  </ul>  
   </div>
 
   <!-- Page Content Wrapper -->
@@ -275,16 +266,16 @@
                               <th>Assessment Criteria</th>
                               <th>Marks (10)</th>
                           </tr>
-                          <tr><td>Literature review</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Problem Identification and definition</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Project objectives</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Project specifications and constraints</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Project work plan</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Methodology proposed</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Environmental issues consideration</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Oral and Written Communication</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-                          <tr><td>Resource Planning</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+                          <tr><td>Literature review</td><td><input type="number" name="criteria_1" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Problem Identification and definition</td><td><input type="number" name="criteria_2" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Project objectives</td><td><input type="number" name="criteria_3" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Project specifications and constraints</td><td><input type="number" name="criteria_4" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Project work plan</td><td><input type="number" name="criteria_5" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Methodology proposed</td><td><input type="number" name="criteria_6" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Environmental issues consideration</td><td><input type="number" name="criteria_7" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Oral and Written Communication</td><td><input type="number" name="criteria_8" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" name="criteria_9" min="0" max="10" class="form-control mark-input" required></td></tr>
+                          <tr><td>Resource Planning</td><td><input type="number" name="criteria_10" min="0" max="10" class="form-control mark-input" required></td></tr>
                       </table>
                   </div>
                   <div class="modal-footer">
@@ -389,16 +380,16 @@
                   <th>Assessment Criteria</th>
                   <th>Marks (10)</th>
               </tr>
-              <tr><td>Literature review</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Problem Identification and definition</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Project objectives</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Project specifications and constraints</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Project work plan</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Methodology proposed</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Environmental issues consideration</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Oral and Written Communication</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
-              <tr><td>Resource Planning</td><td><input type="number" min="0" max="10" class="form-control mark-input"></td></tr>
+              <tr><td>Literature review</td><td><input type="number" name="criteria_1" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Problem Identification and definition</td><td><input type="number" name="criteria_2" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Project objectives</td><td><input type="number" name="criteria_3" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Project specifications and constraints</td><td><input type="number" name="criteria_4" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Project work plan</td><td><input type="number" name="criteria_5" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Methodology proposed</td><td><input type="number" name="criteria_6" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Environmental issues consideration</td><td><input type="number" name="criteria_7" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Oral and Written Communication</td><td><input type="number" name="criteria_8" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" name="criteria_9" min="0" max="10" class="form-control mark-input" required></td></tr>
+              <tr><td>Resource Planning</td><td><input type="number" name="criteria_10" min="0" max="10" class="form-control mark-input" required></td></tr>
           </table>
       </div>
       <div class="modal-footer">

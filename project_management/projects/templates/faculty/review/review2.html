@@ -245,26 +245,25 @@
     
                     <!-- Assign Button -->
                     <div class="text-center mt-4">
-                        <button type="button" class="btn btn-success w-50" id="assignButton">Assign</button>
+                        <button type="submit" class="btn btn-success w-50">Assign</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
     
-    
     <script>
-        document.getElementById("assignButton").addEventListener("click", function() {
+        document.querySelector('form').addEventListener('submit', function(e) {
             let reviewer1 = document.getElementById("reviewer1").value;
             let reviewer2 = document.getElementById("reviewer2").value;
             let reviewer3 = document.getElementById("reviewer3").value;
-    
-            if (!reviewer1 || !reviewer2 || !reviewer3) {
-                alert("Please select all three reviewers before assigning.");
+            let regulation = document.getElementById("regulation").value;
+
+            if (!reviewer1 || !reviewer2 || !reviewer3 || !regulation) {
+                e.preventDefault();
+                alert("Please select all reviewers and regulation before assigning.");
                 return;
             }
-    
-            alert("Reviewers Assigned Successfully!");
         });
     </script>
 </body>
