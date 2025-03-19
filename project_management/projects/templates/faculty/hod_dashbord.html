@@ -21,9 +21,13 @@
             font-family: Arial, Helvetica, sans-serif;
             background-color: #f8f9fa;
         }
+        .table-responsive {
+            max-height: 400px; /* Adjust height as needed */
+            overflow-y: auto;
+        }
 
         .vertical-nav {
-            width: 23rem;
+            width: 27rem;
             height: 100vh;
             position: fixed;
             top: 0;
@@ -126,7 +130,7 @@
             <li class="nav-item">
                 <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
                     <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate commity members
+                    Allocate Committee Members
                 </a>
                 <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
                     <li class="nav-item">
@@ -181,6 +185,14 @@
                 </li>
             </ul>
         </li>
+        {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
+
         
             <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">
@@ -192,8 +204,98 @@
     </div>
     {% endif %}
     <div class="page-content" id="content">
+        <!-- Statistics Summary -->
+        <div class="container mb-4">
+            <h3 class="text-center mb-4">Project Statistics</h3>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-primary shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Total Students</h5>
+                            <p class="display-6">{{ total_students }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-success shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Projects Submitted</h5>
+                            <p class="display-6">{{ total_projects_submitted }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-info shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Marks Awarded</h5>
+                            <p class="display-6">{{ total_marks_awarded }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-white bg-gradient-danger shadow">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Pending Submissions</h5>
+                            <p class="display-6">{{ pending_submissions }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <style>
+            .bg-gradient-primary {
+                background: linear-gradient(135deg, #667eea, #764ba2);
+            }
+            .bg-gradient-success {
+                background: linear-gradient(135deg, #1d976c, #93f9b9);
+            }
+            .bg-gradient-info {
+                background: linear-gradient(135deg, #56ccf2, #2f80ed);
+            }
+            .bg-gradient-danger {
+                background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            }
+            .shadow {
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            }
+        </style>
         
 
+
+        <!-- Students Without Projects -->
+        <div class="container d-flex justify-content-center">
+            <div class="table-container mb-4" style="max-width: 600px; width: 100%;"> <!-- Adjust width as needed -->
+                <h3 class="text-center mb-4">Students Without Project Submissions</h3>
+                <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Register Number</th>
+                                <th>Student Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students_without_projects %}
+                            <tr>
+                                <td>{{ student.reg_no }}</td>
+                                <td>{{ student.student_name }}</td>
+                                <td class="text-danger">Not Submitted</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center">All students have submitted their projects.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+
+        <!-- Existing Project Details Table -->
         <div class="table-container">
             <h3 class="text-center mb-4">Project Details:{{ department }}</h3>
             <div class="table-responsive">

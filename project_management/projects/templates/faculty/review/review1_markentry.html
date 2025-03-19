@@ -103,6 +103,53 @@
         .hidden { 
             display: none !important;
         }
+
+        .modal-dialog-centered {
+            display: flex;
+            align-items: center;
+            min-height: calc(100% - 1rem);
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            color: #495057;
+        }
+        .form-control {
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+            padding: 0.375rem 0.75rem;
+        }
+        .form-control:focus {
+            border-color: #80bdff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+        }
+        .student-info {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+        .marks-section {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .marks-section::-webkit-scrollbar {
+            width: 6px;
+        }
+        .marks-section::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .marks-section::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 3px;
+        }
+        .marks-section::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 </head>
 <body>
@@ -205,15 +252,7 @@
     <!-- Main Content -->
     <div class="page-content">
         <h2>Review 1 Mark Entry</h2>
-        {% if messages %}
-        <div class="messages">
-            {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-        </div>
-        {% endif %}
+        
 
         <!-- Role Selection Buttons -->
         <div class="card mb-4" id="roleSelection">
@@ -254,8 +293,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in filtered_students_list %}
-                        {% if project.internal_guide_name == name %}
+                        {% for project in guide_students %}
                         <tr class="guide-student">
                             <td>{{ project.student_name }}</td>
                             <td>{{ project.reg_no }}</td>
@@ -264,12 +302,13 @@
                                 <button class="btn btn-primary enter-marks-btn" 
                                         data-student-name="{{ project.student_name }}"
                                         data-reg-no="{{ project.reg_no }}"
-                                        data-reviewer-type="Guide">
+                                        data-reviewer-type="Guide"
+                                        data-course-code="{{ project.course_code }}"
+                                        data-semester="{{ project.semester }}">
                                     Enter Marks
                                 </button>
                             </td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -297,8 +336,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in filtered_students_list %}
-                        {% if role == "HOD" or department == project.department %}
+                        {% for project in reviewer_students %}
                         <tr class="reviewer-student">
                             <td>{{ project.student_name }}</td>
                             <td>{{ project.reg_no }}</td>
@@ -307,12 +345,13 @@
                                 <button class="btn btn-success enter-marks-btn" 
                                         data-student-name="{{ project.student_name }}"
                                         data-reg-no="{{ project.reg_no }}"
-                                        data-reviewer-type="Reviewer">
+                                        data-reviewer-type="Reviewer"
+                                        data-course-code="{{ project.course_code }}"
+                                        data-semester="{{ project.semester }}">
                                     Enter Marks
                                 </button>
                             </td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -321,63 +360,84 @@
 
         <!-- Mark Entry Modal -->
         <div class="modal" id="markEntryModal" tabindex="-1" role="dialog" aria-labelledby="markEntryModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
                 <div class="modal-content">
-                    <div class="modal-header">
+                    <div class="modal-header bg-primary text-white">
                         <h5 class="modal-title" id="markEntryModalLabel">Enter Review 1 Marks</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form method="POST" id="markEntryForm">
-                            {% csrf_token %}
-                            <input type="hidden" name="student_name" id="modal_student_name">
-                            <input type="hidden" name="reg_no" id="modal_reg_no">
-                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
-                            
-                            <div class="form-group">
-                                <label>Literature Review (10)</label>
-                                <input type="number" name="criteria_1" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Problem Identification (10)</label>
-                                <input type="number" name="criteria_2" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Resource Planning (10)</label>
-                                <input type="number" name="criteria_3" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Project Planning (10)</label>
-                                <input type="number" name="criteria_4" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Presentation (10)</label>
-                                <input type="number" name="criteria_5" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Implementation (10)</label>
-                                <input type="number" name="criteria_6" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Results (10)</label>
-                                <input type="number" name="criteria_7" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Documentation (10)</label>
-                                <input type="number" name="criteria_8" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Demonstration (10)</label>
-                                <input type="number" name="criteria_9" class="form-control" min="0" max="10" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Communication (10)</label>
-                                <input type="number" name="criteria_10" class="form-control" min="0" max="10" required>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit Marks</button>
-                        </form>
+                        <div class="container-fluid px-4">
+                            <form method="POST" id="markEntryForm">
+                                {% csrf_token %}
+                                <input type="hidden" name="student_name" id="modal_student_name">
+                                <input type="hidden" name="reg_no" id="modal_reg_no">
+                                <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
+                                <input type="hidden" name="course_code" id="modal_course_code">
+                                <input type="hidden" name="semester" id="modal_semester">
+                                
+                                <div class="student-info mb-4">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-2"><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p class="mb-2"><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="marks-section">
+                                    <div class="form-group">
+                                        <label>Literature Review (10)</label>
+                                        <input type="number" name="criteria_1" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Problem Identification (10)</label>
+                                        <input type="number" name="criteria_2" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Resource Planning (10)</label>
+                                        <input type="number" name="criteria_3" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Project Planning (10)</label>
+                                        <input type="number" name="criteria_4" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Presentation (10)</label>
+                                        <input type="number" name="criteria_5" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Implementation (10)</label>
+                                        <input type="number" name="criteria_6" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Results (10)</label>
+                                        <input type="number" name="criteria_7" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Documentation (10)</label>
+                                        <input type="number" name="criteria_8" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Demonstration (10)</label>
+                                        <input type="number" name="criteria_9" class="form-control" min="0" max="10" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Communication (10)</label>
+                                        <input type="number" name="criteria_10" class="form-control" min="0" max="10" required>
+                                    </div>
+                                </div>
+
+                                <div class="modal-footer border-0 px-0">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Submit Marks</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -408,10 +468,14 @@
             var studentName = $(this).data('student-name');
             var regNo = $(this).data('reg-no');
             var reviewerType = $(this).data('reviewer-type');
+            var courseCode = $(this).data('course-code');
+            var semester = $(this).data('semester');
             
             $('#modal_student_name').val(studentName);
             $('#modal_reg_no').val(regNo);
             $('#modal_reviewer_type').val(reviewerType);
+            $('#modal_course_code').val(courseCode);
+            $('#modal_semester').val(semester);
             
             // Update modal title based on reviewer type
             $('#markEntryModalLabel').text('Enter Review 1 Marks as ' + reviewerType);

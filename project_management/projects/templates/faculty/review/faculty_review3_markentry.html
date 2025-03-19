@@ -189,6 +189,13 @@
       </li>
     </ul>  
   </div>
+  {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
   <li class="nav-item">
     <a href="{% url 'home_page' %}" class="nav-link text-dark">
         <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>

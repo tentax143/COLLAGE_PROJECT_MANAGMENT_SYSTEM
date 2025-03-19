@@ -23,7 +23,7 @@
             background-color: #f8f9fa;
         }
         .vertical-nav {
-            width: 23rem;
+            width: 27rem;
             height: 100vh;
             position: fixed;
             top: 0;
@@ -115,7 +115,7 @@
             <li class="nav-item">
                 <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
                     <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    allocate commity members
+                    Allocate Committee Members
                 </a>
                 <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
                     <li class="nav-item">
@@ -170,6 +170,13 @@
                 </li>
             </ul>
         </li>
+        {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
         
             <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">

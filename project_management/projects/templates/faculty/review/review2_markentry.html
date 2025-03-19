@@ -254,8 +254,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in filtered_students_list %}
-                        {% if project.internal_guide_name == name %}
+                        {% for project in guide_students %}
                         <tr class="guide-student">
                             <td>{{ project.student_name }}</td>
                             <td>{{ project.reg_no }}</td>
@@ -271,7 +270,6 @@
                                 </button>
                             </td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
@@ -299,8 +297,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for project in filtered_students_list %}
-                        {% if role == "HOD" or department == project.department %}
+                        {% for project in reviewer_students %}
                         <tr class="reviewer-student">
                             <td>{{ project.student_name }}</td>
                             <td>{{ project.reg_no }}</td>
@@ -316,7 +313,6 @@
                                 </button>
                             </td>
                         </tr>
-                        {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>

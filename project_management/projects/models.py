@@ -7,8 +7,12 @@ class Student(models.Model):
     student_password = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
+
         db_table = 'core_student'
         managed = False
+
+    
+    
 class User(models.Model):
     Name = models.CharField(max_length=100)
     user_name = models.CharField(max_length=100)
@@ -46,6 +50,8 @@ class Project(models.Model):
     semester = models.IntegerField(null=True,blank=True)
     course_code = models.CharField(max_length=10,null=True,blank=True)
     course_title = models.CharField(max_length=255,null=True,blank=True)
+
+
 
 # from django.db import models
 # from django.contrib.auth.models import User  # Assuming faculty are users
@@ -94,15 +100,15 @@ class Student_cgpa(models.Model):
     batch = models.CharField(max_length=100)
     student_name = models.CharField(max_length=100)
     department = models.CharField(max_length=100)
-    section = models.CharField(
-        max_length=10, blank=True, null=True
-    )  # New field for section
-    gender = models.CharField(
-        max_length=10,
-        choices=[("Male", "Male"), ("Female", "Female")],
-        blank=True,
-        null=True,
-    )  # New field for gender
+    # section = models.CharField(
+    #     max_length=10, blank=True, null=True
+    # )  # New field for section
+    # gender = models.CharField(
+    #     max_length=10,
+    #     choices=[("Male", "Male"), ("Female", "Female")],
+    #     blank=True,
+    #     null=True,
+    # )  # New field for gender
     cgpa = models.FloatField()
     sslc = models.FloatField()
     hsc = models.CharField(max_length=20, blank=True, null=True)
