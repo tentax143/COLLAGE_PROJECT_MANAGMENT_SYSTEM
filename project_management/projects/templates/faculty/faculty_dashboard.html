@@ -72,9 +72,10 @@
       font-size: 14px;
     }
     th {
-      background-color: #17a2b8
-      color: white;
-    }
+    background-color: #17a2b8;
+    color: white;
+  }
+
     input {
       width: 50px;
       padding: 3px;
@@ -178,9 +179,14 @@
                     <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                     Review 3
                 </a>
-            </li>
-        </ul>
+              </li>
+    <li class="nav-item">
+      <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+        Final Outcome Entry
+      </a>
     </li>
+  </ul>  
       <li class="nav-item">
         <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
           <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>

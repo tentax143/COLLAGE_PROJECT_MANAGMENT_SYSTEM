@@ -50,8 +50,10 @@ class Project(models.Model):
     semester = models.IntegerField(null=True,blank=True)
     course_code = models.CharField(max_length=10,null=True,blank=True)
     course_title = models.CharField(max_length=255,null=True,blank=True)
-
-
+    project_outcome_type=models.CharField(max_length=50,null=True,blank=True, choices=[('Application', 'Application'), ('Product', 'Produch'), ('Research', 'Research'),('Patent','patent')])
+    outcome=models.CharField(max_length=50,null=True,blank=True, choices=[('National Conference', 'National Conference'), ('International Conference', 'International Conference'),('Scopus','Scopus'),('SCIE', 'SCIE'),('SCI', 'SCI'),('UGC','UGC'),('Otheres','Otheres')])
+    outcome_certificate=models.FileField(null=True,blank=True)
+    achieved=models.CharField(max_length=50,null=True,blank=True, choices=[('yes', 'yes'), ('no', 'no')])
 
 # from django.db import models
 # from django.contrib.auth.models import User  # Assuming faculty are users

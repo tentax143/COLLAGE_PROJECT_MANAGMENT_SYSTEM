@@ -72,9 +72,10 @@
       font-size: 14px;
     }
     th {
-      background-color: #17a2b8
-      color: white;
+    background-color: #17a2b8;
+    color: white;
     }
+
     input {
       width: 50px;
       padding: 3px;
@@ -182,6 +183,13 @@
         </ul>
       </li>
       <li class="nav-item">
+        <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+          <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+          Final Outcome Entry
+        </a>
+      </li>
+    </ul>  
+      <li class="nav-item">
         <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
           <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
           Manual
@@ -231,6 +239,13 @@
                       <td>{{ project.student_name }}</td>
                       <td>{{ project.reg_no }}</td>
                       <td>{{ project.title }}</td>
+                      <td>
+                          <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
+                              data-student="{{ project.student_name }}" 
+                              data-reg="{{ project.reg_no }}">
+                              Outcome Entry
+                          </button>
+                      </td>
                       <td>
                           <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
                               data-student="{{ project.student_name }}" 
@@ -298,6 +313,7 @@
                           <th>Student Name</th>
                           <th>Reg No</th>
                           <th>Project Title</th>
+                          <th>Outcome entry</th>
                           <th>Mark</th>
                       </tr>
                   </thead>
@@ -307,6 +323,13 @@
                           <td>{{ project.student_name }}</td>
                           <td>{{ project.reg_no }}</td>
                           <td>{{ project.title }}</td>
+                          <td>
+                              <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
+                                  data-student="{{ project.student_name }}" 
+                                  data-reg="{{ project.reg_no }}">
+                                  Outcome Entry
+                              </button>
+                          </td>
                           <td>
                               <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
                                   data-student="{{ project.student_name }}" 
@@ -336,6 +359,7 @@
           <th>Student Name</th>
           <th>Reg No</th>
           <th>Project Title</th>
+          <th>Outcome entry</th>
           <th>Mark</th>
       </tr>
   </thead>
@@ -345,6 +369,13 @@
           <td>{{ project.student_name }}</td>
           <td>{{ project.reg_no }}</td>
           <td>{{ project.title }}</td>
+          <td>
+              <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
+                  data-student="{{ project.student_name }}" 
+                  data-reg="{{ project.reg_no }}">
+                  Outcome Entry
+              </button>
+          </td>
           <td>
               <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
                   data-student="{{ project.student_name }}" 
@@ -401,6 +432,75 @@
   </div>
   {% endif %}
 
+  <!-- Outcome Entry Modal -->
+  <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="outcomeEntryModalLabel">Enter Project Outcome</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                  <form id="outcomeEntryForm" method="POST">
+                      {% csrf_token %}
+                      <input type="hidden" name="student_name" id="outcome_student_name">
+                      <input type="hidden" name="reg_no" id="outcome_reg_no">
+                      <input type="hidden" name="form_type" value="outcome">
+                      
+                      <p><strong>Student Name:</strong> <span id="outcomeStudentName"></span></p>
+                      <p><strong>Reg No:</strong> <span id="outcomeRegNo"></span></p>
+
+                      <div class="form-group">
+                          <label for="project_outcome_type">Project Outcome Type</label>
+                          <select class="form-control" id="project_outcome_type" name="project_outcome_type" required>
+                              <option value="">Select Type</option>
+                              <option value="Application">Application</option>
+                              <option value="Product">Product</option>
+                              <option value="Research">Research</option>
+                              <option value="Patent">Patent</option>
+                          </select>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="outcome">Outcome</label>
+                          <select class="form-control" id="outcome" name="outcome" required>
+                              <option value="">Select Outcome</option>
+                              <option value="National Conference">National Conference</option>
+                              <option value="International Conference">International Conference</option>
+                              <option value="Scopus">Scopus</option>
+                              <option value="SCIE">SCIE</option>
+                              <option value="SCI">SCI</option>
+                              <option value="UGC">UGC</option>
+                              <option value="Otheres">Others</option>
+                          </select>
+                      </div>
+
+                      <div class="form-group">
+                          <label for="outcome_certificate">Outcome Certificate</label>
+                          <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
+                      </div>
+
+                      <div class="form-group">
+                          <label for="achieved">Achieved</label>
+                          <select class="form-control" id="achieved" name="achieved" required>
+                              <option value="">Select Status</option>
+                              <option value="yes">Yes</option>
+                              <option value="no">No</option>
+                          </select>
+                      </div>
+
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-success">Save Outcome</button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+      </div>
+  </div>
+
   <script>
   $(document).ready(function(){
       $("#guideBtn").click(function(){
@@ -411,6 +511,74 @@
       $("#reviewerBtn").click(function(){
           $("#reviewerSection").removeClass("hidden").show();
           $("#guideSection").addClass("hidden").hide();
+      });
+
+      // Outcome entry button click
+      $(".outcome-btn").click(function(){
+          var studentName = $(this).data("student");
+          var regNo = $(this).data("reg");
+          
+          // Reset form and clear previous values
+          $('#outcomeEntryForm')[0].reset();
+          
+          // Set form values
+          $("#outcomeStudentName").text(studentName);
+          $("#outcomeRegNo").text(regNo);
+          $("#outcome_student_name").val(studentName);
+          $("#outcome_reg_no").val(regNo);
+      });
+
+      // Outcome form submission
+      $('#outcomeEntryForm').on('submit', function(e) {
+          e.preventDefault();
+          
+          // Validate all required fields
+          var isValid = true;
+          $(this).find('select[required]').each(function() {
+              if (!$(this).val()) {
+                  isValid = false;
+                  $(this).addClass('is-invalid');
+              } else {
+                  $(this).removeClass('is-invalid');
+              }
+          });
+
+          if (!isValid) {
+              alert('Please fill in all required fields');
+              return;
+          }
+
+          // Create FormData object for file upload
+          var formData = new FormData(this);
+
+          // Submit the form
+          $.ajax({
+              url: window.location.href,
+              type: 'POST',
+              data: formData,
+              processData: false,
+              contentType: false,
+              headers: {
+                  "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
+              },
+              success: function(response) {
+                  if (response.status === 'success') {
+                      $('#outcomeEntryModal').modal('hide');
+                      alert('Outcome saved successfully!');
+                      location.reload();
+                  } else {
+                      alert('Error: ' + (response.message || 'Unknown error occurred'));
+                  }
+              },
+              error: function(xhr, errmsg, err) {
+                  console.error("Error details:", {
+                      status: xhr.status,
+                      responseText: xhr.responseText,
+                      error: err
+                  });
+                  alert('Error submitting outcome. Please try again.');
+              }
+          });
       });
   });
   </script>
