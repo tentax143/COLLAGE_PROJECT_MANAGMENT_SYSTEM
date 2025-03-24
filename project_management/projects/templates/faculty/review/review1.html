@@ -204,58 +204,104 @@
         <div class="container d-flex justify-content-center" style="margin-top: 150px;">
             <div class="card shadow-sm">
                 <div class="card-body d-flex flex-column align-items-center" style="background-color: white; width: 500px; border-radius: 8px; padding: 30px;">
-                    <form method="POST" class="w-100 ">
-                        {% csrf_token %}
-        
-                        <!-- Regulation Dropdown -->
-                        <div class="form-group mb-3 text-start w-100">
-                            <label for="regulation">Regulation</label>
-                            <select id="regulation" name="regulation" class="form-control">
-                                <option value="">Select Regulation</option>
-                                {% for reg in regulation %}
-                                    <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
-                                {% endfor %}
-                            </select>
+                    <!-- Current Reviewers Section -->
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Currently Assigned Reviewers</h3>
                         </div>
-        
-                        <!-- Reviewer 1 -->
-                        <div class="form-group mb-3 text-start w-100">
-                            <label for="reviewer1">Reviewer 1</label>
-                            <select id="reviewer1" name="reviewer1" class="form-control">
-                                <option value="">Select Reviewer 1</option>
-                                {% for faculty in faculty_list %}
-                                    <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
-                                {% endfor %}
-                            </select>
+                        <div class="card-body">
+                            {% if current_reviewers %}
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Reviewer 1</th>
+                                                <th>Reviewer 2</th>
+                                                <th>Reviewer 3</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ current_reviewers.reviewer1 }}</td>
+                                                <td>{{ current_reviewers.reviewer2 }}</td>
+                                                <td>{{ current_reviewers.reviewer3 }}</td>
+                                                <td>
+                                                    <button class="btn btn-warning" onclick="enableEditMode()">
+                                                        <i class="fas fa-edit"></i> Edit Reviewers
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No reviewers have been assigned yet for Review 1.
+                                </div>
+                            {% endif %}
                         </div>
-        
-                        <!-- Reviewer 2 -->
-                        <div class="form-group mb-3 text-start w-100">
-                            <label for="reviewer2">Reviewer 2</label>
-                            <select id="reviewer2" name="reviewer2" class="form-control">
-                                <option value="">Select Reviewer 2</option>
-                                {% for faculty in faculty_list %}
-                                    <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
-                                {% endfor %}
-                            </select>
+                    </div>
+
+                    <!-- Reviewer Assignment Form -->
+                    <div class="card mb-4" id="reviewerForm" {% if current_reviewers %}style="display: none;"{% endif %}>
+                        <div class="card-header bg-success text-white">
+                            <h3 class="mb-0">Assign Reviewers</h3>
                         </div>
+                        <div class="card-body">
+                            <form method="POST">
+                                {% csrf_token %}
+                                <!-- Regulation Dropdown -->
+                                <div class="form-group mb-3 text-start w-100">
+                                    <label for="regulation">Regulation</label>
+                                    <select id="regulation" name="regulation" class="form-control">
+                                        <option value="">Select Regulation</option>
+                                        {% for reg in regulation %}
+                                            <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
         
-                        <!-- Reviewer 3 -->
-                        <div class="form-group mb-3 text-start w-100">
-                            <label for="reviewer3">Reviewer 3</label>
-                            <select id="reviewer3" name="reviewer3" class="form-control">
-                                <option value="">Select Reviewer 3</option>
-                                {% for faculty in faculty_list %}
-                                    <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
+                                <!-- Reviewer 1 -->
+                                <div class="form-group mb-3 text-start w-100">
+                                    <label for="reviewer1">Reviewer 1</label>
+                                    <select id="reviewer1" name="reviewer1" class="form-control">
+                                        <option value="">Select Reviewer 1</option>
+                                        {% for faculty in faculty_list %}
+                                            <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
         
-                        <!-- Assign Button -->
-                        <div class="text-center mt-4">
-                            <button type="submit" class="btn btn-success  w-50">Assign</button>
+                                <!-- Reviewer 2 -->
+                                <div class="form-group mb-3 text-start w-100">
+                                    <label for="reviewer2">Reviewer 2</label>
+                                    <select id="reviewer2" name="reviewer2" class="form-control">
+                                        <option value="">Select Reviewer 2</option>
+                                        {% for faculty in faculty_list %}
+                                            <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <!-- Reviewer 3 -->
+                                <div class="form-group mb-3 text-start w-100">
+                                    <label for="reviewer3">Reviewer 3</label>
+                                    <select id="reviewer3" name="reviewer3" class="form-control">
+                                        <option value="">Select Reviewer 3</option>
+                                        {% for faculty in faculty_list %}
+                                            <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+        
+                                <!-- Assign Button -->
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success  w-50">Assign</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -263,17 +309,34 @@
     </div>
     
     <script>
-        document.getElementById("assignButton").addEventListener("click", function() {
-            let reviewer1 = document.getElementById("reviewer1").value;
-            let reviewer2 = document.getElementById("reviewer2").value;
-            let reviewer3 = document.getElementById("reviewer3").value;
-    
-            if (!reviewer1 || !reviewer2 || !reviewer3) {
-                alert("Please select all three reviewers before assigning.");
-                return;
+        function enableEditMode() {
+            document.getElementById('reviewerForm').style.display = 'block';
+            // Pre-fill the form with current values
+            if ('{{ current_reviewers.reviewer1 }}') {
+                document.getElementById('reviewer1').value = '{{ current_reviewers.reviewer1 }}';
             }
-    
-            alert("Reviewers Assigned Successfully!");
+            if ('{{ current_reviewers.reviewer2 }}') {
+                document.getElementById('reviewer2').value = '{{ current_reviewers.reviewer2 }}';
+            }
+            if ('{{ current_reviewers.reviewer3 }}') {
+                document.getElementById('reviewer3').value = '{{ current_reviewers.reviewer3 }}';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                let reviewer1 = document.getElementById("reviewer1").value;
+                let reviewer2 = document.getElementById("reviewer2").value;
+                let reviewer3 = document.getElementById("reviewer3").value;
+                let regulation = document.getElementById("regulation").value;
+
+                if (!reviewer1 || !reviewer2 || !reviewer3 || !regulation) {
+                    e.preventDefault();
+                    alert("Please select all reviewers and regulation before assigning.");
+                    return;
+                }
+            });
         });
     </script>
 </body>

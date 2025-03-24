@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+{% load static %}
+<html>
+<head>
+    <title>RIT PROJECT MANAGEMENT</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <style>
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .table-responsive {
+            max-height: 400px; /* Adjust height as needed */
+            overflow-y: auto;
+        }
+
+        .vertical-nav {
+            width: 27rem;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        .page-content {
+            margin-left: 23rem;
+            transition: all 0.4s;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .table-container {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #00407b;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .vertical-nav {
+                margin-left: -23rem;
+            }
+            .vertical-nav.active {
+                margin-left: 0;
+            }
+            .page-content {
+                width: 100%;
+                margin-left: 0;
+            }
+            .page-content.active {
+                margin-left: 23rem;
+            }
+        }
+
+        #sidebarCollapse {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+        }
+        .chart-container {
+            width: 200px;
+            height: 200px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vertical-nav" id="sidebar">
+        <div class="py-4 px-3 mb-4 bg-light border-bottom">
+            <div class="media d-flex align-items-center">
+                <div class="media-body">
+                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
+                    <h4 class="m-0">RIT</h4>
+                    <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                </div>
+            </div>
+        </div>
+        <div class="border-bottom mb-2">
+            <div class="card-body text-center">
+                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                <h5 class="card-title">{{ name }}</h5>
+                <p class="card-text">{{ department }}</p>
+                <p class="card-text">{{ role }}</p>
+            </div>
+        </div>
+
+    {% if role == 'HOD' %}
+        <ul class="nav flex-column bg-white mb-0">
+            <li class="nav-item">
+                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
+                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+                    View Guide Detail
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Committee Members
+                </a>
+                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
+                    <li class="nav-item">
+                        <a href="{% url 'review1' %}" class="nav-link text-dark">
+                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                            Review 1
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'review2' %}" class="nav-link text-dark">
+                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                            Review 2
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="{% url 'review3' %}" class="nav-link text-dark">
+                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                            Review 3
+                        </a>
+                    </li>
+                </ul>
+            <li class="nav-item">
+                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Guide
+                </a>
+            </li>
+        </ul>  
+        <li class="nav-item">
+            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                Review Mark Entry
+            </a>
+            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+                <li class="nav-item">
+                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 1
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 2
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 3
+                    </a>
+                </li>
+            </ul>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Final Outcome Entry
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'filter' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Filter
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Analysis
+            </a>
+        </li>
+        
+        {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
+
+        
+            <li class="nav-item">
+                <a href="{% url 'home_page' %}" class="nav-link text-dark">
+                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>  
+    </div>
+    {% endif %}
+    {% if role == 'Principal' %}
+    <li class="nav-item">
+        <a href="{% url 'principal_dashboard' %}" class="nav-link text-dark">
+            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+            Filter
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+            Criteria Analysis
+        </a>
+    </li>
+    
+    
+    {% load static %}
+        <li class="nav-item">
+            <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                Manual
+            </a>
+        </li>
+
+    
+        <li class="nav-item">
+            <a href="{% url 'home_page' %}" class="nav-link text-dark">
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Logout
+            </a>
+        </li>
+    </ul>  
+</div>
+{% endif %}
+
+<div class="page-content">
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Review Criteria Analysis</h2>
+        
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="d-grid gap-3">
+                    <button onclick="showContent('review1')" class="btn btn-primary btn-lg mb-3">
+                        Review 1 Analysis
+                    </button>
+                    <button onclick="showContent('review2')" class="btn btn-success btn-lg mb-3">
+                        Review 2 Analysis
+                    </button>
+                    <button onclick="showContent('review3')" class="btn btn-info btn-lg mb-3">
+                        Review 3 Analysis
+                    </button>
+                    <button onclick="showContent('allReviews')" class="btn btn-dark btn-lg mb-3">
+                        All Reviews Analysis
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content sections -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <!-- Review 1 Content -->
+                <div id="review1Content" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Review 1 Criteria Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="chart-container">
+                                                <canvas id="review1OverallScore"></canvas>
+                                            </div>
+                                            <h4 class="mt-3">Overall Score</h4>
+                                            <p>Average score across all criteria</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Criteria Breakdown</h5>
+                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review1CriteriaGrid">
+                                                <!-- Will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 2 Content -->
+                <div id="review2Content" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header bg-success text-white">
+                            <h3 class="mb-0">Review 2 Criteria Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="chart-container">
+                                                <canvas id="review2OverallScore"></canvas>
+                                            </div>
+                                            <h4 class="mt-3">Overall Score</h4>
+                                            <p>Average score across all criteria</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Criteria Breakdown</h5>
+                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review2CriteriaGrid">
+                                                <!-- Will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Review 3 Content -->
+                <div id="review3Content" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            <h3 class="mb-0">Review 3 Criteria Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-4">
+                                <div class="col-md-4">
+                                    <div class="card">
+                                        <div class="card-body text-center">
+                                            <div class="chart-container">
+                                                <canvas id="review3OverallScore"></canvas>
+                                            </div>
+                                            <h4 class="mt-3">Overall Score</h4>
+                                            <p>Average score across all criteria</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Criteria Breakdown</h5>
+                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review3CriteriaGrid">
+                                                <!-- Will be populated by JavaScript -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Reviews Content -->
+                <div id="allReviewsContent" class="content-section" style="display: none;">
+                    <div class="card">
+                        <div class="card-header bg-dark text-white">
+                            <h3 class="mb-0">Overall Reviews Analysis</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5>Criteria Performance Across Reviews</h5>
+                                            <canvas id="allReviewsChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Sample data - Replace with actual data from your backend
+    const criteriaNames = [
+        "Problem Identification",
+        "Literature Survey",
+        "Project Planning",
+        "Implementation Progress",
+        "Results & Analysis",
+        "Documentation",
+        "Presentation Skills",
+        "Innovation & Creativity",
+        "Team Collaboration",
+        "Overall Quality"
+    ];
+
+    const reviewData = {
+        review1: {
+            scores: [85, 72, 90, 65, 78, 88, 92, 70, 85, 80],
+            color: '#007bff',
+            gradient: {
+                start: '#007bff',
+                end: '#00c6ff'
+            }
+        },
+        review2: {
+            scores: [88, 75, 92, 70, 82, 90, 94, 75, 88, 85],
+            color: '#28a745',
+            gradient: {
+                start: '#28a745',
+                end: '#84fb95'
+            }
+        },
+        review3: {
+            scores: [90, 80, 95, 75, 85, 92, 96, 80, 90, 88],
+            color: '#17a2b8',
+            gradient: {
+                start: '#17a2b8',
+                end: '#89ffff'
+            }
+        }
+    };
+
+    function createDoughnutChart(canvasId, score, color, showLabel = false) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        
+        // Create gradient based on review color
+        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
+        if (color === reviewData.review1.color) {
+            gradient.addColorStop(0, reviewData.review1.gradient.start);
+            gradient.addColorStop(1, reviewData.review1.gradient.end);
+        } else if (color === reviewData.review2.color) {
+            gradient.addColorStop(0, reviewData.review2.gradient.start);
+            gradient.addColorStop(1, reviewData.review2.gradient.end);
+        } else {
+            gradient.addColorStop(0, reviewData.review3.gradient.start);
+            gradient.addColorStop(1, reviewData.review3.gradient.end);
+        }
+
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [score, 100 - score],
+                    backgroundColor: [gradient, '#eee'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                cutout: '75%',
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { enabled: false }
+                }
+            },
+            plugins: [{
+                id: 'centerText',
+                afterDraw: (chart) => {
+                    const ctx = chart.ctx;
+                    const width = chart.width;
+                    const height = chart.height;
+
+                    ctx.restore();
+                    ctx.font = 'bold 20px Arial';
+                    ctx.textBaseline = 'middle';
+                    ctx.textAlign = 'center';
+
+                    const text = score + '%';
+                    const textX = width / 2;
+                    const textY = height / 2;
+
+                    ctx.fillStyle = '#000';
+                    ctx.fillText(text, textX, textY);
+                    ctx.save();
+                }
+            }]
+        });
+    }
+
+    function populateCriteriaGrid(reviewNumber, scores, color) {
+        const grid = document.getElementById(`review${reviewNumber}CriteriaGrid`);
+        grid.innerHTML = '';
+        
+        scores.forEach((score, index) => {
+            const col = document.createElement('div');
+            col.className = 'col mb-4';
+            
+            const card = document.createElement('div');
+            card.className = 'card h-100';
+            
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body text-center';
+            
+            const canvasContainer = document.createElement('div');
+            canvasContainer.style.position = 'relative';
+            canvasContainer.style.width = '120px';
+            canvasContainer.style.height = '120px';
+            canvasContainer.style.margin = '0 auto';
+            
+            const canvas = document.createElement('canvas');
+            canvas.id = `review${reviewNumber}Criteria${index}`;
+            
+            const title = document.createElement('h6');
+            title.className = 'mt-3 mb-0';
+            title.textContent = criteriaNames[index];
+            
+            canvasContainer.appendChild(canvas);
+            cardBody.appendChild(canvasContainer);
+            cardBody.appendChild(title);
+            card.appendChild(cardBody);
+            col.appendChild(card);
+            grid.appendChild(col);
+            
+            // Create doughnut chart with percentage label
+            createDoughnutChart(canvas.id, score, color, true);
+        });
+    }
+
+    function createAllReviewsChart() {
+        const ctx = document.getElementById('allReviewsChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: criteriaNames,
+                datasets: [
+                    {
+                        label: 'Review 1',
+                        data: reviewData.review1.scores,
+                        backgroundColor: reviewData.review1.color,
+                    },
+                    {
+                        label: 'Review 2',
+                        data: reviewData.review2.scores,
+                        backgroundColor: reviewData.review2.color,
+                    },
+                    {
+                        label: 'Review 3',
+                        data: reviewData.review3.scores,
+                        backgroundColor: reviewData.review3.color,
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+    }
+
+    function showContent(contentId) {
+        // Hide all content sections
+        document.querySelectorAll('.content-section').forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show the selected content section
+        const selectedSection = document.getElementById(contentId + 'Content');
+        selectedSection.style.display = 'block';
+
+        // Initialize charts based on the selected section
+        if (contentId === 'review1') {
+            const avgScore = Math.round(reviewData.review1.scores.reduce((a, b) => a + b) / reviewData.review1.scores.length);
+            createDoughnutChart('review1OverallScore', avgScore, reviewData.review1.color, true);
+            populateCriteriaGrid(1, reviewData.review1.scores, reviewData.review1.color);
+        } else if (contentId === 'review2') {
+            const avgScore = Math.round(reviewData.review2.scores.reduce((a, b) => a + b) / reviewData.review2.scores.length);
+            createDoughnutChart('review2OverallScore', avgScore, reviewData.review2.color, true);
+            populateCriteriaGrid(2, reviewData.review2.scores, reviewData.review2.color);
+        } else if (contentId === 'review3') {
+            const avgScore = Math.round(reviewData.review3.scores.reduce((a, b) => a + b) / reviewData.review3.scores.length);
+            createDoughnutChart('review3OverallScore', avgScore, reviewData.review3.color, true);
+            populateCriteriaGrid(3, reviewData.review3.scores, reviewData.review3.color);
+        } else if (contentId === 'allReviews') {
+            createAllReviewsChart();
+        }
+    }
+
+    // Show Review 1 by default when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        showContent('review1');
+    });
+
+    // Update table styles
+    const tableStyles = `
+        <style>
+            .table td {
+                vertical-align: middle;
+            }
+            .table td:last-child {
+                width: 80px;
+                text-align: center;
+            }
+        </style>
+    `;
+    document.head.insertAdjacentHTML('beforeend', tableStyles);
+</script>
+
+</body>
+</html>
+

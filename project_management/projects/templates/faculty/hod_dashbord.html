@@ -185,19 +185,28 @@
                 </li>
             </ul>
         </li>
+        
         <li class="nav-item">
             <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-              <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-              Final Outcome Entry
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Final Outcome Entry
             </a>
-          </li>
-        </ul>  
+        </li>
+        
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
                 Filter
             </a>
         </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Analysis
+            </a>
+        </li>
+        
         {% load static %}
             <li class="nav-item">
                 <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
@@ -284,6 +293,7 @@
                     <table class="table table-bordered">
                         <thead>
                             <tr>
+                                <th>Serial No.</th>
                                 <th>Register Number</th>
                                 <th>Student Name</th>
                                 <th>Status</th>
@@ -292,6 +302,7 @@
                         <tbody>
                             {% for student in students_without_projects %}
                             <tr>
+                                <td>{{ forloop.counter }}</td>
                                 <td>{{ student.reg_no }}</td>
                                 <td>{{ student.student_name }}</td>
                                 <td class="text-danger">Not Submitted</td>

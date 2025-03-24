@@ -88,15 +88,19 @@ def student_entry(request):
         })
 
     title = "Student Entry"
-    faculty_list = faculty_master.objects.all()
-    
+    faculty_list = User.objects.using('rit_e_approval').filter(Department=department).distinct()
+
+
+    print(faculty_list)
     if request.method == 'POST':
         Project_title = request.POST.get('title')
         domain = request.POST.get('domain')
         project_type = request.POST.get('type')
+        print(project_type)
     
         if project_type == 'internal':
             internal_guide_name = request.POST.get('internal_guide_name')
+            print(internal_guide_name)
             # Validate required fields for internal projects
             if not all([Project_title, domain, project_type, internal_guide_name]):
                 messages.error(request, 'All fields are required for internal projects.')
@@ -278,6 +282,8 @@ def faculty_login(request):
             
             if user.role == 'HOD':
                 return redirect('hod_dashbord')
+            elif user.role == 'Principal':
+                return redirect('principal_dashboard')
             elif user.role == 'Staff':
                 return redirect('faculty_dashboard')
         else:
@@ -296,77 +302,76 @@ def faculty_login(request):
 from django.db.models import Q
 from datetime import datetime
 def hod_dashbord(request):
-    # Retrieve session data
     role = request.session.get('role')
     department = request.session.get('department')
     name = request.session.get('name')
-    projects_list = Project.objects.filter(department=department)
-    a=projects_list.count()
-    print(a, "the projects list is")
-    print(projects_list, "the projects list is")
-    batch=int(datetime.now().year)
-    current_batch=f"{batch-4}-{str(batch)[2:]}"
-    print(current_batch, "the current batch is")
-    project_batch=f"{batch-4}-{str(batch)}"
-        # Get all projects for the department from the default database
-    projects_list = Project.objects.filter(department=department,batch=project_batch)
+
+    batch = int(datetime.now().year)
+    current_batch = f"{batch-4}-{str(batch)[2:]}"
+    project_batch = f"{batch-4}-{str(batch)}"
+    
+    # Get all projects for the department from the default database
+    projects_list = Project.objects.filter(department=department, batch=project_batch)
     total_projects_submitted = projects_list.count()
-
-    # Get unique student registration numbers from projects
-    submitted_student_regnos = list(projects_list.values_list('reg_no', flat=True))
-
-    # Get all students who have marks awarded from the default database
-    total_marks_awarded = review_marks_master.objects.filter(
-        department=department
-    ).values('reg_no').distinct().count()
-
+    
     # Get all students from placement portal database
     all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(batch=current_batch)
     total_students = all_students.count()
-
+    
+    # Calculate submission percentage
+    submission_percentage = round((total_projects_submitted / total_students) * 100) if total_students > 0 else 0
+    
+    # Get all students who have marks awarded
+    total_marks_awarded = review_marks_master.objects.filter(
+        department=department
+    ).values('reg_no').distinct().count()
+    
+    # Calculate review completion percentage
+    review_percentage = round((total_marks_awarded / total_projects_submitted) * 100) if total_projects_submitted > 0 else 0
+    
     # Get students who haven't submitted projects
+    submitted_student_regnos = list(projects_list.values_list('reg_no', flat=True))
     students_without_projects = Student_cgpa.objects.using('rit_cgpatrack').exclude(reg_no__in=submitted_student_regnos).filter(batch=current_batch)
     pending_submissions = students_without_projects.count()
+    
+    # Calculate project type distribution
+    internal_projects = projects_list.filter(project_type='internal').count()
+    external_projects = projects_list.filter(project_type='external').count()
+    research_projects = projects_list.filter(project_type='research').count()
+    
+    # Calculate percentages for project types
+    internal_percentage = round((internal_projects / total_projects_submitted) * 100) if total_projects_submitted > 0 else 0
+    external_percentage = round((external_projects / total_projects_submitted) * 100) if total_projects_submitted > 0 else 0
+    research_percentage = round((research_projects / total_projects_submitted) * 100) if total_projects_submitted > 0 else 0
+    
+    # Calculate project statuses based on achieved field and review marks
+    completed = projects_list.filter(achieved='yes').count()
+    in_progress = total_projects_submitted - completed
+    
+    # Calculate pending reviews
+    pending_reviews = total_projects_submitted - total_marks_awarded
 
-    # Find all assignments where the internal_guide_name appears in reviewer1, reviewer2, or reviewer3
-    assigned_projects = assignreviewers.objects.filter(
-        department=department
-    ).filter(
-        Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
-    )
-
-    # Get project list where the internal_guide_name matches the logged-in user and is assigned as a reviewer
-    filtered_students_list = Project.objects.filter(
-        department=department,
-        internal_guide_name=name,
-        batch__in=assigned_projects.values_list('batch', flat=True)
-    )
-
-    # Get student names from placement portal for students without projects
-    students_without_projects_list = []
-   
-    without_projects = Student_cgpa.objects.using('rit_cgpatrack').exclude(reg_no__in=submitted_student_regnos).filter(batch=current_batch)
-    students_without_projects_list.extend(without_projects)
-    # for student in students_without_projects:
-    #     # Get student name from rit_cgpatrack database
-       
-            
-    #     students_without_projects_list.append({
-    #         'regno': student.student_regno,
-    #         'name': student.student_name
-    #     })
-    return render(request, 'faculty/hod_dashbord.html', {
-        'projects_list': projects_list,
-        'filtered_students_list': filtered_students_list,
+    context = {
         'role': role,
         'department': department,
         'name': name,
+        'projects_list': projects_list,
         'total_students': total_students,
         'total_projects_submitted': total_projects_submitted,
         'total_marks_awarded': total_marks_awarded,
         'pending_submissions': pending_submissions,
-        'students_without_projects': students_without_projects_list
-    })
+        'students_without_projects': students_without_projects,
+        'submission_percentage': submission_percentage,
+        'review_percentage': review_percentage,
+        'internal_percentage': internal_percentage,
+        'external_percentage': external_percentage,
+        'research_percentage': research_percentage,
+        'in_progress': in_progress,
+        'completed': completed,
+        'pending_reviews': pending_reviews
+    }
+    
+    return render(request, "faculty/hod_dashbord.html", context)
 
 # def allocate_commity(request):
 #     return render(request, 'allocate_commity.html')
@@ -392,6 +397,12 @@ def review1(request):
     projects_list = Project.objects.filter(department=department)
     regulation = regulation_master.objects.using('course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
+
+    # Get current reviewers for this department
+    current_reviewers = assignreviewers.objects.filter(
+        department=department,
+        review_type="Review 1"
+    ).first()
 
     if request.method == "POST":
         review_type = "Review 1"
@@ -420,20 +431,23 @@ def review1(request):
             batch = ""
             sem = ""
 
-        # Save the data in the assignreviewers table
-        assignreviewers.objects.create(
+        # Update or create the assignreviewers record
+        assignreviewers.objects.update_or_create(
+            department=department,
             review_type=review_type,
-            reviewer1=reviewer1,
-            reviewer2=reviewer2,
-            reviewer3=reviewer3,
-            regulation=regulation_selected,
-            coursecode=course_code,
-            coursename=course_name,
-            batch=batch,
-            sem=sem,
-            department=department
+            defaults={
+                'reviewer1': reviewer1,
+                'reviewer2': reviewer2,
+                'reviewer3': reviewer3,
+                'regulation': regulation_selected,
+                'coursecode': course_code,
+                'coursename': course_name,
+                'batch': batch,
+                'sem': sem,
+            }
         )
 
+        messages.success(request, "Reviewers updated successfully!")
         return redirect("review1")
 
     return render(request, "faculty/review/review1.html", {
@@ -444,6 +458,7 @@ def review1(request):
         "faculty_list": faculty_list,
         "regulation": regulation,
         "courses": courses,
+        "current_reviewers": current_reviewers,
     })
 
 
@@ -452,6 +467,7 @@ def review2(request):
     role = request.session.get('role')
     department = request.session.get('department')
     name = request.session.get('name')
+
     department_mapping = {
         "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE": "B.TECH AD",
         "COMPUTER SCIENCE AND ENGINEERING": "B.TECH CSE",
@@ -459,11 +475,20 @@ def review2(request):
         "MECHANICAL ENGINEERING":"BE.MECH"
     }
     course_department = department_mapping.get(department, department)
+
+    # Fetch courses only for 8th semester
     courses = Course.objects.using('course_master').filter(department=course_department, semester=8)
+    
     projects_list = Project.objects.filter(department=department)
     regulation = regulation_master.objects.using('course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
-    
+
+    # Get current reviewers for this department
+    current_reviewers = assignreviewers.objects.filter(
+        department=department,
+        review_type="Review 2"
+    ).first()
+
     if request.method == "POST":
         review_type = "Review 2"
         reviewer1_id = request.POST.get("reviewer1")
@@ -500,24 +525,26 @@ def review2(request):
             batch = ""
             sem = ""
 
-        # Save the data in the assignreviewers table
-        assignreviewers.objects.create(
+        # Update or create the assignreviewers record
+        assignreviewers.objects.update_or_create(
+            department=department,
             review_type=review_type,
-            reviewer1=reviewer1_name,
-            reviewer2=reviewer2_name,
-            reviewer3=reviewer3_name,
-            regulation=regulation_selected,
-            coursecode=course_code,
-            coursename=course_name,
-            batch=batch,
-            sem=sem,
-            department=department
+            defaults={
+                'reviewer1': reviewer1_name,
+                'reviewer2': reviewer2_name,
+                'reviewer3': reviewer3_name,
+                'regulation': regulation_selected,
+                'coursecode': course_code,
+                'coursename': course_name,
+                'batch': batch,
+                'sem': sem,
+            }
         )
 
-        messages.success(request, "Reviewers Assigned Successfully!")
+        messages.success(request, "Reviewers updated successfully!")
         return redirect("review2")
 
-    return render(request, 'faculty/review/review2.html', {
+    return render(request, "faculty/review/review2.html", {
         "projects_list": projects_list,
         "role": role,
         "department": department,
@@ -525,6 +552,7 @@ def review2(request):
         "faculty_list": faculty_list,
         "regulation": regulation,
         "courses": courses,
+        "current_reviewers": current_reviewers,
     })
 
 def review3(request):
@@ -536,12 +564,22 @@ def review3(request):
         "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE": "B.TECH AD",
         "COMPUTER SCIENCE AND ENGINEERING": "B.TECH CSE",
         "INFORMATION TECHNOLOGY": "B.TECH IT",
+        "MECHANICAL ENGINEERING":"BE.MECH"
     }
     course_department = department_mapping.get(department, department)
+
+    # Fetch courses only for 8th semester
     courses = Course.objects.using('course_master').filter(department=course_department, semester=8)
+    
     projects_list = Project.objects.filter(department=department)
     regulation = regulation_master.objects.using('course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
+
+    # Get current reviewers for this department
+    current_reviewers = assignreviewers.objects.filter(
+        department=department,
+        review_type="Review 3"
+    ).first()
 
     if request.method == "POST":
         review_type = "Review 3"
@@ -582,26 +620,29 @@ def review3(request):
             batch = ""
             sem = ""
 
-        # Save the data in the assignreviewers table
-        assignreviewers.objects.create(
-            review_type=review_type,
-            reviewer1=reviewer1_name,
-            reviewer2=reviewer2_name,
-            reviewer3=reviewer3_name,
-            regulation=regulation_selected,
-            coursecode=course_code,
-            coursename=course_name,
-            batch=batch,
-            sem=sem,
+        # Update or create the assignreviewers record
+        assignreviewers.objects.update_or_create(
             department=department,
-            expname=industrial_expert_name,
-            company_name=company_name,
-            desegnation=designation
+            review_type=review_type,
+            defaults={
+                'reviewer1': reviewer1_name,
+                'reviewer2': reviewer2_name,
+                'reviewer3': reviewer3_name,
+                'regulation': regulation_selected,
+                'coursecode': course_code,
+                'coursename': course_name,
+                'batch': batch,
+                'sem': sem,
+                'expname': industrial_expert_name,
+                'company_name': company_name,
+                'desegnation': designation
+            }
         )
 
-        messages.success(request, "Reviewers Assigned Successfully!")
+        messages.success(request, "Reviewers updated successfully!")
+        return redirect("review3")
 
-    return render(request, 'faculty/review/review3.html', {
+    return render(request, "faculty/review/review3.html", {
         "projects_list": projects_list,
         "role": role,
         "department": department,
@@ -609,6 +650,7 @@ def review3(request):
         "faculty_list": faculty_list,
         "regulation": regulation,
         "courses": courses,
+        "current_reviewers": current_reviewers,
     })
 
 from django.shortcuts import render, redirect
@@ -623,29 +665,46 @@ def guide_alocation(request):
 
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department1)
     
-    # Get projects that do NOT have an internal guide assigned yet
-    projects = Project.objects.filter(department=department1, internal_guide_name__isnull=True)
+    # Get all internal projects and external projects without guides
+    projects = Project.objects.filter(
+        department=department1
+    ).filter(
+        Q(project_type='internal') |  # Show all internal projects
+        (Q(project_type='external') & (Q(internal_guide_name__isnull=True) | Q(internal_guide_name='')))  # Show only external projects without guides
+    )
 
     if request.method == "POST":
-        print("Received POST Data:", request.POST)
-
         student_ids = request.POST.getlist("student_ids")
         faculty_id = request.POST.get("faculty_id")
 
-        if student_ids and faculty_id:
-            faculty_id = int(faculty_id)
-            faculty = User.objects.using('rit_e_approval').filter(id=faculty_id).first()
+        if not student_ids:
+            messages.error(request, "Please select at least one student.")
+            return redirect("guide_alocation")
 
-            if faculty:
-                print("Faculty Found:", faculty.Name)
-                
-                # Directly assign faculty as the internal guide
-                updated_count = Project.objects.filter(id__in=student_ids).update(
-                    internal_guide_name=faculty.Name
+        if not faculty_id:
+            messages.error(request, "Please select a faculty member to assign as guide.")
+            return redirect("guide_alocation")
+
+        try:
+            faculty = User.objects.using('rit_e_approval').get(id=faculty_id)
+            
+            # Update the selected projects with the new guide
+            updated_count = Project.objects.filter(id__in=student_ids).update(
+                internal_guide_name=faculty.Name
+            )
+            
+            if updated_count > 0:
+                messages.success(
+                    request, 
+                    f"Successfully assigned {faculty.Name} as guide to {updated_count} project(s)."
                 )
-                print(f"Updated {updated_count} project records.")
             else:
-                print("Error: Faculty not found!")
+                messages.warning(request, "No projects were updated.")
+                
+        except User.DoesNotExist:
+            messages.error(request, "Selected faculty member not found.")
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
 
         return redirect("guide_alocation")
 
@@ -914,7 +973,7 @@ def review2_markentry(request):
     print("Is Reviewer:", is_reviewer)
     print("Filtered Students List:", filtered_students_list)
 
-    return render(request, "faculty/review/faculty_review2_markentry.html", {
+    return render(request, "faculty/review/review2_markentry.html", {
         'role': role,
         'department': department,
         'name': name,
@@ -1073,8 +1132,95 @@ def faculty_review3_markentry(request):
         'is_reviewer': is_reviewer,
     })
 
+def review3_markentry(request):
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+    
+    if request.method == "POST":
+        faculty_name = name
+        faculty_role = role
+        student_name = request.POST.get('student_name')
+        reg_no = request.POST.get('reg_no')
+        semester_value = request.POST.get('semester')
+        try:
+            semester = int(semester_value) if semester_value not in [None, ''] else 0
+        except ValueError:
+            semester = 0
+        
+        course_code = request.POST.get('course_code')
+        course_title = request.POST.get('course_title')
+        reviewer_type = request.POST.get('reviewer_type')
+        
+        # Get marks for each criteria
+        criteria_1 = int(request.POST.get('criteria_1', 0))
+        criteria_2 = int(request.POST.get('criteria_2', 0))
+        criteria_3 = int(request.POST.get('criteria_3', 0))
+        criteria_4 = int(request.POST.get('criteria_4', 0))
+        criteria_5 = int(request.POST.get('criteria_5', 0))
+        criteria_6 = int(request.POST.get('criteria_6', 0))
+        criteria_7 = int(request.POST.get('criteria_7', 0))
+        criteria_8 = int(request.POST.get('criteria_8', 0))
+        criteria_9 = int(request.POST.get('criteria_9', 0))
+        criteria_10 = int(request.POST.get('criteria_10', 0))
+        
+        total = (criteria_1 + criteria_2 + criteria_3 + criteria_4 + criteria_5 +
+                criteria_6 + criteria_7 + criteria_8 + criteria_9 + criteria_10)
+        
+        assign_record = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
+        if assign_record:
+            batch = assign_record.batch
+            regulations = assign_record.regulation  
+            company_guide_name = assign_record.company_name
+        else:
+            batch = ""
+            regulations = ""
+            company_guide_name = ""
 
+        # Create the review_marks_master record
+        review_marks_master.objects.create(
+            faculty_name=faculty_name,
+            faculty_role=faculty_role,
+            reviewer_type=reviewer_type,
+            student_name=student_name,
+            reg_no=reg_no,
+            batch=batch,
+            review_number=3,
+            regulations=regulations,
+            department=department,
+            semester=semester,
+            course_code=course_code,
+            company_guide_name=company_guide_name,
+            internal_guide_name=faculty_name,
+            criteria_1=criteria_1,
+            criteria_2=criteria_2,
+            criteria_3=criteria_3,
+            criteria_4=criteria_4,
+            criteria_5=criteria_5,
+            criteria_6=criteria_6,
+            criteria_7=criteria_7,
+            criteria_8=criteria_8,
+            criteria_9=criteria_9,
+            criteria_10=criteria_10,
+            total=total,
+        )
+        
+        return JsonResponse({'status': 'success'})
 
+    # Get all projects for the department
+    projects_list = Project.objects.filter(department=department)
+
+    # For review3_markentry, we'll show all projects in the department
+    # This is different from faculty_review3_markentry which filters by reviewer/guide
+    filtered_students_list = projects_list
+
+    return render(request, "faculty/review/review3_markentry.html", {
+        'role': role,
+        'department': department,
+        'name': name,
+        'projects_list': projects_list,
+        'filtered_students_list': filtered_students_list,
+    })
 
 #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓faculty mark entry part↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
@@ -1448,3 +1594,83 @@ def filter(request):
     return render(request, "faculty/filter.html", context)
 def admin_portal(request):
     return(request,"e-approval/page.html")
+
+
+def principal_dashboard(request):
+    role = request.session.get('role')
+    name = request.session.get('name')
+    
+    # Get filter parameters
+    selected_department = request.GET.get('department')  # Default: Show all departments
+    selected_batch = request.GET.get('batch')
+    selected_outcome_type = request.GET.get('outcome_type')
+    selected_achieved = request.GET.get('achieved')
+
+    # Base queryset: Initially fetch all departments' data
+    projects = Project.objects.all()
+
+    # Count total students per department (initial state)
+    department_wise_counts = (
+        projects.values('department')
+        .annotate(total_students=Count('id'))
+        .order_by('department')
+    )
+
+    # Apply department filter dynamically
+    if selected_department:
+        projects = projects.filter(department=selected_department)
+
+    # Apply additional filters
+    if selected_batch:
+        projects = projects.filter(batch=selected_batch)
+    if selected_outcome_type:
+        projects = projects.filter(project_outcome_type=selected_outcome_type)
+    if selected_achieved:
+        projects = projects.filter(achieved=selected_achieved)
+
+    # Get unique values for filter dropdowns
+    available_departments = Project.objects.values_list('department', flat=True).distinct()
+    available_batches = Project.objects.filter(department=selected_department).values_list('batch', flat=True).distinct() if selected_department else Project.objects.values_list('batch', flat=True).distinct()
+    available_outcome_types = Project.objects.filter(department=selected_department).values_list('project_outcome_type', flat=True).distinct() if selected_department else Project.objects.values_list('project_outcome_type', flat=True).distinct()
+    available_achieved_statuses = Project.objects.filter(department=selected_department).values_list('achieved', flat=True).distinct() if selected_department else Project.objects.values_list('achieved', flat=True).distinct()
+
+    # Count projects by outcome type (Based on current filters)
+    total_application_projects = projects.filter(project_outcome_type='Application').count()
+    total_research_projects = projects.filter(project_outcome_type='Research').count()
+    total_patent_projects = projects.filter(project_outcome_type='Patent').count()
+    total_product_projects = projects.filter(project_outcome_type='Product').count()
+    total_students = projects.count()
+    no_count = total_students - (total_application_projects + total_research_projects + total_patent_projects + total_product_projects)
+
+    context = {
+        'projects': projects,
+        'total_students': total_students,
+        'total_application_projects': total_application_projects,
+        'total_research_projects': total_research_projects,
+        'total_patent_projects': total_patent_projects,
+        'total_product_projects': total_product_projects,
+        'no_count': no_count,
+        'role': role,
+        'name': name,
+        'available_departments': available_departments,  # List of all departments
+        'available_batches': available_batches,
+        'available_outcome_types': available_outcome_types,
+        'available_achieved_statuses': available_achieved_statuses,
+        'selected_department': selected_department,  # Current department selection
+        'selected_batch': selected_batch,
+        'selected_outcome_type': selected_outcome_type,
+        'selected_achieved': selected_achieved,
+        'department_wise_counts': department_wise_counts,  # Initial department-wise counts
+    }
+    
+    return render(request, "faculty/principal_dashboard.html", context)
+
+def criteria_analysis(request):
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+    return render(request, "faculty/criteria_analysis.html", {
+        'role': role,
+        'department': department,
+        'name': name,
+    })

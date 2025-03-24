@@ -19,6 +19,31 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <title>Ramco Institute of Technology</title>
+    <script>
+        $(document).ready(function() {
+            // Function to toggle fields based on project type
+            function toggleFields() {
+                var projectType = $('#type').val();
+                if (projectType === 'internal') {
+                    $('#internal-fields').show();
+                    $('#external-fields').hide();
+                    $('#internal_guide_name').prop('required', true);
+                } else if (projectType === 'external') {
+                    $('#internal-fields').hide();
+                    $('#external-fields').show();
+                    $('#internal_guide_name').prop('required', false);
+                }
+            }
+
+            // Call toggleFields on page load
+            toggleFields();
+
+            // Call toggleFields when project type changes
+            $('#type').change(function() {
+                toggleFields();
+            });
+        });
+    </script>
     <style>
         #Column_container {
         display: flex;
@@ -267,7 +292,7 @@
                 <label for="internal_guide_name">Internal Guide</label>
                 <select name="internal_guide_name" id="internal_guide_name" class="form-control">
                     {% for faculty in faculty_list %}
-                        <option value="{{ faculty.name }}">{{ faculty.name }}</option>
+                        <option value="{{ faculty.Name }}">{{ faculty.Name }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -307,14 +332,6 @@
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    <script>
-        document.getElementById('type').addEventListener('change', function() {
-            var type = this.value;
-            document.getElementById('internal-fields').style.display = type === 'internal' ? 'block' : 'none';
-            document.getElementById('external-fields').style.display = type === 'external' ? 'block' : 'none';
-        });
-    </script>
 {% endif %}
 
 </body>

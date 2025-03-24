@@ -201,91 +201,144 @@
                 <h1 class="text-center">Review 3</h1>
                 <div class="card shadow-sm mt-3" style="width: 700px; border-radius: 10px; padding: 20px;">
                     <div class="card-body">
-                        <form method="post" class="w-100">
-                            {% csrf_token %}
-                            <div class="row justify-content-center">
-                                <!-- Regulation -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="regulation">Regulation</label>
-                                        <select id="regulation" name="regulation" class="form-control">
-                                            <option value="">Select Regulation</option>
-                                            {% for reg in regulation %}
-                                                <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-            
-                                <!-- Reviewer 1 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer1">Reviewer 1</label>
-                                        <select id="reviewer1" name="reviewer1" class="form-control">
-                                            <option value="">Select Reviewer 1</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-            
-                                <!-- Reviewer 2 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer2">Reviewer 2</label>
-                                        <select id="reviewer2" name="reviewer2" class="form-control">
-                                            <option value="">Select Reviewer 2</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-            
-                                <!-- Reviewer 3 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer3">Reviewer 3</label>
-                                        <select id="reviewer3" name="reviewer3" class="form-control">
-                                            <option value="">Select Reviewer 3</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-            
-                                <!-- Industrial Expert Name -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="industrial_expert_name">Industrial Expert Name</label>
-                                        <input type="text" id="industrial_expert_name" name="industrial_expert_name" class="form-control" placeholder="Enter Industrial Expert Name">
-                                    </div>
-                                </div>
-            
-                                <!-- Company Name -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="company_name">Company Name</label>
-                                        <input type="text" id="company_name" name="company_name" class="form-control" placeholder="Enter Company Name">
-                                    </div>
-                                </div>
-            
-                                <!-- Designation -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="designation">Designation</label>
-                                        <input type="text" id="designation" name="designation" class="form-control" placeholder="Enter Designation">
-                                    </div>
-                                </div>
+                        <!-- Current Reviewers Section -->
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h3 class="mb-0">Currently Assigned Reviewers</h3>
                             </div>
-            
-                            <!-- Submit Button -->
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-success w-50">Assign</button>
+                            <div class="card-body">
+                                {% if current_reviewers %}
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Reviewer 1</th>
+                                                    <th>Reviewer 2</th>
+                                                    <th>Reviewer 3</th>
+                                                    <th>Industrial Expert</th>
+                                                    <th>Company</th>
+                                                    <th>Designation</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>{{ current_reviewers.reviewer1 }}</td>
+                                                    <td>{{ current_reviewers.reviewer2 }}</td>
+                                                    <td>{{ current_reviewers.reviewer3 }}</td>
+                                                    <td>{{ current_reviewers.expname }}</td>
+                                                    <td>{{ current_reviewers.company_name }}</td>
+                                                    <td>{{ current_reviewers.desegnation }}</td>
+                                                    <td>
+                                                        <button class="btn btn-warning" onclick="enableEditMode()">
+                                                            <i class="fas fa-edit"></i> Edit Reviewers
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-info">
+                                        No reviewers have been assigned yet for Review 3.
+                                    </div>
+                                {% endif %}
                             </div>
-                        </form>
+                        </div>
+
+                        <!-- Reviewer Assignment Form -->
+                        <div class="card mb-4" id="reviewerForm" {% if current_reviewers %}style="display: none;"{% endif %}>
+                            <div class="card-header bg-success text-white">
+                                <h3 class="mb-0">Assign Reviewers</h3>
+                            </div>
+                            <div class="card-body">
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <div class="row justify-content-center">
+                                        <!-- Regulation -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="regulation">Regulation</label>
+                                                <select id="regulation" name="regulation" class="form-control">
+                                                    <option value="">Select Regulation</option>
+                                                    {% for reg in regulation %}
+                                                        <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Reviewer 1 -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="reviewer1">Reviewer 1</label>
+                                                <select id="reviewer1" name="reviewer1" class="form-control">
+                                                    <option value="">Select Reviewer 1</option>
+                                                    {% for faculty in faculty_list %}
+                                                        <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Reviewer 2 -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="reviewer2">Reviewer 2</label>
+                                                <select id="reviewer2" name="reviewer2" class="form-control">
+                                                    <option value="">Select Reviewer 2</option>
+                                                    {% for faculty in faculty_list %}
+                                                        <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Reviewer 3 -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="reviewer3">Reviewer 3</label>
+                                                <select id="reviewer3" name="reviewer3" class="form-control">
+                                                    <option value="">Select Reviewer 3</option>
+                                                    {% for faculty in faculty_list %}
+                                                        <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Industrial Expert Name -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="industrial_expert_name">Industrial Expert Name</label>
+                                                <input type="text" id="industrial_expert_name" name="industrial_expert_name" class="form-control" placeholder="Enter Industrial Expert Name">
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Company Name -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="company_name">Company Name</label>
+                                                <input type="text" id="company_name" name="company_name" class="form-control" placeholder="Enter Company Name">
+                                            </div>
+                                        </div>
+                    
+                                        <!-- Designation -->
+                                        <div class="col-md-10 mb-3">
+                                            <div class="form-group text-start">
+                                                <label for="designation">Designation</label>
+                                                <input type="text" id="designation" name="designation" class="form-control" placeholder="Enter Designation">
+                                            </div>
+                                        </div>
+                                    </div>
+                    
+                                    <!-- Submit Button -->
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn btn-success w-50">Assign</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -294,17 +347,46 @@
     
     
     <script>
-        document.getElementById("assignButton").addEventListener("click", function() {
-            let reviewer1 = document.getElementById("reviewer1").value;
-            let reviewer2 = document.getElementById("reviewer2").value;
-            let reviewer3 = document.getElementById("reviewer3").value;
-    
-            if (!reviewer1 || !reviewer2 || !reviewer3) {
-                alert("Please select all three reviewers before assigning.");
-                return;
+        function enableEditMode() {
+            document.getElementById('reviewerForm').style.display = 'block';
+            // Pre-fill the form with current values
+            if ('{{ current_reviewers.reviewer1 }}') {
+                document.getElementById('reviewer1').value = '{{ current_reviewers.reviewer1 }}';
             }
-    
-            alert("Reviewers Assigned Successfully!");
+            if ('{{ current_reviewers.reviewer2 }}') {
+                document.getElementById('reviewer2').value = '{{ current_reviewers.reviewer2 }}';
+            }
+            if ('{{ current_reviewers.reviewer3 }}') {
+                document.getElementById('reviewer3').value = '{{ current_reviewers.reviewer3 }}';
+            }
+            if ('{{ current_reviewers.expname }}') {
+                document.getElementById('industrial_expert_name').value = '{{ current_reviewers.expname }}';
+            }
+            if ('{{ current_reviewers.company_name }}') {
+                document.getElementById('company_name').value = '{{ current_reviewers.company_name }}';
+            }
+            if ('{{ current_reviewers.desegnation }}') {
+                document.getElementById('designation').value = '{{ current_reviewers.desegnation }}';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(e) {
+                let reviewer1 = document.getElementById("reviewer1").value;
+                let reviewer2 = document.getElementById("reviewer2").value;
+                let reviewer3 = document.getElementById("reviewer3").value;
+                let regulation = document.getElementById("regulation").value;
+                let industrial_expert = document.getElementById("industrial_expert_name").value;
+                let company = document.getElementById("company_name").value;
+                let designation = document.getElementById("designation").value;
+
+                if (!reviewer1 || !reviewer2 || !reviewer3 || !regulation || !industrial_expert || !company || !designation) {
+                    e.preventDefault();
+                    alert("Please fill in all fields before assigning.");
+                    return;
+                }
+            });
         });
     </script>
 </body>

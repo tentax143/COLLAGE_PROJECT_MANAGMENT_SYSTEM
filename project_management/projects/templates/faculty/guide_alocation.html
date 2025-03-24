@@ -202,6 +202,20 @@
     <div class="page-content">
         <div class="container-fluid table-container">
             <h2 class="mb-4">Project Details</h2>
+            
+            {% if messages %}
+            <div class="messages mb-4">
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+
             <!-- Wrap the table in a form -->
             <form method="POST" action="{% url 'guide_alocation' %}">
                 {% csrf_token %}
@@ -247,23 +261,42 @@
         </div>
     </div>
     <script>
-        // Show/hide the global faculty dropdown and assign button based on checkbox selection.
-        document.addEventListener('DOMContentLoaded', function(){
-            let checkboxes = document.querySelectorAll('.student-checkbox');
-            let facultySelectContainer = document.getElementById('faculty-select-container');
-            let assignButton = document.getElementById('assign-button');
+        $(document).ready(function() {
+            // Function to check if any checkbox is selected
+            function checkSelection() {
+                var checkedBoxes = $('.student-checkbox:checked').length;
+                if (checkedBoxes > 0) {
+                    $('#faculty-select-container').show();
+                    $('#assign-button').show();
+                } else {
+                    $('#faculty-select-container').hide();
+                    $('#assign-button').hide();
+                }
+            }
 
-            checkboxes.forEach(function(checkbox){
-                checkbox.addEventListener('change', function(){
-                    let anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-                    if (anyChecked) {
-                        facultySelectContainer.style.display = 'block';
-                        assignButton.style.display = 'inline-block';
-                    } else {
-                        facultySelectContainer.style.display = 'none';
-                        assignButton.style.display = 'none';
-                    }
-                });
+            // Listen for changes on checkboxes
+            $('.student-checkbox').change(function() {
+                checkSelection();
+            });
+
+            // Form submission validation
+            $('form').submit(function(e) {
+                var checkedBoxes = $('.student-checkbox:checked').length;
+                var selectedFaculty = $('#faculty-select').val();
+                
+                if (checkedBoxes === 0) {
+                    e.preventDefault();
+                    alert('Please select at least one student.');
+                    return false;
+                }
+                
+                if (!selectedFaculty) {
+                    e.preventDefault();
+                    alert('Please select a faculty member to assign as guide.');
+                    return false;
+                }
+                
+                return true;
             });
         });
     </script>
