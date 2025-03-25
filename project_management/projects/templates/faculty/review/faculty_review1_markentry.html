@@ -39,8 +39,10 @@
     }
     /* Page Content */
     .page-content {
-      margin-left: 250px;
-      padding: 20px;
+      width: calc(100% - 23rem);
+      margin-left: 23rem;
+      padding: 2rem;
+      transition: all 0.4s;
     }
     /* Button styling */
     #sidebarCollapse {
@@ -120,9 +122,6 @@
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
-    }
-    #reviewerSection {
-      display: none;
     }
   </style>
 </head>
@@ -455,26 +454,33 @@
     </div>
 
     <script>
-    $(document).ready(function() {
-      // Show guide section by default if not reviewer
+    $(document).ready(function(){
+      // Initially show guide section if not a reviewer
       if (!$('#reviewerBtn').length) {
-        $('#guideSection').show();
+        $('#guideSection').removeClass('hidden');
       }
 
-      // Guide button click
+      // Handle role selection buttons
       $('#guideBtn').click(function() {
-        $('#guideSection').show();
-        $('#reviewerSection').hide();
-        $(this).removeClass('btn-secondary').addClass('btn-primary');
-        $('#reviewerBtn').removeClass('btn-primary').addClass('btn-secondary');
+        $('#guideSection').removeClass('hidden');
+        $('#reviewerSection').addClass('hidden');
+        $(this).addClass('btn-primary').removeClass('btn-secondary');
+        $('#reviewerBtn').addClass('btn-secondary').removeClass('btn-primary');
+        
+        // Show only students where this faculty is the internal guide
+        $('.guide-student').show();
+        $('.reviewer-student').hide();
       });
 
-      // Reviewer button click
       $('#reviewerBtn').click(function() {
-        $('#reviewerSection').show();
-        $('#guideSection').hide();
-        $(this).removeClass('btn-secondary').addClass('btn-primary');
-        $('#guideBtn').removeClass('btn-primary').addClass('btn-secondary');
+        $('#reviewerSection').removeClass('hidden');
+        $('#guideSection').addClass('hidden');
+        $(this).addClass('btn-primary').removeClass('btn-secondary');
+        $('#guideBtn').addClass('btn-secondary').removeClass('btn-primary');
+        
+        // Show only students where this faculty is the reviewer
+        $('.reviewer-student').show();
+        $('.guide-student').hide();
       });
 
       // Mark entry button click
