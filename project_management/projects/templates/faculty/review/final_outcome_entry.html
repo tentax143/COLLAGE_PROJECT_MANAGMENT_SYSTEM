@@ -344,11 +344,6 @@
                         data-reg="{{ project.reg_no }}">
                   Outcome Entry
                 </button>
-                {% if project.outcome_certificate %}
-                <a href="{% url 'download_certificate' project.reg_no %}" class="btn btn-info btn-sm">
-                  <i class="fas fa-download"></i> Download PDF
-                </a>
-                {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -364,11 +359,6 @@
                         onclick="openOutcomeModal('{{ project.student_name }}', '{{ project.reg_no }}', '{{ project.title }}')">
                   Outcome Entry
                 </button>
-                {% if project.outcome_certificate %}
-                <a href="{% url 'download_certificate' project.reg_no %}" class="btn btn-info btn-sm">
-                  <i class="fas fa-download"></i> Download PDF
-                </a>
-                {% endif %}
               </td>
             </tr>
             {% endfor %}

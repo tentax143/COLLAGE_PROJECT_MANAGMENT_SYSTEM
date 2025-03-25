@@ -228,6 +228,7 @@
         </div>
         {% endif %}
 
+        {% if is_reviewer %}
         <!-- Role Selection Buttons -->
         <div class="card mb-4" id="roleSelection">
             <div class="card-body text-center">
@@ -245,15 +246,18 @@
                 {% endif %}
             </div>
         </div>
+        {% endif %}
 
         <!-- Guide Students Table -->
-        <div class="card mb-4 d-none" id="guideTable">
+        <div class="card mb-4 {% if not is_reviewer %}d-block{% else %}d-none{% endif %}" id="guideTable">
             <div class="card-header bg-primary text-white">
                 <h3 class="mb-0">
                     <i class="fa fa-user-tie mr-2"></i>Guide Role - Student List
+                    {% if is_reviewer %}
                     <button class="btn btn-light float-right" onclick="showRoleSelection()">
                         <i class="fa fa-arrow-left mr-2"></i>Back to Role Selection
                     </button>
+                    {% endif %}
                 </h3>
             </div>
             <div class="card-body">

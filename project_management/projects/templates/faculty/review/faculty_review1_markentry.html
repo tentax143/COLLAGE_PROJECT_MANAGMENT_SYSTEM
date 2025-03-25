@@ -39,10 +39,8 @@
     }
     /* Page Content */
     .page-content {
-      width: calc(100% - 23rem);
-      margin-left: 23rem;
-      padding: 2rem;
-      transition: all 0.4s;
+      margin-left: 250px;
+      padding: 20px;
     }
     /* Button styling */
     #sidebarCollapse {
@@ -122,6 +120,9 @@
     input::-webkit-inner-spin-button {
       -webkit-appearance: none;
       margin: 0;
+    }
+    #reviewerSection {
+      display: none;
     }
   </style>
 </head>
@@ -205,459 +206,434 @@
 
   <!-- Page Content Wrapper -->
   <div class="page-content">
-  {% if is_reviewer %}
-  <div class="container">
-      <h2 class="text-center">Select Role</h2>
+    <div class="container">
+      <h2 class="text-center">Review 1 Mark Entry</h2>
 
-      <!-- Role Selection -->
+      {% if is_reviewer %}
+      <!-- Role Selection for Reviewers -->
       <div class="text-center mt-4">
-          <button id="guideBtn" class="btn btn-primary">Guide</button>
-          <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
+        <button id="guideBtn" class="btn btn-primary">Guide</button>
+        <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
       </div>
 
-      <!-- Guide Table -->
-      <div id="guideSection" class="hidden mt-4">
-          <h3>Student List</h3>
-          {% for batch in batches %}
-              {{ batch }} <br>
-          {% endfor %}
-
-          <table class="table table-bordered">
-              <thead class="thead-dark">
-                  <tr>
-                      <th>Student Name</th>
-                      <th>Reg No</th>
-                      <th>Project Title</th>
-                      <th>Course Code</th>
-                      <th>Course Title</th>
-                      
-                      <th>Mark</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for project in filtered_students_list %}
-                  <tr>
-                      <td>{{ project.student_name }}</td>
-                      <td>{{ project.reg_no }}</td>
-                      <td>{{ project.title }}</td>
-                      <td class="course-code">{{ project.course_code }}</td>
-                      <td class="course-title">{{ project.course_title }}</td>
-                      <td>
-                          <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
-                              data-student="{{ project.student_name }}" 
-                              data-reg="{{ project.reg_no }}">
-                              Outcome Entry
-                          </button>
-                      </td>
-                      <td>
-                          <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                              data-student="{{ project.student_name }}" 
-                              data-reg="{{ project.reg_no }}">
-                              Enter Marks
-                          </button>
-                      </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                      <td colspan="6" class="text-center">No projects found.</td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      </div>
-      
-      <!-- Reviewer Section -->
-      <div id="reviewerSection" class="hidden mt-4">
-          <h3>Student List</h3>
-          {% for batch in batches %}
-              {{ batch }} <br>
-          {% endfor %}
-          <table class="table table-bordered">
-              <thead class="thead-dark">
-                  <tr>
-                      <th>Student Name</th>
-                      <th>Reg No</th>
-                      <th>Project Title</th>
-                      <th>Course Code</th>
-                      <th>Course Title</th>
-                      <th>Mark</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for project in projects %}
-                  <tr>
-                      <td>{{ project.student_name }}</td>
-                      <td>{{ project.reg_no }}</td>
-                      <td>{{ project.title }}</td>
-                      <td class="course-code">{{ project.course_code }}</td>
-                      <td class="course-title">{{ project.course_title }}</td>
-                      <td>
-                          <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
-                              data-student="{{ project.student_name }}" 
-                              data-reg="{{ project.reg_no }}">
-                              Outcome Entry
-                          </button>
-                      </td>
-                      <td>
-                          <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                              data-student="{{ project.student_name }}" 
-                              data-reg="{{ project.reg_no }}">
-                              Enter Marks
-                          </button>
-                      </td>
-                  </tr>
-                  {% empty %}
-                  <tr>
-                      <td colspan="6" class="text-center">No projects found.</td>
-                  </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      </div>
-  </div>
-  {% else %}
-  <h3>Student List</h3>
-  {% for batch in batches %}
-      {{ batch }} <br>
-  {% endfor %}
-
-  <table class="table table-bordered">
-      <thead class="thead-dark">
-          <tr>
+      <!-- Guide Section -->
+      <div id="guideSection" class="mt-4">
+        <h3>Student List (Guide)</h3>
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
               <th>Student Name</th>
               <th>Reg No</th>
               <th>Project Title</th>
               <th>Course Code</th>
               <th>Course Title</th>
-              <th>outcome entry</th>
               <th>Mark</th>
-          </tr>
-      </thead>
-      <tbody>
-          {% for project in filtered_students_list %}
-          <tr>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in guide_students %}
+            <tr class="guide-student">
               <td>{{ project.student_name }}</td>
               <td>{{ project.reg_no }}</td>
               <td>{{ project.title }}</td>
               <td class="course-code">{{ project.course_code }}</td>
               <td class="course-title">{{ project.course_title }}</td>
               <td>
-                  <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
-                      data-student="{{ project.student_name }}" 
-                      data-reg="{{ project.reg_no }}">
-                      Outcome Entry
-                  </button>
+                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                  data-student="{{ project.student_name }}" 
+                  data-reg="{{ project.reg_no }}">
+                  Enter Marks
+                </button>
               </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No students found for guide role</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Reviewer Section -->
+      <div id="reviewerSection" class="hidden mt-4">
+        <h3>Student List (Reviewer)</h3>
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>Student Name</th>
+              <th>Reg No</th>
+              <th>Project Title</th>
+              <th>Course Code</th>
+              <th>Course Title</th>
+              <th>Mark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in reviewer_students %}
+            <tr class="reviewer-student">
+              <td>{{ project.student_name }}</td>
+              <td>{{ project.reg_no }}</td>
+              <td>{{ project.title }}</td>
+              <td class="course-code">{{ project.course_code }}</td>
+              <td class="course-title">{{ project.course_title }}</td>
               <td>
-                  <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                      data-student="{{ project.student_name }}" 
-                      data-reg="{{ project.reg_no }}">
-                      Enter Marks
-                  </button>
+                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                  data-student="{{ project.student_name }}" 
+                  data-reg="{{ project.reg_no }}">
+                  Enter Marks
+                </button>
               </td>
-          </tr>
-          {% empty %}
-          <tr>
-              <td colspan="6" class="text-center">No projects found.</td>
-          </tr>
-          {% endfor %}
-      </tbody>
-  </table>
-  {% endif %}
-
-  <!-- Single Mark Entry Modal -->
-  <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="markEntryModalLabel">Enter Review 1 Marks</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <form id="markEntryForm" method="POST">
-                      {% csrf_token %}
-                      <input type="hidden" name="student_name" id="modal_student_name">
-                      <input type="hidden" name="reg_no" id="modal_reg_no">
-                      <input type="hidden" name="reviewer_type" id="modal_reviewer_type" value="{% if is_reviewer %}Reviewer{% else %}Guide{% endif %}">
-                      <input type="hidden" name="semester" value="8">
-                      <input type="hidden" name="course_code" id="modal_course_code">
-                      <input type="hidden" name="course_title" id="modal_course_title">
-                      
-                      <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-                      <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
-
-                      <table class="table">
-                          <tr>
-                              <th>Assessment Criteria</th>
-                              <th>Marks (10)</th>
-                          </tr>
-                          <tr><td>Literature review</td><td><input type="number" name="criteria_1" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Problem Identification and definition</td><td><input type="number" name="criteria_2" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Project objectives</td><td><input type="number" name="criteria_3" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Project specifications and constraints</td><td><input type="number" name="criteria_4" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Project work plan</td><td><input type="number" name="criteria_5" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Methodology proposed</td><td><input type="number" name="criteria_6" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Environmental issues consideration</td><td><input type="number" name="criteria_7" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Oral and Written Communication</td><td><input type="number" name="criteria_8" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" name="criteria_9" min="0" max="10" class="form-control mark-input" required></td></tr>
-                          <tr><td>Resource Planning</td><td><input type="number" name="criteria_10" min="0" max="10" class="form-control mark-input" required></td></tr>
-                      </table>
-
-                      <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-success" id="saveMarksBtn">Save Marks</button>
-                      </div>
-                  </form>
-              </div>
-          </div>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No students found for reviewer role</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-  </div>
-
-  <!-- Outcome Entry Modal -->
-  <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-          <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="outcomeEntryModalLabel">Enter Project Outcome</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                  <form id="outcomeEntryForm" method="POST">
-                      {% csrf_token %}
-                      <input type="hidden" name="student_name" id="outcome_student_name">
-                      <input type="hidden" name="reg_no" id="outcome_reg_no">
-                      <input type="hidden" name="form_type" value="outcome">
-                      
-                      <p><strong>Student Name:</strong> <span id="outcomeStudentName"></span></p>
-                      <p><strong>Reg No:</strong> <span id="outcomeRegNo"></span></p>
-
-                      <div class="form-group">
-                          <label for="project_outcome_type">Project Outcome Type</label>
-                          <select class="form-control" id="project_outcome_type" name="project_outcome_type" required>
-                              <option value="">Select Type</option>
-                              <option value="Application">Application</option>
-                              <option value="Product">Product</option>
-                              <option value="Research">Research</option>
-                              <option value="Patent">Patent</option>
-                          </select>
-                      </div>
-
-                      <div class="form-group">
-                          <label for="outcome">Outcome</label>
-                          <select class="form-control" id="outcome" name="outcome" required>
-                              <option value="">Select Outcome</option>
-                              <option value="National Conference">National Conference</option>
-                              <option value="International Conference">International Conference</option>
-                              <option value="Scopus">Scopus</option>
-                              <option value="SCIE">SCIE</option>
-                              <option value="SCI">SCI</option>
-                              <option value="UGC">UGC</option>
-                              <option value="Otheres">Others</option>
-                          </select>
-                      </div>
-
-                      <div class="form-group">
-                          <label for="outcome_certificate">Outcome Certificate</label>
-                          <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
-                      </div>
-
-                      <div class="form-group">
-                          <label for="achieved">Achieved</label>
-                          <select class="form-control" id="achieved" name="achieved" required>
-                              <option value="">Select Status</option>
-                              <option value="yes">Yes</option>
-                              <option value="no">No</option>
-                          </select>
-                      </div>
-
-                      <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                          <button type="submit" class="btn btn-success">Save Outcome</button>
-                      </div>
-                  </form>
-              </div>
-          </div>
+      {% else %}
+      <!-- Non-Reviewer View -->
+      <div class="mt-4">
+        <h3>Student List (Guide)</h3>
+        <table class="table table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th>Student Name</th>
+              <th>Reg No</th>
+              <th>Project Title</th>
+              <th>Course Code</th>
+              <th>Course Title</th>
+              <th>Mark</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in guide_students %}
+            <tr class="guide-student">
+              <td>{{ project.student_name }}</td>
+              <td>{{ project.reg_no }}</td>
+              <td>{{ project.title }}</td>
+              <td class="course-code">{{ project.course_code }}</td>
+              <td class="course-title">{{ project.course_title }}</td>
+              <td>
+                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                  data-student="{{ project.student_name }}" 
+                  data-reg="{{ project.reg_no }}">
+                  Enter Marks
+                </button>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6" class="text-center">No students found</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
       </div>
-  </div>
+      {% endif %}
+    </div>
 
-  <script>
-  $(document).ready(function(){
-      // Role selection buttons
-      $("#guideBtn").click(function(){
-          $("#guideSection").removeClass("hidden").show();
-          $("#reviewerSection").addClass("hidden").hide();
-          $(this).addClass('btn-primary').removeClass('btn-secondary');
-          $("#reviewerBtn").addClass('btn-secondary').removeClass('btn-primary');
+    <!-- Single Mark Entry Modal -->
+    <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="markEntryModalLabel">Enter Review 1 Marks</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="markEntryForm" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="student_name" id="modal_student_name">
+                        <input type="hidden" name="reg_no" id="modal_reg_no">
+                        <input type="hidden" name="reviewer_type" id="modal_reviewer_type" value="{% if is_reviewer %}Reviewer{% else %}Guide{% endif %}">
+                        <input type="hidden" name="semester" value="8">
+                        <input type="hidden" name="course_code" id="modal_course_code">
+                        <input type="hidden" name="course_title" id="modal_course_title">
+                        
+                        <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
+                        <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
+
+                        <table class="table">
+                            <tr>
+                                <th>Assessment Criteria</th>
+                                <th>Marks (10)</th>
+                            </tr>
+                            <tr><td>Literature review</td><td><input type="number" name="criteria_1" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Problem Identification and definition</td><td><input type="number" name="criteria_2" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Project objectives</td><td><input type="number" name="criteria_3" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Project specifications and constraints</td><td><input type="number" name="criteria_4" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Project work plan</td><td><input type="number" name="criteria_5" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Methodology proposed</td><td><input type="number" name="criteria_6" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Environmental issues consideration</td><td><input type="number" name="criteria_7" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Oral and Written Communication</td><td><input type="number" name="criteria_8" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Individual and Team work - Delegation of Responsibilities</td><td><input type="number" name="criteria_9" min="0" max="10" class="form-control mark-input" required></td></tr>
+                            <tr><td>Resource Planning</td><td><input type="number" name="criteria_10" min="0" max="10" class="form-control mark-input" required></td></tr>
+                        </table>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success" id="saveMarksBtn">Save Marks</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Outcome Entry Modal -->
+    <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="outcomeEntryModalLabel">Enter Project Outcome</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="outcomeEntryForm" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="student_name" id="outcome_student_name">
+                        <input type="hidden" name="reg_no" id="outcome_reg_no">
+                        <input type="hidden" name="form_type" value="outcome">
+                        
+                        <p><strong>Student Name:</strong> <span id="outcomeStudentName"></span></p>
+                        <p><strong>Reg No:</strong> <span id="outcomeRegNo"></span></p>
+
+                        <div class="form-group">
+                            <label for="project_outcome_type">Project Outcome Type</label>
+                            <select class="form-control" id="project_outcome_type" name="project_outcome_type" required>
+                                <option value="">Select Type</option>
+                                <option value="Application">Application</option>
+                                <option value="Product">Product</option>
+                                <option value="Research">Research</option>
+                                <option value="Patent">Patent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="outcome">Outcome</label>
+                            <select class="form-control" id="outcome" name="outcome" required>
+                                <option value="">Select Outcome</option>
+                                <option value="National Conference">National Conference</option>
+                                <option value="International Conference">International Conference</option>
+                                <option value="Scopus">Scopus</option>
+                                <option value="SCIE">SCIE</option>
+                                <option value="SCI">SCI</option>
+                                <option value="UGC">UGC</option>
+                                <option value="Otheres">Others</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="outcome_certificate">Outcome Certificate</label>
+                            <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="achieved">Achieved</label>
+                            <select class="form-control" id="achieved" name="achieved" required>
+                                <option value="">Select Status</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-success">Save Outcome</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    $(document).ready(function() {
+      // Show guide section by default if not reviewer
+      if (!$('#reviewerBtn').length) {
+        $('#guideSection').show();
+      }
+
+      // Guide button click
+      $('#guideBtn').click(function() {
+        $('#guideSection').show();
+        $('#reviewerSection').hide();
+        $(this).removeClass('btn-secondary').addClass('btn-primary');
+        $('#reviewerBtn').removeClass('btn-primary').addClass('btn-secondary');
       });
 
-      $("#reviewerBtn").click(function(){
-          $("#reviewerSection").removeClass("hidden").show();
-          $("#guideSection").addClass("hidden").hide();
-          $(this).addClass('btn-primary').removeClass('btn-secondary');
-          $("#guideBtn").addClass('btn-secondary').removeClass('btn-primary');
+      // Reviewer button click
+      $('#reviewerBtn').click(function() {
+        $('#reviewerSection').show();
+        $('#guideSection').hide();
+        $(this).removeClass('btn-secondary').addClass('btn-primary');
+        $('#guideBtn').removeClass('btn-primary').addClass('btn-secondary');
       });
 
       // Mark entry button click
       $(".mark-btn").click(function(){
-          var studentName = $(this).data("student");
-          var regNo = $(this).data("reg");
-          var courseCode = $(this).closest('tr').find('.course-code').text().trim();
-          var courseTitle = $(this).closest('tr').find('.course-title').text().trim();
-          
-          // Reset form and clear previous values
-          $('#markEntryForm')[0].reset();
-          
-          // Set form values
-          $("#modalStudentName").text(studentName);
-          $("#modalRegNo").text(regNo);
-          $("#modal_student_name").val(studentName);
-          $("#modal_reg_no").val(regNo);
-          $("#modal_course_code").val(courseCode);
-          $("#modal_course_title").val(courseTitle);
-          
-          // Update modal title based on reviewer type
-          var reviewerType = $("#modal_reviewer_type").val();
-          $('#markEntryModalLabel').text('Enter Review 1 Marks as ' + reviewerType);
+        var studentName = $(this).data("student");
+        var regNo = $(this).data("reg");
+        var courseCode = $(this).closest('tr').find('.course-code').text().trim();
+        var courseTitle = $(this).closest('tr').find('.course-title').text().trim();
+        
+        // Reset form and clear previous values
+        $('#markEntryForm')[0].reset();
+        
+        // Set form values
+        $("#modalStudentName").text(studentName);
+        $("#modalRegNo").text(regNo);
+        $("#modal_student_name").val(studentName);
+        $("#modal_reg_no").val(regNo);
+        $("#modal_course_code").val(courseCode);
+        $("#modal_course_title").val(courseTitle);
+        
+        // Update modal title based on reviewer type
+        var reviewerType = $("#modal_reviewer_type").val();
+        $('#markEntryModalLabel').text('Enter Review 1 Marks as ' + reviewerType);
       });
 
       // Outcome entry button click
       $(".outcome-btn").click(function(){
-          var studentName = $(this).data("student");
-          var regNo = $(this).data("reg");
-          
-          // Reset form and clear previous values
-          $('#outcomeEntryForm')[0].reset();
-          
-          // Set form values
-          $("#outcomeStudentName").text(studentName);
-          $("#outcomeRegNo").text(regNo);
-          $("#outcome_student_name").val(studentName);
-          $("#outcome_reg_no").val(regNo);
+        var studentName = $(this).data("student");
+        var regNo = $(this).data("reg");
+        
+        // Reset form and clear previous values
+        $('#outcomeEntryForm')[0].reset();
+        
+        // Set form values
+        $("#outcomeStudentName").text(studentName);
+        $("#outcomeRegNo").text(regNo);
+        $("#outcome_student_name").val(studentName);
+        $("#outcome_reg_no").val(regNo);
       });
 
       // Form submission
       $('#markEntryForm').on('submit', function(e) {
-          e.preventDefault();
-          
-          // Validate all required fields
-          var isValid = true;
-          $(this).find('input[required]').each(function() {
-              if (!$(this).val()) {
-                  isValid = false;
-                  $(this).addClass('is-invalid');
-              } else {
-                  $(this).removeClass('is-invalid');
-              }
-          });
-
-          if (!isValid) {
-              alert('Please fill in all required fields');
-              return;
+        e.preventDefault();
+        
+        // Validate all required fields
+        var isValid = true;
+        $(this).find('input[required]').each(function() {
+          if (!$(this).val()) {
+            isValid = false;
+            $(this).addClass('is-invalid');
+          } else {
+            $(this).removeClass('is-invalid');
           }
+        });
 
-          // Disable submit button to prevent double submission
-          $('#saveMarksBtn').prop('disabled', true);
+        if (!isValid) {
+          alert('Please fill in all required fields');
+          return;
+        }
 
-          // Submit the form
-          $.ajax({
-              url: window.location.href,
-              type: 'POST',
-              data: $(this).serialize(),
-              headers: {
-                  "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
-              },
-              success: function(response) {
-                  if (response.status === 'success') {
-                      $('#markEntryModal').modal('hide');
-                      alert('Marks saved successfully!');
-                      location.reload();
-                  } else {
-                      alert('Error: ' + (response.message || 'Unknown error occurred'));
-                      $('#saveMarksBtn').prop('disabled', false);
-                  }
-              },
-              error: function(xhr, errmsg, err) {
-                  console.error("Error details:", {
-                      status: xhr.status,
-                      responseText: xhr.responseText,
-                      error: err
-                  });
-                  alert('Error submitting marks. Please try again.');
-                  $('#saveMarksBtn').prop('disabled', false);
-              }
-          });
+        // Disable submit button to prevent double submission
+        $('#saveMarksBtn').prop('disabled', true);
+
+        // Submit the form
+        $.ajax({
+          url: window.location.href,
+          type: 'POST',
+          data: $(this).serialize(),
+          headers: {
+            "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              $('#markEntryModal').modal('hide');
+              alert('Marks saved successfully!');
+              location.reload();
+            } else {
+              alert('Error: ' + (response.message || 'Unknown error occurred'));
+              $('#saveMarksBtn').prop('disabled', false);
+            }
+          },
+          error: function(xhr, errmsg, err) {
+            console.error("Error details:", {
+              status: xhr.status,
+              responseText: xhr.responseText,
+              error: err
+            });
+            alert('Error submitting marks. Please try again.');
+            $('#saveMarksBtn').prop('disabled', false);
+          }
+        });
       });
 
       // Outcome form submission
       $('#outcomeEntryForm').on('submit', function(e) {
-          e.preventDefault();
-          
-          // Validate all required fields
-          var isValid = true;
-          $(this).find('select[required]').each(function() {
-              if (!$(this).val()) {
-                  isValid = false;
-                  $(this).addClass('is-invalid');
-              } else {
-                  $(this).removeClass('is-invalid');
-              }
-          });
-
-          if (!isValid) {
-              alert('Please fill in all required fields');
-              return;
+        e.preventDefault();
+        
+        // Validate all required fields
+        var isValid = true;
+        $(this).find('select[required]').each(function() {
+          if (!$(this).val()) {
+            isValid = false;
+            $(this).addClass('is-invalid');
+          } else {
+            $(this).removeClass('is-invalid');
           }
+        });
 
-          // Create FormData object for file upload
-          var formData = new FormData(this);
+        if (!isValid) {
+          alert('Please fill in all required fields');
+          return;
+        }
 
-          // Submit the form
-          $.ajax({
-              url: window.location.href,
-              type: 'POST',
-              data: formData,
-              processData: false,
-              contentType: false,
-              headers: {
-                  "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
-              },
-              success: function(response) {
-                  if (response.status === 'success') {
-                      $('#outcomeEntryModal').modal('hide');
-                      alert('Outcome saved successfully!');
-                      location.reload();
-                  } else {
-                      alert('Error: ' + (response.message || 'Unknown error occurred'));
-                  }
-              },
-              error: function(xhr, errmsg, err) {
-                  console.error("Error details:", {
-                      status: xhr.status,
-                      responseText: xhr.responseText,
-                      error: err
-                  });
-                  alert('Error submitting outcome. Please try again.');
-              }
-          });
+        // Create FormData object for file upload
+        var formData = new FormData(this);
+
+        // Submit the form
+        $.ajax({
+          url: window.location.href,
+          type: 'POST',
+          data: formData,
+          processData: false,
+          contentType: false,
+          headers: {
+            "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
+          },
+          success: function(response) {
+            if (response.status === 'success') {
+              $('#outcomeEntryModal').modal('hide');
+              alert('Outcome saved successfully!');
+              location.reload();
+            } else {
+              alert('Error: ' + (response.message || 'Unknown error occurred'));
+            }
+          },
+          error: function(xhr, errmsg, err) {
+            console.error("Error details:", {
+              status: xhr.status,
+              responseText: xhr.responseText,
+              error: err
+            });
+            alert('Error submitting outcome. Please try again.');
+          }
+        });
       });
 
       // Input validation for marks
       $('.mark-input').on('input', function() {
-          var value = parseInt($(this).val());
-          if (value > 10) {
-              alert('Max marks allowed is 10');
-              $(this).val(10);
-          } else if (value < 0) {
-              alert('Marks cannot be negative');
-              $(this).val(0);
-          }
+        var value = parseInt($(this).val());
+        if (value > 10) {
+          alert('Max marks allowed is 10');
+          $(this).val(10);
+        } else if (value < 0) {
+          alert('Marks cannot be negative');
+          $(this).val(0);
+        }
       });
-  });
-  </script>
+    });
+    </script>
   </div>
 </body>
 </html>
