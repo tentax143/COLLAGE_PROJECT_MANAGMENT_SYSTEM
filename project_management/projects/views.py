@@ -1529,6 +1529,7 @@ def final_outcome_entry(request):
         department=department,
         internal_guide_name=name
     )
+    print(filtered_students_list,"filtered_students_list")
 
     context = {
         'projects_list': projects_list,

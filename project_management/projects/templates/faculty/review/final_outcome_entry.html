@@ -130,109 +130,213 @@
 
   <!-- Sidebar Navigation (DO NOT MODIFY) -->
   <div class="vertical-nav bg-white" id="sidebar">
+    <!-- Header Section -->
     <div class="py-4 px-3 mb-4 bg-light border-bottom">
       <div class="media d-flex align-items-center">
         <div class="media-body">
-          <img decoding="async" src="{% static 'images/image.png' %}" alt="..." width="80" height="80" 
+          <img decoding="async" src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" 
                class="mr-3 rounded-bottom img-thumbnail shadow-sm">
           <h4 class="m-0">RIT</h4>
           <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
         </div>
       </div>
     </div>
+    <!-- User Info -->
     <div class="border-bottom mb-2" style="width: 23rem;">
       <div class="card-body text-center">
         <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-        <h5 class="card-title">{{name}}</h5>
-        <p class="card-text">{{department}}</p>
-        <p class="card-text">{{role}}</p>
+        <h5 class="card-title">{{ name }}</h5>
+        <p class="card-text">{{ department }}</p>
+        <p class="card-text">{{ role }}</p>
       </div>
     </div>
+    
+    <!-- Menu -->
     <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
     <ul class="nav flex-column bg-white mb-0">
-      <li class="nav-item">
-        <a href="{% url 'faculty_dashboard' %}" class="nav-link bg-info text-white">
-          <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-          view student
-        </a>
-      </li>
-      <li class="nav-item">
-        <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+      {% if role == 'HOD' %}
+        <!-- HOD Specific Navigation -->
+        <li class="nav-item">
+          <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
+            <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+            View Guide Detail
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#hodCommittee" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
+            Allocate Committee Members
+          </a>
+          <ul class="collapse list-unstyled ml-4" id="hodCommittee">
+            <li class="nav-item">
+              <a href="{% url 'review1' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 1
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'review2' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 2
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'review3' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 3
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
+            Allocate Guide
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#hodReviewMark" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
             Review Mark Entry
-        </a>
-        <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+          </a>
+          <ul class="collapse list-unstyled ml-4" id="hodReviewMark">
             <li class="nav-item">
-                <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 1
-                </a>
+              <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 1
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 2
-                </a>
+              <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 2
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 3
-                </a>
+              <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 3
+              </a>
             </li>
-        </ul>
-      </li>
-      <li class="nav-item">
-        <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-          <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-          Final Outcome Entry
-        </a>
-      </li>
-    </ul>  
-      <li class="nav-item">
-        <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-          <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-          Manual
-        </a>
-      </li>
-
-      <li class="nav-item">
-        <a href="{% url 'home_page' %}" class="nav-link text-dark">
-          <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-          Logout
-        </a>
-      </li>
-    </ul>  
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+            <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+            Final Outcome Entry
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'filter' %}" class="nav-link text-dark">
+            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+            Filter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+            Criteria Analysis
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+            <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+            Manual
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'home_page' %}" class="nav-link text-dark">
+            <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+            Logout
+          </a>
+        </li>
+      {% else %}
+        <!-- Faculty Specific Navigation -->
+        <li class="nav-item">
+          <a href="{% url 'faculty_dashboard' %}" class="nav-link bg-info text-white">
+            <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+            View Student
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#facultyReviewMark" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
+            Review Mark Entry
+          </a>
+          <ul class="collapse list-unstyled ml-4" id="facultyReviewMark">
+            <li class="nav-item">
+              <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 1
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 2
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 3
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+            <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+            Final Outcome Entry
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+            <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+            Manual
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'home_page' %}" class="nav-link text-dark">
+            <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+            Logout
+          </a>
+        </li>
+      {% endif %}
+    </ul>
   </div>
   <div class="page-content">
-    <h2>Project Management</h2>
-    <table class="table table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th>Student Name</th>
-          <th>Reg No</th>
-          <th>Project Title</th>
-          <th>Outcome Entry</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for project in filtered_students_list %}
-        <tr>
-          <td>{{ project.student_name }}</td>
-          <td>{{ project.reg_no }}</td>
-          <td>{{ project.title }}</td>
-          <td>
-            <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
-                data-student="{{ project.student_name }}" 
-                data-reg="{{ project.reg_no }}">
-                Outcome Entry
-            </button>
-        </td>
-        <td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="container-fluid">
+      <h2 class="mb-4">Final Outcome Entry</h2>
+      <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+          <thead class="thead-dark">
+            <tr>
+              <th>Student Name</th>
+              <th>Reg No</th>
+              <th>Project Title</th>
+              <th>Outcome Entry</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for project in filtered_students_list %}
+            <tr>
+              <td>{{ project.student_name }}</td>
+              <td>{{ project.reg_no }}</td>
+              <td>{{ project.title }}</td>
+              <td class="text-center">
+                <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
+                    data-student="{{ project.student_name }}" 
+                    data-reg="{{ project.reg_no }}">
+                    Outcome Entry
+                </button>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
   <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -274,12 +378,101 @@
                             <option value="SCIE">SCIE</option>
                             <option value="SCI">SCI</option>
                             <option value="UGC">UGC</option>
-                            <option value="Otheres">Others</option>
+                            <option value="Patent">Patent</option>
+                            <option value="Others">Others</option>
                         </select>
                     </div>
 
+                    <!-- Journal/Conference Fields -->
+                    <div id="journalFields">
+                        <div class="form-group">
+                            <label for="web_url">Web URL</label>
+                            <input type="url" class="form-control" id="web_url" name="web_url" placeholder="Enter publication web URL">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="journal_name">Journal/Conference Name</label>
+                            <input type="text" class="form-control" id="journal_name" name="journal_name" placeholder="Enter journal or conference name">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="volume">Volume</label>
+                                    <input type="text" class="form-control" id="volume" name="volume" placeholder="Enter volume">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="page_no">Page Number</label>
+                                    <input type="text" class="form-control" id="page_no" name="page_no" placeholder="Enter page number">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="doi">DOI</label>
+                            <input type="text" class="form-control" id="doi" name="doi" placeholder="Enter DOI">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="impact_factor">Impact Factor</label>
+                            <input type="text" class="form-control" id="impact_factor" name="impact_factor" placeholder="Enter impact factor">
+                        </div>
+                    </div>
+
+                    <!-- Patent Fields -->
+                    <div id="patentFields" style="display: none;">
+                        <div class="form-group">
+                            <label for="patent_type">Patent Type</label>
+                            <select class="form-control" id="patent_type" name="patent_type">
+                                <option value="">Select Patent Type</option>
+                                <option value="Utility">Utility Patent</option>
+                                <option value="Design">Design Patent</option>
+                                <option value="Plant">Plant Patent</option>
+                                <option value="Software">Software Patent</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="field_name">Field Name</label>
+                            <input type="text" class="form-control" id="field_name" name="field_name" placeholder="Enter field name">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inventor_name">Inventor Name</label>
+                            <input type="text" class="form-control" id="inventor_name" name="inventor_name" placeholder="Enter inventor name">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="filed_date">Filed Date</label>
+                                    <input type="date" class="form-control" id="filed_date" name="filed_date">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="published_date">Published Date</label>
+                                    <input type="date" class="form-control" id="published_date" name="published_date">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="granted_date">Granted Date</label>
+                                    <input type="date" class="form-control" id="granted_date" name="granted_date">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patent_web_url">Web URL</label>
+                            <input type="url" class="form-control" id="patent_web_url" name="patent_web_url" placeholder="Enter patent web URL">
+                        </div>
+                    </div>
+
                     <div class="form-group">
-                        <label for="outcome_certificate">Outcome Certificate</label>
+                        <label for="outcome_certificate">Outcome Certificate/patent proof</label>
                         <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
                     </div>
 
@@ -303,16 +496,6 @@
 </div>
 <script>
     $(document).ready(function(){
-        $("#guideBtn").click(function(){
-            $("#guideSection").removeClass("hidden").show();
-            $("#reviewerSection").addClass("hidden").hide();
-        });
-  
-        $("#reviewerBtn").click(function(){
-            $("#reviewerSection").removeClass("hidden").show();
-            $("#guideSection").addClass("hidden").hide();
-        });
-  
         // Outcome entry button click
         $(".outcome-btn").click(function(){
             var studentName = $(this).data("student");
@@ -326,7 +509,34 @@
             $("#outcomeRegNo").text(regNo);
             $("#outcome_student_name").val(studentName);
             $("#outcome_reg_no").val(regNo);
+
+            // Show/hide appropriate fields based on initial state
+            toggleFields();
         });
+
+        // Toggle fields based on outcome selection
+        $("#outcome").change(function() {
+            toggleFields();
+        });
+
+        function toggleFields() {
+            var selectedOutcome = $("#outcome").val();
+            if (selectedOutcome === "Patent") {
+                $("#journalFields").hide();
+                $("#patentFields").show();
+                // Make patent fields required
+                $("#patentFields input, #patentFields select").prop('required', true);
+                // Make journal fields not required
+                $("#journalFields input, #journalFields select").prop('required', false);
+            } else {
+                $("#journalFields").show();
+                $("#patentFields").hide();
+                // Make journal fields required
+                $("#journalFields input, #journalFields select").prop('required', true);
+                // Make patent fields not required
+                $("#patentFields input, #patentFields select").prop('required', false);
+            }
+        }
   
         // Outcome form submission
         $('#outcomeEntryForm').on('submit', function(e) {
@@ -334,7 +544,7 @@
             
             // Validate all required fields
             var isValid = true;
-            $(this).find('select[required]').each(function() {
+            $(this).find('[required]').each(function() {
                 if (!$(this).val()) {
                     isValid = false;
                     $(this).addClass('is-invalid');
@@ -371,36 +581,12 @@
                     }
                 },
                 error: function(xhr, errmsg, err) {
-                    console.error("Error details:", {
-                        status: xhr.status,
-                        responseText: xhr.responseText,
-                        error: err
-                    });
+                    console.log("Error details:", xhr.status + ": " + xhr.responseText);
                     alert('Error submitting outcome. Please try again.');
                 }
             });
         });
     });
-    </script>
-    <script>
-    $(document).ready(function(){
-        $(".mark-btn").click(function(){
-            var studentName = $(this).data("student");
-            var regNo = $(this).data("reg");
-            $("#modalStudentName").text(studentName);
-            $("#modalRegNo").text(regNo);
-        });
-    });
-    </script>
-    <script>
-    document.querySelectorAll('.mark-input').forEach(input => {
-        input.addEventListener('input', function () {
-            if (this.value > 10) {
-                alert('Max marks allowed is 10');
-                this.value = 10; // Reset value to 10
-            }
-        });
-    });
-    </script>
+</script>
 </body>
 </html>

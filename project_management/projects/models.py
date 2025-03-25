@@ -228,6 +228,37 @@ class departments(models.Model):
         db_table='application_departments'
         manage=False
 
+class final_outcome(models.Model):
+    reg_no=models.CharField(max_length=20,null=True,blank=True)
+    batch=models.CharField(max_length=200,null=True,blank=True)
+    semester=models.CharField(max_length=200,null=True,blank=True)
+    guide_name=models.CharField(max_length=200,null=True,blank=True)
+    outcome=models.CharField(max_length=200,null=True,blank=True)
+    web_url=models.CharField(max_length=200,null=True,blank=True)
+    journal_name=models.CharField(max_length=200,null=True,blank=True)
+    volume=models.CharField(max_length=200,null=True,blank=True)
+    page_no=models.CharField(max_length=200,null=True,blank=True)
+    doi=models.CharField(max_length=200,null=True,blank=True)
+    impact_factor=models.CharField(max_length=200,null=True,blank=True)
+    project_title=models.CharField(max_length=200,null=True,blank=True)
+    filed_date=models.DateField(null=True,blank=True)
+    published_date=models.DateField(null=True,blank=True)
+    granted_date=models.DateField(null=True,blank=True)
+    patent_web_url=models.CharField(max_length=200,null=True,blank=True)
+    outcome_certificate=models.FileField(null=True,blank=True) 
+    filed_name=models.CharField(max_length=200,null=True,blank=True)
+    patent_number=models.CharField(max_length=200,null=True,blank=True)
+    patent_type=models.CharField(max_length=200,null=True,blank=True)
+    granted_date=models.DateField(null=True,blank=True)
+    inventor_name=models.CharField(max_length=200,null=True,blank=True)
+    
+
+
+    
+
+    
+
+
 
 
 
