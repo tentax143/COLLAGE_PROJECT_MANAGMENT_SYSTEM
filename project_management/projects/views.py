@@ -3,13 +3,15 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master
-import datetime
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome
+from datetime import datetime
 from django.contrib import messages
 import hashlib
 from django.db import connections
 from django.http import JsonResponse
-
+import pandas as pd
+from io import BytesIO
+from django.db.models import Count
 
 def encrypt_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -1478,6 +1480,29 @@ def faculty_review2_markentry(request):
         'is_reviewer': is_reviewer,  # Pass True or False
     })
 
+def handle_uploaded_file(file, batch, department, reg_no):
+    # Create directory structure: batch/department/reg_no/
+    upload_dir = os.path.join(settings.MEDIA_ROOT, 'outcome_certificates', str(batch), str(department), str(reg_no))
+    
+    # Create directories if they don't exist
+    os.makedirs(upload_dir, exist_ok=True)
+    
+    # Generate unique filename using timestamp
+    timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+    file_extension = os.path.splitext(file.name)[1]
+    filename = f'outcome_certificate_{timestamp}{file_extension}'
+    
+    # Full path for the file
+    file_path = os.path.join(upload_dir, filename)
+    
+    # Save the file
+    with open(file_path, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    
+    # Return the relative path from MEDIA_ROOT
+    return os.path.join('outcome_certificates', str(batch), str(department), str(reg_no), filename)
+
 def final_outcome_entry(request):
     role = request.session.get('role')
     department = request.session.get('department')
@@ -1486,40 +1511,115 @@ def final_outcome_entry(request):
     if request.method == "POST":
         form_type = request.POST.get('form_type')
         
-        if form_type == 'outcome':
-            # Handle outcome form submission
-            student_name = request.POST.get('student_name')
-            reg_no = request.POST.get('reg_no')
-            project_outcome_type = request.POST.get('project_outcome_type')
-            outcome = request.POST.get('outcome')
-            achieved = request.POST.get('achieved')
-            outcome_certificate = request.FILES.get('outcome_certificate')
-            
+        if form_type == 'both':
             try:
-                # Find the project and update its details
+                print("Received POST data:", request.POST)
+                print("Received FILES:", request.FILES)
+                
+                # Get the project
                 project = Project.objects.get(
-                    student_name=student_name,
-                    reg_no=reg_no,
+                    student_name=request.POST.get('student_name'),
+                    reg_no=request.POST.get('reg_no'),
                     department=department
                 )
                 
-                # Update project fields
-                project.project_outcome_type = project_outcome_type
-                project.outcome = outcome
-                project.achieved = achieved
+                # Handle file upload if present
+                if 'outcome_certificate' in request.FILES:
+                    file = request.FILES['outcome_certificate']
+                    relative_file_path = handle_uploaded_file(file, project.batch, project.department, project.reg_no)
+                    
+                    # Update project model with file path
+                    project.outcome_certificate = relative_file_path
+                    print(f"Updated project.outcome_certificate with: {relative_file_path}")
                 
-                # Handle file upload
-                if outcome_certificate:
-                    # Generate a unique filename
-                    filename = f"outcome_cert_{reg_no}_{outcome_certificate.name}"
-                    project.outcome_certificate = outcome_certificate
+                # Update Project model fields
+                project.project_outcome_type = request.POST.get('project_outcome_type')
+                project.outcome = request.POST.get('outcome')
+                project.achieved = request.POST.get('achieved')
+                
+                print("Saving project model with data:", {
+                    'project_outcome_type': project.project_outcome_type,
+                    'outcome': project.outcome,
+                    'achieved': project.achieved,
+                    'outcome_certificate': project.outcome_certificate if 'outcome_certificate' in request.FILES else 'No new file'
+                })
                 
                 project.save()
-                return JsonResponse({'status': 'success', 'message': 'Outcome details saved successfully'})
+                print("Project model saved successfully")
+
+                # Process date fields
+                filed_date = None
+                published_date = None
+                granted_date = None
+                
+                try:
+                    if request.POST.get('filed_date'):
+                        filed_date = datetime.strptime(request.POST.get('filed_date'), '%Y-%m-%d').date()
+                    if request.POST.get('published_date'):
+                        published_date = datetime.strptime(request.POST.get('published_date'), '%Y-%m-%d').date()
+                    if request.POST.get('granted_date'):
+                        granted_date = datetime.strptime(request.POST.get('granted_date'), '%Y-%m-%d').date()
+                except ValueError as e:
+                    print(f"Date parsing error: {str(e)}")
+                    return JsonResponse({'status': 'error', 'message': f'Invalid date format: {str(e)}'}, status=400)
+
+                # Prepare data for final_outcome model
+                final_outcome_data = {
+                    'batch': project.batch,
+                    'semester': project.semester,
+                    'guide_name': project.internal_guide_name,
+                    'project_title': project.title,
+                    'outcome': request.POST.get('outcome'),
+                    'web_url': request.POST.get('web_url') or None,
+                    'journal_name': request.POST.get('journal_name') or None,
+                    'volume': request.POST.get('volume') or None,
+                    'page_no': request.POST.get('page_no') or None,
+                    'doi': request.POST.get('doi') or None,
+                    'impact_factor': request.POST.get('impact_factor') or None,
+                    'filed_date': filed_date,
+                    'published_date': published_date,
+                    'granted_date': granted_date,
+                    'patent_web_url': request.POST.get('patent_web_url') or None,
+                    'filed_name': request.POST.get('field_name') or None,
+                    'patent_type': request.POST.get('patent_type') or None,
+                    'inventor_name': request.POST.get('inventor_name') or None,
+                    'patent_number': request.POST.get('patent_number') or None
+                }
+
+                if 'outcome_certificate' in request.FILES:
+                    final_outcome_data['outcome_certificate'] = relative_file_path
+
+                print("Creating/updating final_outcome with data:", final_outcome_data)
+
+                # Create/Update final_outcome model
+                final_outcome_obj, created = final_outcome.objects.update_or_create(
+                    reg_no=request.POST.get('reg_no'),
+                    defaults=final_outcome_data
+                )
+
+                print(f"final_outcome model {'created' if created else 'updated'} successfully")
+                
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Outcome details saved successfully',
+                    'created': created
+                })
+
             except Project.DoesNotExist:
-                return JsonResponse({'status': 'error', 'message': 'Project not found'}, status=404)
+                print("Project not found error")
+                return JsonResponse({
+                    'status': 'error',
+                    'message': 'Project not found for the given student name and registration number'
+                }, status=404)
             except Exception as e:
-                return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+                print(f"Error saving outcome: {str(e)}")
+                import traceback
+                print("Full traceback:", traceback.format_exc())
+                return JsonResponse({
+                    'status': 'error',
+                    'message': f'Error saving outcome: {str(e)}',
+                    'details': traceback.format_exc()
+                }, status=500)
 
     # Get all projects for the department
     projects_list = Project.objects.filter(department=department)
@@ -1529,7 +1629,6 @@ def final_outcome_entry(request):
         department=department,
         internal_guide_name=name
     )
-    print(filtered_students_list,"filtered_students_list")
 
     context = {
         'projects_list': projects_list,
@@ -1540,6 +1639,7 @@ def final_outcome_entry(request):
     }
 
     return render(request, 'faculty/review/final_outcome_entry.html', context)
+
 def filter(request):
     role = request.session.get('role')
     department = request.session.get('department')
@@ -1593,6 +1693,7 @@ def filter(request):
         'selected_achieved': selected_achieved,
     }
     return render(request, "faculty/filter.html", context)
+
 def admin_portal(request):
     return(request,"e-approval/page.html")
 
@@ -1600,12 +1701,16 @@ def admin_portal(request):
 def principal_dashboard(request):
     role = request.session.get('role')
     name = request.session.get('name')
-    
+    batch = int(datetime.now().year)
+    current_batch = f"{batch-4}-{str(batch)[2:]}"
+    project_batch = f"{batch-4}-{str(batch)}"
     # Get filter parameters
     selected_department = request.GET.get('department')  # Default: Show all departments
     selected_batch = request.GET.get('batch')
     selected_outcome_type = request.GET.get('outcome_type')
     selected_achieved = request.GET.get('achieved')
+    all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(batch=current_batch)
+    total_students = all_students.count()
 
     # Base queryset: Initially fetch all departments' data
     projects = Project.objects.all()
@@ -1620,6 +1725,8 @@ def principal_dashboard(request):
     # Apply department filter dynamically
     if selected_department:
         projects = projects.filter(department=selected_department)
+        p_1=projects.count()
+        print(p_1)
 
     # Apply additional filters
     if selected_batch:
@@ -1640,7 +1747,9 @@ def principal_dashboard(request):
     total_research_projects = projects.filter(project_outcome_type='Research').count()
     total_patent_projects = projects.filter(project_outcome_type='Patent').count()
     total_product_projects = projects.filter(project_outcome_type='Product').count()
-    total_students = projects.count()
+    all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(batch=current_batch)
+    total_students = all_students.count()
+
     no_count = total_students - (total_application_projects + total_research_projects + total_patent_projects + total_product_projects)
 
     context = {
@@ -1668,19 +1777,45 @@ def principal_dashboard(request):
 
 def criteria_analysis(request):
     role = request.session.get('role')
-    department = request.session.get('department')
     name = request.session.get('name')
-    projects_1 = Project.objects.filter(department=department,achieved="Yes",outcome="National Conference").count()
-    projects_2 = Project.objects.filter(department=department,achieved="Yes",outcome="International Conference").count()
-    projects_3 = Project.objects.filter(department=department,achieved="Yes",outcome="Scopus").count()
-    projects_4 = Project.objects.filter(department=department,achieved="Yes",outcome="SCIE").count()
-    projects_5 = Project.objects.filter(department=department,achieved="Yes",outcome="SCI").count()
-    projects_6 = Project.objects.filter(department=department,achieved="Yes",outcome="UGC").count()
-    projects_7 = Project.objects.filter(department=department,achieved="Yes",outcome="Others").count()
+    
+    # Get selected department from request, default to user's department if not specified
+    selected_department = request.GET.get('department', request.session.get('department'))
+    
+    # Get all available departments for the dropdown
+    available_departments = Project.objects.values_list('department', flat=True).distinct()
+    
+    # Filter projects based on selected department
+    projects = Project.objects.filter(department=selected_department)
+    
+    # Count projects for different outcomes
+    projects_1 = projects.filter(achieved="Yes", outcome="National Conference").count()
+    projects_2 = projects.filter(achieved="Yes", outcome="International Conference").count()
+    projects_3 = projects.filter(achieved="Yes", outcome="Scopus").count()
+    projects_4 = projects.filter(achieved="Yes", outcome="SCIE").count()
+    projects_5 = projects.filter(achieved="Yes", outcome="SCI").count()
+    projects_6 = projects.filter(achieved="Yes", outcome="UGC").count()
+    projects_7 = projects.filter(achieved="Yes", outcome="Others").count()
+    
+    # Calculate total projects for percentage calculations
+    total_projects = projects_1 + projects_2 + projects_3 + projects_4 + projects_5 + projects_6 + projects_7
+    
+    # Calculate percentages
+    percentages = {
+        'national_conf': round((projects_1 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'international_conf': round((projects_2 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'scopus': round((projects_3 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'scie': round((projects_4 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'sci': round((projects_5 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'ugc': round((projects_6 / total_projects * 100) if total_projects > 0 else 0, 2),
+        'others': round((projects_7 / total_projects * 100) if total_projects > 0 else 0, 2)
+    }
+    
     return render(request, "faculty/criteria_analysis.html", {
         'role': role,
-        'department': department,
         'name': name,
+        'selected_department': selected_department,
+        'available_departments': available_departments,
         'projects_1': projects_1,
         'projects_2': projects_2,
         'projects_3': projects_3,
@@ -1688,4 +1823,172 @@ def criteria_analysis(request):
         'projects_5': projects_5,
         'projects_6': projects_6,
         'projects_7': projects_7,
+        'total_projects': total_projects,
+        'percentages': percentages,
     })
+
+def export_to_excel(request):
+    department = request.session.get('department')
+    
+    # Get all projects for the department
+    projects = Project.objects.filter(department=department)
+    
+    # Create lists to store the data
+    data = []
+    
+    for project in projects:
+        # Try to get corresponding final_outcome record
+        try:
+            outcome = final_outcome.objects.get(reg_no=project.reg_no)
+            
+            # Combine data from both models
+            row = {
+                'Registration Number': project.reg_no,
+                'Student Name': project.student_name,
+                'Department': project.department,
+                'Batch': project.batch,
+                'Project Title': project.title,
+                'Project Type': project.project_type,
+                'Internal Guide': project.internal_guide_name,
+                'Project Outcome Type': project.project_outcome_type,
+                'Outcome': project.outcome,
+                'Achieved': project.achieved,
+                
+                # Final Outcome specific fields
+                'Journal Name': outcome.journal_name,
+                'Volume': outcome.volume,
+                'Page Number': outcome.page_no,
+                'DOI': outcome.doi,
+                'Impact Factor': outcome.impact_factor,
+                'Web URL': outcome.web_url,
+                
+                # Patent specific fields
+                'Patent Type': outcome.patent_type,
+                'Filed Name': outcome.filed_name,
+                'Inventor Name': outcome.inventor_name,
+                'Patent Number': outcome.patent_number,
+                'Filed Date': outcome.filed_date,
+                'Published Date': outcome.published_date,
+                'Granted Date': outcome.granted_date,
+                'Patent Web URL': outcome.patent_web_url,
+            }
+            data.append(row)
+        except final_outcome.DoesNotExist:
+            # If no final_outcome record exists, just use project data
+            row = {
+                'Registration Number': project.reg_no,
+                'Student Name': project.student_name,
+                'Department': project.department,
+                'Batch': project.batch,
+                'Project Title': project.title,
+                'Project Type': project.project_type,
+                'Internal Guide': project.internal_guide_name,
+                'Project Outcome Type': project.project_outcome_type,
+                'Outcome': project.outcome,
+                'Achieved': project.achieved,
+                
+                # Empty values for final_outcome fields
+                'Journal Name': '',
+                'Volume': '',
+                'Page Number': '',
+                'DOI': '',
+                'Impact Factor': '',
+                'Web URL': '',
+                'Patent Type': '',
+                'Filed Name': '',
+                'Inventor Name': '',
+                'Patent Number': '',
+                'Filed Date': '',
+                'Published Date': '',
+                'Granted Date': '',
+                'Patent Web URL': '',
+            }
+            data.append(row)
+    
+    # Create DataFrame
+    df = pd.DataFrame(data)
+    
+    # Create Excel file in memory
+    excel_file = BytesIO()
+    with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
+        df.to_excel(writer, sheet_name='Project Outcomes', index=False)
+        
+        # Get workbook and worksheet objects
+        workbook = writer.book
+        worksheet = writer.sheets['Project Outcomes']
+        
+        # Add some formatting
+        header_format = workbook.add_format({
+            'bold': True,
+            'bg_color': '#D3D3D3',
+            'border': 1
+        })
+        
+        # Format the header row
+        for col_num, value in enumerate(df.columns.values):
+            worksheet.write(0, col_num, value, header_format)
+            worksheet.set_column(col_num, col_num, 15)  # Set column width
+    
+    # Set up the response
+    excel_file.seek(0)
+    response = HttpResponse(
+        excel_file.read(),
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = f'attachment; filename=project_outcomes_{department}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    
+    return response
+
+def download_certificate(request, reg_no):
+    try:
+        # Get the project
+        project = Project.objects.get(reg_no=reg_no)
+        
+        if not project.outcome_certificate:
+            print(f"No certificate found for reg_no: {reg_no}")
+            return HttpResponse("No certificate found", status=404)
+            
+        # Get the directory path from the stored path
+        stored_path = str(project.outcome_certificate)
+        directory_path = os.path.dirname(os.path.join(settings.MEDIA_ROOT, stored_path))
+        
+        print(f"Looking for files in directory: {directory_path}")
+        
+        if not os.path.exists(directory_path):
+            print(f"Directory does not exist: {directory_path}")
+            return HttpResponse("Directory not found", status=404)
+            
+        # List all files in the directory
+        files = os.listdir(directory_path)
+        print(f"Files found in directory: {files}")
+        
+        # Find the most recent outcome certificate file
+        matching_files = [f for f in files if f.startswith('outcome_certificate_')]
+        if not matching_files:
+            print("No matching files found")
+            return HttpResponse("File not found", status=404)
+            
+        # Get the most recent file
+        latest_file = max(matching_files, key=lambda x: os.path.getctime(os.path.join(directory_path, x)))
+        file_path = os.path.join(directory_path, latest_file)
+        
+        print(f"Using file: {latest_file}")
+        
+        if not os.path.exists(file_path):
+            print(f"File not found at path: {file_path}")
+            return HttpResponse("File not found", status=404)
+            
+        # Open the file and create response
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="{latest_file}"'
+            return response
+            
+    except Project.DoesNotExist:
+        print(f"Project not found for reg_no: {reg_no}")
+        return HttpResponse("Project not found", status=404)
+    except Exception as e:
+        print(f"Error downloading file: {str(e)}")
+        import traceback
+        print("Full traceback:", traceback.format_exc())
+        return HttpResponse(f"Error downloading file: {str(e)}", status=500)

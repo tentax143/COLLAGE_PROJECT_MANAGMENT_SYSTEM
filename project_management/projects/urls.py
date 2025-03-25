@@ -28,4 +28,7 @@ urlpatterns = [
     path('filter/', views.filter, name='filter'),
     path('principal_dashboard/', views.principal_dashboard, name='principal_dashboard'),
     path('criteria_analysis/', views.criteria_analysis, name='criteria_analysis'),
+    path('export_to_excel/', views.export_to_excel, name='export_to_excel'),
+    path('export_to_excel/', views.export_to_excel, name='export_to_excel'),
+    path('download_certificate/<str:reg_no>/', views.download_certificate, name='download_certificate'),
 ]

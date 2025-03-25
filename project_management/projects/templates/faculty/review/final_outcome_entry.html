@@ -307,7 +307,21 @@
   </div>
   <div class="page-content">
     <div class="container-fluid">
-      <h2 class="mb-4">Final Outcome Entry</h2>
+      <div class="row mb-3">
+        <div class="col">
+          <h2>Final Outcome Entry</h2>
+        </div>
+        {% if role == 'HOD' %}
+        <div class="col-auto">
+          <button id="toggleView" class="btn btn-primary me-2">
+            <i class="fas fa-users"></i> Show All Students
+          </button>
+          {% endif %}
+          <a href="{% url 'export_to_excel' %}" class="btn btn-success">
+            <i class="fas fa-file-excel"></i> Export to Excel
+          </a>
+        </div>
+      </div>
       <div class="table-responsive">
         <table class="table table-bordered table-hover">
           <thead class="thead-dark">
@@ -315,21 +329,46 @@
               <th>Student Name</th>
               <th>Reg No</th>
               <th>Project Title</th>
-              <th>Outcome Entry</th>
+              <th>Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="filteredStudents">
             {% for project in filtered_students_list %}
             <tr>
               <td>{{ project.student_name }}</td>
               <td>{{ project.reg_no }}</td>
               <td>{{ project.title }}</td>
-              <td class="text-center">
-                <button class="btn btn-info outcome-btn" data-toggle="modal" data-target="#outcomeEntryModal" 
-                    data-student="{{ project.student_name }}" 
-                    data-reg="{{ project.reg_no }}">
-                    Outcome Entry
+              <td>
+                <button type="button" class="btn btn-primary btn-sm outcome-btn" 
+                        data-student="{{ project.student_name }}" 
+                        data-reg="{{ project.reg_no }}">
+                  Outcome Entry
                 </button>
+                {% if project.outcome_certificate %}
+                <a href="{% url 'download_certificate' project.reg_no %}" class="btn btn-info btn-sm">
+                  <i class="fas fa-download"></i> Download PDF
+                </a>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+          <tbody id="allStudents" style="display: none;">
+            {% for project in projects_list %}
+            <tr>
+              <td>{{ project.student_name }}</td>
+              <td>{{ project.reg_no }}</td>
+              <td>{{ project.title }}</td>
+              <td>
+                <button type="button" class="btn btn-primary btn-sm" 
+                        onclick="openOutcomeModal('{{ project.student_name }}', '{{ project.reg_no }}', '{{ project.title }}')">
+                  Outcome Entry
+                </button>
+                {% if project.outcome_certificate %}
+                <a href="{% url 'download_certificate' project.reg_no %}" class="btn btn-info btn-sm">
+                  <i class="fas fa-download"></i> Download PDF
+                </a>
+                {% endif %}
               </td>
             </tr>
             {% endfor %}
@@ -338,33 +377,30 @@
       </div>
     </div>
   </div>
-  <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+  <div class="modal fade" id="outcomeEntryModal" tabindex="-1" role="dialog" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="outcomeEntryModalLabel">Enter Project Outcome</h5>
+                <h5 class="modal-title" id="outcomeEntryModalLabel">Project Outcome Entry</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form id="outcomeEntryForm" method="POST">
+                <form id="outcomeEntryForm" enctype="multipart/form-data">
                     {% csrf_token %}
-                    <input type="hidden" name="student_name" id="outcome_student_name">
-                    <input type="hidden" name="reg_no" id="outcome_reg_no">
-                    <input type="hidden" name="form_type" value="outcome">
-                    
-                    <p><strong>Student Name:</strong> <span id="outcomeStudentName"></span></p>
-                    <p><strong>Reg No:</strong> <span id="outcomeRegNo"></span></p>
+                    <input type="hidden" id="student_name" name="student_name">
+                    <input type="hidden" id="reg_no" name="reg_no">
+                    <input type="hidden" id="project_title" name="project_title">
 
                     <div class="form-group">
                         <label for="project_outcome_type">Project Outcome Type</label>
                         <select class="form-control" id="project_outcome_type" name="project_outcome_type" required>
-                            <option value="">Select Type</option>
+                            <option value="">Select Outcome Type</option>
                             <option value="Application">Application</option>
-                            <option value="Product">Product</option>
                             <option value="Research">Research</option>
                             <option value="Patent">Patent</option>
+                            <option value="Product">Product</option>
                         </select>
                     </div>
 
@@ -386,38 +422,28 @@
                     <!-- Journal/Conference Fields -->
                     <div id="journalFields">
                         <div class="form-group">
-                            <label for="web_url">Web URL</label>
-                            <input type="url" class="form-control" id="web_url" name="web_url" placeholder="Enter publication web URL">
-                        </div>
-
-                        <div class="form-group">
                             <label for="journal_name">Journal/Conference Name</label>
-                            <input type="text" class="form-control" id="journal_name" name="journal_name" placeholder="Enter journal or conference name">
+                            <input type="text" class="form-control" id="journal_name" name="journal_name">
                         </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="volume">Volume</label>
-                                    <input type="text" class="form-control" id="volume" name="volume" placeholder="Enter volume">
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="page_no">Page Number</label>
-                                    <input type="text" class="form-control" id="page_no" name="page_no" placeholder="Enter page number">
-                                </div>
-                            </div>
+                        <div class="form-group">
+                            <label for="volume">Volume</label>
+                            <input type="text" class="form-control" id="volume" name="volume">
                         </div>
-
+                        <div class="form-group">
+                            <label for="page_no">Page Number</label>
+                            <input type="text" class="form-control" id="page_no" name="page_no">
+                        </div>
                         <div class="form-group">
                             <label for="doi">DOI</label>
-                            <input type="text" class="form-control" id="doi" name="doi" placeholder="Enter DOI">
+                            <input type="text" class="form-control" id="doi" name="doi">
                         </div>
-
                         <div class="form-group">
                             <label for="impact_factor">Impact Factor</label>
-                            <input type="text" class="form-control" id="impact_factor" name="impact_factor" placeholder="Enter impact factor">
+                            <input type="text" class="form-control" id="impact_factor" name="impact_factor">
+                        </div>
+                        <div class="form-group">
+                            <label for="web_url">Web URL</label>
+                            <input type="url" class="form-control" id="web_url" name="web_url">
                         </div>
                     </div>
 
@@ -427,23 +453,19 @@
                             <label for="patent_type">Patent Type</label>
                             <select class="form-control" id="patent_type" name="patent_type">
                                 <option value="">Select Patent Type</option>
-                                <option value="Utility">Utility Patent</option>
-                                <option value="Design">Design Patent</option>
-                                <option value="Plant">Plant Patent</option>
-                                <option value="Software">Software Patent</option>
+                                <option value="Design">Design</option>
+                                <option value="Utility">Utility</option>
+                                <option value="Plant">Plant</option>
                             </select>
                         </div>
-
                         <div class="form-group">
                             <label for="field_name">Field Name</label>
-                            <input type="text" class="form-control" id="field_name" name="field_name" placeholder="Enter field name">
+                            <input type="text" class="form-control" id="field_name" name="field_name">
                         </div>
-
                         <div class="form-group">
                             <label for="inventor_name">Inventor Name</label>
-                            <input type="text" class="form-control" id="inventor_name" name="inventor_name" placeholder="Enter inventor name">
+                            <input type="text" class="form-control" id="inventor_name" name="inventor_name">
                         </div>
-
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="form-group">
@@ -464,30 +486,29 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <label for="patent_web_url">Web URL</label>
-                            <input type="url" class="form-control" id="patent_web_url" name="patent_web_url" placeholder="Enter patent web URL">
+                            <label for="patent_web_url">Patent Web URL</label>
+                            <input type="url" class="form-control" id="patent_web_url" name="patent_web_url">
                         </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="outcome_certificate">Outcome Certificate/patent proof</label>
-                        <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
                     </div>
 
                     <div class="form-group">
                         <label for="achieved">Achieved</label>
                         <select class="form-control" id="achieved" name="achieved" required>
                             <option value="">Select Status</option>
-                            <option value="yes">Yes</option>
-                            <option value="no">No</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
                         </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="outcome_certificate">Upload Certificate</label>
+                        <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate">
                     </div>
 
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-success">Save Outcome</button>
+                        <button type="submit" class="btn btn-primary">Save Outcome</button>
                     </div>
                 </form>
             </div>
@@ -495,50 +516,16 @@
     </div>
 </div>
 <script>
-    $(document).ready(function(){
-        // Outcome entry button click
-        $(".outcome-btn").click(function(){
-            var studentName = $(this).data("student");
-            var regNo = $(this).data("reg");
-            
-            // Reset form and clear previous values
-            $('#outcomeEntryForm')[0].reset();
-            
-            // Set form values
-            $("#outcomeStudentName").text(studentName);
-            $("#outcomeRegNo").text(regNo);
-            $("#outcome_student_name").val(studentName);
-            $("#outcome_reg_no").val(regNo);
-
-            // Show/hide appropriate fields based on initial state
-            toggleFields();
-        });
-
-        // Toggle fields based on outcome selection
-        $("#outcome").change(function() {
-            toggleFields();
-        });
-
-        function toggleFields() {
-            var selectedOutcome = $("#outcome").val();
-            if (selectedOutcome === "Patent") {
-                $("#journalFields").hide();
-                $("#patentFields").show();
-                // Make patent fields required
-                $("#patentFields input, #patentFields select").prop('required', true);
-                // Make journal fields not required
-                $("#journalFields input, #journalFields select").prop('required', false);
-            } else {
-                $("#journalFields").show();
-                $("#patentFields").hide();
-                // Make journal fields required
-                $("#journalFields input, #journalFields select").prop('required', true);
-                // Make patent fields not required
-                $("#patentFields input, #patentFields select").prop('required', false);
-            }
+    $(document).ready(function() {
+        // Function to open the outcome modal
+        function openOutcomeModal(studentName, regNo, title) {
+            $('#student_name').val(studentName);
+            $('#reg_no').val(regNo);
+            $('#project_title').val(title);
+            $('#outcomeEntryModal').modal('show');
         }
-  
-        // Outcome form submission
+
+        // Handle form submission
         $('#outcomeEntryForm').on('submit', function(e) {
             e.preventDefault();
             
@@ -552,15 +539,22 @@
                     $(this).removeClass('is-invalid');
                 }
             });
-  
+
             if (!isValid) {
                 alert('Please fill in all required fields');
                 return;
             }
-  
+
             // Create FormData object for file upload
             var formData = new FormData(this);
-  
+            formData.append('form_type', 'both');
+
+            // Log form data for debugging
+            console.log("Submitting form with data:");
+            for (var pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
             // Submit the form
             $.ajax({
                 url: window.location.href,
@@ -572,6 +566,7 @@
                     "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
                 },
                 success: function(response) {
+                    console.log("Server response:", response);
                     if (response.status === 'success') {
                         $('#outcomeEntryModal').modal('hide');
                         alert('Outcome saved successfully!');
@@ -582,9 +577,60 @@
                 },
                 error: function(xhr, errmsg, err) {
                     console.log("Error details:", xhr.status + ": " + xhr.responseText);
-                    alert('Error submitting outcome. Please try again.');
+                    try {
+                        var response = JSON.parse(xhr.responseText);
+                        alert('Error: ' + (response.message || 'Unknown error occurred'));
+                    } catch(e) {
+                        alert('Error submitting outcome. Please try again.');
+                    }
                 }
             });
+        });
+
+        // Toggle fields based on outcome selection
+        $("#outcome").change(function() {
+            var selectedOutcome = $(this).val();
+            if (selectedOutcome === "Patent") {
+                $("#journalFields").hide();
+                $("#patentFields").show();
+                // Make patent fields required
+                $("#patentFields input, #patentFields select").prop('required', true);
+                // Make journal fields not required
+                $("#journalFields input").prop('required', false);
+            } else {
+                $("#patentFields").hide();
+                $("#journalFields").show();
+                // Make journal fields required
+                $("#journalFields input").prop('required', true);
+                // Make patent fields not required
+                $("#patentFields input, #patentFields select").prop('required', false);
+            }
+        });
+
+        // Make the outcome entry button work
+        $(".outcome-btn").click(function() {
+            var studentName = $(this).data('student');
+            var regNo = $(this).data('reg');
+            var title = $(this).closest('tr').find('td:eq(2)').text(); // Get project title from the table
+            openOutcomeModal(studentName, regNo, title);
+        });
+
+        let showingAll = false;
+        const toggleButton = $('#toggleView');
+        const filteredStudents = $('#filteredStudents');
+        const allStudents = $('#allStudents');
+
+        toggleButton.click(function() {
+            showingAll = !showingAll;
+            if (showingAll) {
+                filteredStudents.hide();
+                allStudents.show();
+                toggleButton.html('<i class="fas fa-user"></i> Show My Students');
+            } else {
+                allStudents.hide();
+                filteredStudents.show();
+                toggleButton.html('<i class="fas fa-users"></i> Show All Students');
+            }
         });
     });
 </script>

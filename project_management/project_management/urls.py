@@ -18,12 +18,11 @@ from django.contrib import admin
 from django.urls import path, include
 from projects.views import admin_portal
 from projects.admin import admin_site
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('rit_admin/', admin_site.urls),    
     path('rit_admin/admin_portal',admin_portal,name="admin_portal"),
     path('', include('projects.urls')),  # Set 'projects' as the default app
-]
-from django.conf import settings
-from django.conf.urls.static import static
-
-urlpatterns += static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS[0])
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
