@@ -1669,8 +1669,22 @@ def criteria_analysis(request):
     role = request.session.get('role')
     department = request.session.get('department')
     name = request.session.get('name')
+    projects_1 = Project.objects.filter(department=department,achieved="Yes",outcome="National Conference").count()
+    projects_2 = Project.objects.filter(department=department,achieved="Yes",outcome="International Conference").count()
+    projects_3 = Project.objects.filter(department=department,achieved="Yes",outcome="Scopus").count()
+    projects_4 = Project.objects.filter(department=department,achieved="Yes",outcome="SCIE").count()
+    projects_5 = Project.objects.filter(department=department,achieved="Yes",outcome="SCI").count()
+    projects_6 = Project.objects.filter(department=department,achieved="Yes",outcome="UGC").count()
+    projects_7 = Project.objects.filter(department=department,achieved="Yes",outcome="Others").count()
     return render(request, "faculty/criteria_analysis.html", {
         'role': role,
         'department': department,
         'name': name,
+        'projects_1': projects_1,
+        'projects_2': projects_2,
+        'projects_3': projects_3,
+        'projects_4': projects_4,
+        'projects_5': projects_5,
+        'projects_6': projects_6,
+        'projects_7': projects_7,
     })

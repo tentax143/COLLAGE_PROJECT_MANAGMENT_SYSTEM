@@ -268,54 +268,73 @@
     <div class="container mt-5">
         <h2 class="text-center mb-4">Review Criteria Analysis</h2>
         
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="d-grid gap-3">
-                    <button onclick="showContent('review1')" class="btn btn-primary btn-lg mb-3">
-                        Review 1 Analysis
-                    </button>
-                    <button onclick="showContent('review2')" class="btn btn-success btn-lg mb-3">
-                        Review 2 Analysis
-                    </button>
-                    <button onclick="showContent('review3')" class="btn btn-info btn-lg mb-3">
-                        Review 3 Analysis
-                    </button>
-                    <button onclick="showContent('allReviews')" class="btn btn-dark btn-lg mb-3">
-                        All Reviews Analysis
-                    </button>
+        <!-- Separate Container for Buttons -->
+        <div class="card mb-4">
+            <div class="card-header bg-light">
+                <h4 class="mb-0">Analysis Options</h4>
+            </div>
+            <div class="card-body">
+                <div class="row justify-content-center">
+                    <div class="col-md-10">
+                        <div class="row row-cols-2 row-cols-md-3 g-3">
+                            <div class="col">
+                                <button type="button" class="btn btn-primary btn-lg w-100" onclick="showContent('review1')">
+                                    Review 1 Analysis
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-success btn-lg w-100" onclick="showContent('review2')">
+                                    Review 2 Analysis
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-info btn-lg w-100" onclick="showContent('review3')">
+                                    Review 3 Analysis
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-dark btn-lg w-100" onclick="showContent('allReviews')">
+                                    All Reviews Analysis
+                                </button>
+                            </div>
+                            <div class="col">
+                                <button type="button" class="btn btn-warning btn-lg w-100" onclick="showContent('outcomeAnalysis')">
+                                    Outcome Analysis
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Content sections -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <!-- Review 1 Content -->
-                <div id="review1Content" class="content-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h3 class="mb-0">Review 1 Criteria Analysis</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <div class="chart-container">
-                                                <canvas id="review1OverallScore"></canvas>
-                                            </div>
-                                            <h4 class="mt-3">Overall Score</h4>
-                                            <p>Average score across all criteria</p>
+        <!-- Content Sections -->
+        <div class="content-sections">
+            <!-- Review 1 Container -->
+            <div id="review1Content" class="content-section mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h3 class="mb-0">Review 1 Criteria Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="chart-container">
+                                            <canvas id="review1OverallScore"></canvas>
                                         </div>
+                                        <h4 class="mt-3">Overall Score</h4>
+                                        <p>Average score across all criteria</p>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Criteria Breakdown</h5>
-                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review1CriteriaGrid">
-                                                <!-- Will be populated by JavaScript -->
-                                            </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Criteria Breakdown</h5>
+                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review1CriteriaGrid">
+                                            <!-- Will be populated by JavaScript -->
                                         </div>
                                     </div>
                                 </div>
@@ -323,33 +342,33 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Review 2 Content -->
-                <div id="review2Content" class="content-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header bg-success text-white">
-                            <h3 class="mb-0">Review 2 Criteria Analysis</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <div class="chart-container">
-                                                <canvas id="review2OverallScore"></canvas>
-                                            </div>
-                                            <h4 class="mt-3">Overall Score</h4>
-                                            <p>Average score across all criteria</p>
+            <!-- Review 2 Container -->
+            <div id="review2Content" class="content-section mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h3 class="mb-0">Review 2 Criteria Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="chart-container">
+                                            <canvas id="review2OverallScore"></canvas>
                                         </div>
+                                        <h4 class="mt-3">Overall Score</h4>
+                                        <p>Average score across all criteria</p>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Criteria Breakdown</h5>
-                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review2CriteriaGrid">
-                                                <!-- Will be populated by JavaScript -->
-                                            </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Criteria Breakdown</h5>
+                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review2CriteriaGrid">
+                                            <!-- Will be populated by JavaScript -->
                                         </div>
                                     </div>
                                 </div>
@@ -357,33 +376,33 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Review 3 Content -->
-                <div id="review3Content" class="content-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header bg-info text-white">
-                            <h3 class="mb-0">Review 3 Criteria Analysis</h3>
-                        </div>
-                        <div class="card-body">
-                            <div class="row mb-4">
-                                <div class="col-md-4">
-                                    <div class="card">
-                                        <div class="card-body text-center">
-                                            <div class="chart-container">
-                                                <canvas id="review3OverallScore"></canvas>
-                                            </div>
-                                            <h4 class="mt-3">Overall Score</h4>
-                                            <p>Average score across all criteria</p>
+            <!-- Review 3 Container -->
+            <div id="review3Content" class="content-section mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h3 class="mb-0">Review 3 Criteria Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-4">
+                            <div class="col-md-4">
+                                <div class="card">
+                                    <div class="card-body text-center">
+                                        <div class="chart-container">
+                                            <canvas id="review3OverallScore"></canvas>
                                         </div>
+                                        <h4 class="mt-3">Overall Score</h4>
+                                        <p>Average score across all criteria</p>
                                     </div>
                                 </div>
-                                <div class="col-md-8">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Criteria Breakdown</h5>
-                                            <div class="row row-cols-2 row-cols-md-3 g-4" id="review3CriteriaGrid">
-                                                <!-- Will be populated by JavaScript -->
-                                            </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Criteria Breakdown</h5>
+                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review3CriteriaGrid">
+                                            <!-- Will be populated by JavaScript -->
                                         </div>
                                     </div>
                                 </div>
@@ -391,20 +410,124 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <!-- All Reviews Content -->
-                <div id="allReviewsContent" class="content-section" style="display: none;">
-                    <div class="card">
-                        <div class="card-header bg-dark text-white">
-                            <h3 class="mb-0">Overall Reviews Analysis</h3>
+            <!-- All Reviews Container -->
+            <div id="allReviewsContent" class="content-section mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h3 class="mb-0">Overall Reviews Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Criteria Performance Across Reviews</h5>
+                                        <canvas id="allReviewsChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h5>Criteria Performance Across Reviews</h5>
-                                            <canvas id="allReviewsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Outcome Analysis Container -->
+            <div id="outcomeAnalysisContent" class="content-section mb-4" style="display: none;">
+                <div class="card">
+                    <div class="card-header bg-warning text-dark">
+                        <h3 class="mb-0">Outcome Analysis</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5>Project Outcomes Overview</h5>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="card mb-3">
+                                                    <div class="card-body">
+                                                        <h4 class="text-center mb-4">Outcome Statistics</h4>
+                                                        <div class="row row-cols-2 g-4">
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="nationalConfMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">National Conferences</h6>
+                                                                    <p class="mb-0">{{ projects_1 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="internationalConfMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">International Conference</h6>
+                                                                    <p class="mb-0">{{ projects_2 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="scopusMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">Scopus</h6>
+                                                                    <p class="mb-0">{{ projects_3 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="scieMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">SCIE</h6>
+                                                                    <p class="mb-0">{{ projects_4 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="sciMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">SCI</h6>
+                                                                    <p class="mb-0">{{ projects_5 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="ugcMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">UGC</h6>
+                                                                    <p class="mb-0">{{ projects_6 }}</p>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col mb-4">
+                                                                <div class="text-center">
+                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
+                                                                        <canvas id="othersMeter"></canvas>
+                                                                    </div>
+                                                                    <h6 class="mt-3">Others</h6>
+                                                                    <p class="mb-0">{{ projects_7 }}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="card mb-3">
+                                                    <div class="card-body text-center">
+                                                        <div class="chart-container" style="width: 100%; height: 400px; margin: 0 auto;">
+                                                            <canvas id="outcomeDistribution"></canvas>
+                                                        </div>
+                                                        <h4 class="mt-3">Outcome Distribution</h4>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -593,7 +716,48 @@
         });
     }
 
+    function createHalfCircleMeter(canvasId, value, color) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        const width = 150;
+        const height = 120;
+        
+        // Set canvas dimensions
+        ctx.canvas.width = width;
+        ctx.canvas.height = height;
+        
+        // Clear the canvas
+        ctx.clearRect(0, 0, width, height);
+        
+        // Calculate center and radius
+        const centerX = width / 2;
+        const centerY = height - 40;
+        const radius = width / 2 - 15;
+        
+        // Draw the background arc
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, Math.PI, 0);
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 10;
+        ctx.stroke();
+        
+        // Draw the value arc
+        const percentage = Math.min(value / 10, 1);
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, Math.PI, Math.PI + (Math.PI * percentage));
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 8;
+        ctx.stroke();
+        
+        // Add the value text
+        ctx.fillStyle = '#000';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(value, centerX, centerY - 20);
+    }
+
     function showContent(contentId) {
+        console.log('Showing content:', contentId); // Debug log
+        
         // Hide all content sections
         document.querySelectorAll('.content-section').forEach(section => {
             section.style.display = 'none';
@@ -601,7 +765,12 @@
         
         // Show the selected content section
         const selectedSection = document.getElementById(contentId + 'Content');
-        selectedSection.style.display = 'block';
+        if (selectedSection) {
+            selectedSection.style.display = 'block';
+            console.log('Section found:', contentId + 'Content'); // Debug log
+        } else {
+            console.error('Section not found:', contentId + 'Content'); // Debug log
+        }
 
         // Initialize charts based on the selected section
         if (contentId === 'review1') {
@@ -618,12 +787,67 @@
             populateCriteriaGrid(3, reviewData.review3.scores, reviewData.review3.color);
         } else if (contentId === 'allReviews') {
             createAllReviewsChart();
+        } else if (contentId === 'outcomeAnalysis') {
+            // Create outcome distribution chart
+            const ctx = document.getElementById('outcomeDistribution').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: [
+                        'National Conferences',
+                        'International Conference',
+                        'Scopus',
+                        'SCIE',
+                        'SCI',
+                        'UGC',
+                        'Others'
+                    ],
+                    datasets: [{
+                        data: [
+                            {{ projects_1 }},
+                            {{ projects_2 }},
+                            {{ projects_3 }},
+                            {{ projects_4 }},
+                            {{ projects_5 }},
+                            {{ projects_6 }},
+                            {{ projects_7 }}
+                        ],
+                        backgroundColor: [
+                            '#FF6384',
+                            '#36A2EB',
+                            '#FFCE56',
+                            '#4BC0C0',
+                            '#9966FF',
+                            '#FF9F40',
+                            '#FF6384'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'right'
+                        }
+                    }
+                }
+            });
+
+            // Create half-circle meters for each outcome
+            createHalfCircleMeter('nationalConfMeter', {{ projects_1 }}, '#FF6384');
+            createHalfCircleMeter('internationalConfMeter', {{ projects_2 }}, '#36A2EB');
+            createHalfCircleMeter('scopusMeter', {{ projects_3 }}, '#FFCE56');
+            createHalfCircleMeter('scieMeter', {{ projects_4 }}, '#4BC0C0');
+            createHalfCircleMeter('sciMeter', {{ projects_5 }}, '#9966FF');
+            createHalfCircleMeter('ugcMeter', {{ projects_6 }}, '#FF9F40');
+            createHalfCircleMeter('othersMeter', {{ projects_7 }}, '#FF6384');
         }
     }
 
-    // Show Review 1 by default when page loads
-    document.addEventListener('DOMContentLoaded', () => {
-        showContent('review1');
+    // Make sure the script runs after the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded'); // Debug log
+        showContent('review1'); // Show Review 1 by default
     });
 
     // Update table styles
@@ -637,10 +861,7 @@
                 text-align: center;
             }
         </style>
-    `;
-    document.head.insertAdjacentHTML('beforeend', tableStyles);
+    `
 </script>
-
 </body>
 </html>
-
