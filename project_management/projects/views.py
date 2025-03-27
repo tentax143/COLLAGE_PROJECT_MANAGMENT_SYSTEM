@@ -267,7 +267,7 @@ def faculty_login(request):
             print(f"No user found with staff_id: {username}")
             return render(request, 'faculty/faculty_login.html', {'error': 'User not found!'})
         elif users.count() >= 2:
-            user = users[1]  # Select the second user if more than one exists
+            user = users[0]  # Select the second user if more than one exists
         else:
             user = users.first()
         
@@ -312,12 +312,42 @@ def hod_dashbord(request):
     current_batch = f"{batch-4}-{str(batch)[2:]}"
     project_batch = f"{batch-4}-{str(batch)}"
     
-        # Get all projects for the department from the default database
+    # Get all projects for the department from the default database
     projects_list = Project.objects.filter(department=department, batch=project_batch)
     total_projects_submitted = projects_list.count()
 
-    # Get all students from placement portal database
-    all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(batch=current_batch)
+    # Calculate department code from department name
+    department_code = None
+    if "ARTIFICIAL INTELLIGENCE AND DATA SCIENCE" in department:
+        department_code = "243"
+        cgpa_department = "B.TECH AD"
+    elif "COMPUTER SCIENCE AND BUSINESS SYSTEM" in department:
+        department_code = "107"
+        cgpa_department = "B.TECH CSBS"
+    elif "ELECTRONICS AND COMMUNICATION ENGINEERING" in department:
+        department_code = "106"
+        cgpa_department = "B.TECH ECE"
+    elif "MECHANICAL ENGINEERING" in department:
+        department_code = "102"
+        cgpa_department = "BE.MECH"
+    elif "INFORMATION TECHNOLOGY" in department:
+        department_code = "105"
+        cgpa_department = "B.TECH IT"
+    elif "CIVIL ENGINEERING" in department:
+        department_code = "101"
+        cgpa_department = "BE.CIVIL"
+    elif "COMPUTER SCIENCE AND ENGINEERING" in department:
+        department_code = "104"
+        cgpa_department = "B.TECH CSE"
+    elif "ELECRICAL AND ELECTRONICS ENGINEERING" in department:
+        department_code = "103"
+        cgpa_department = "B.TECH EEE"
+
+    # Get all students from placement portal database for the specific department and batch
+    all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(
+        batch=current_batch,
+        department=cgpa_department  # Use the mapped department name
+    )
     total_students = all_students.count()
 
     # Calculate submission percentage
@@ -331,10 +361,18 @@ def hod_dashbord(request):
     # Calculate review completion percentage
     review_percentage = round((total_marks_awarded / total_projects_submitted) * 100) if total_projects_submitted > 0 else 0
 
-    # Get students who haven't submitted projects
+    # Get students who haven't submitted projects (filtered by department and batch)
     submitted_student_regnos = list(projects_list.values_list('reg_no', flat=True))
-    students_without_projects = Student_cgpa.objects.using('rit_cgpatrack').exclude(reg_no__in=submitted_student_regnos).filter(batch=current_batch)
-    pending_submissions = students_without_projects.count()
+    
+    # Filter students who haven't submitted projects
+    students_without_projects = Student_cgpa.objects.using('rit_cgpatrack').filter(
+        batch=current_batch,
+        department=cgpa_department  # Use the mapped department name
+    ).exclude(
+        reg_no__in=submitted_student_regnos
+    )
+
+    pending_submissions = total_students - total_projects_submitted
 
     # Calculate project type distribution
     internal_projects = projects_list.filter(project_type='internal').count()
@@ -1243,7 +1281,7 @@ def review3_markentry(request):
         'is_reviewer': is_reviewer
     })
 
-#↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+#↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓faculty mark entry part↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 def faculty_dashboard(request):
