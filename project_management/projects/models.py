@@ -9,7 +9,7 @@ class Student(models.Model):
     class Meta:
 
         db_table = 'core_student'
-        managed = False
+        managed = True
 
     
     
@@ -34,26 +34,30 @@ class faculty_master(models.Model):
     faculty_name=models.CharField(max_length=200,null=True,blank=True)
     department=models.CharField(max_length=300,null=True,blank=True)
 class Project(models.Model):
-    department=models.CharField(max_length=300)
-    student_name=models.CharField(max_length=300, null=True,blank=True)
-    reg_no = models.CharField(max_length=20, null=True, blank=True) 
-    batch=models.CharField(max_length=300)
-    entry_status=models.CharField(max_length=300)
-    title = models.CharField(max_length=255)
-    domain = models.CharField(max_length=255)
-    project_type = models.CharField(max_length=50, choices=[('internal', 'Internal'), ('external', 'External')])
-    company_name = models.CharField(max_length=255, blank=True, null=True)
-    location = models.CharField(max_length=255, blank=True, null=True)
-    company_guide_name = models.CharField(max_length=255, blank=True, null=True)
-    duration = models.CharField(max_length=50, blank=True, null=True)
-    internal_guide_name = models.CharField(max_length=255, blank=True, null=True)
-    semester = models.IntegerField(null=True,blank=True)
-    course_code = models.CharField(max_length=10,null=True,blank=True)
-    course_title = models.CharField(max_length=255,null=True,blank=True)
-    project_outcome_type=models.CharField(max_length=50,null=True,blank=True, choices=[('Application', 'Application'), ('Product', 'Produch'), ('Research', 'Research'),('Patent','patent')])
-    outcome=models.CharField(max_length=50,null=True,blank=True, choices=[('National Conference', 'National Conference'), ('International Conference', 'International Conference'),('Scopus','Scopus'),('SCIE', 'SCIE'),('SCI', 'SCI'),('UGC','UGC'),('Otheres','Otheres')])
-    outcome_certificate=models.FileField(null=True,blank=True)
-    achieved=models.CharField(max_length=50,null=True,blank=True, choices=[('yes', 'yes'), ('no', 'no')])
+    department = models.CharField(max_length=100)
+    batch = models.CharField(max_length=20)
+    entry_status = models.CharField(max_length=20)
+    title = models.CharField(max_length=200)
+    domain = models.CharField(max_length=100)
+    project_type = models.CharField(max_length=20)
+    company_name = models.CharField(max_length=100, null=True, blank=True)
+    location = models.CharField(max_length=100, null=True, blank=True)
+    company_guide_name = models.CharField(max_length=100, null=True, blank=True)
+    duration = models.CharField(max_length=50, null=True, blank=True)
+    internal_guide_name = models.CharField(max_length=100, null=True, blank=True)
+    reg_no = models.CharField(max_length=20,null=True,blank=True)
+    student_name = models.CharField(max_length=100,null=True,blank=True)
+    course_code = models.CharField(max_length=20, null=True, blank=True)
+    course_title = models.CharField(max_length=100, null=True, blank=True)
+    semester = models.IntegerField(null=True, blank=True)
+    project_outcome_type = models.CharField(max_length=50, null=True, blank=True)
+    outcome = models.CharField(max_length=100, null=True, blank=True)
+    achieved = models.CharField(max_length=10, null=True, blank=True)
+    outcome_certificate = models.FileField(upload_to='outcome_certificates/', null=True, blank=True)
+    hod_assigned_reviewer = models.BooleanField(default=False,null=True,blank=True)  # New column to track reviewer assignment
+
+    def __str__(self):
+        return f"{self.student_name} - {self.title}"
 
 # from django.db import models
 # from django.contrib.auth.models import User  # Assuming faculty are users

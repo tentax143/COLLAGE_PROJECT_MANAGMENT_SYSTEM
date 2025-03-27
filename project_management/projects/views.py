@@ -298,7 +298,7 @@ def faculty_login(request):
 
 
 
-#↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ hod part ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
+#↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓ hod part ↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 
 from django.db.models import Q
@@ -667,13 +667,8 @@ def guide_alocation(request):
 
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department1)
     
-    # Get all internal projects and external projects without guides
-    projects = Project.objects.filter(
-        department=department1
-    ).filter(
-        Q(project_type='internal') |  # Show all internal projects
-        (Q(project_type='external') & (Q(internal_guide_name__isnull=True) | Q(internal_guide_name='')))  # Show only external projects without guides
-    )
+    # Get all projects for the department
+    projects = Project.objects.filter(department=department1)
 
     if request.method == "POST":
         student_ids = request.POST.getlist("student_ids")
@@ -692,7 +687,8 @@ def guide_alocation(request):
             
             # Update the selected projects with the new guide
             updated_count = Project.objects.filter(id__in=student_ids).update(
-                    internal_guide_name=faculty.Name
+                    internal_guide_name=faculty.Name,
+                    hod_assigned_reviewer=True  # Set the reviewer as assigned
                 )
             
             if updated_count > 0:
@@ -2065,3 +2061,47 @@ def download_certificate(request, reg_no):
         import traceback
         print("Full traceback:", traceback.format_exc())
         return HttpResponse(f"Error downloading file: {str(e)}", status=500)
+
+def student_forgot_password(request):
+    if request.method == 'POST':
+        if 'registration_number' in request.POST:
+            # First step: Verify registration number
+            registration_number = request.POST.get('registration_number')
+            try:
+                student = Student.objects.using('placement_portal').get(student_regno=registration_number)
+                # Store registration number in session for next step
+                request.session['reset_reg_no'] = registration_number
+                return render(request, 'student/forgot_password.html', {'new_password_form': True})
+            except Student.DoesNotExist:
+                messages.error(request, 'Invalid registration number. Please try again.')
+                return render(request, 'student/forgot_password.html', {'new_password_form': False})
+        
+        elif 'new_password' in request.POST:
+            # Second step: Set new password
+            registration_number = request.session.get('reset_reg_no')
+            if not registration_number:
+                messages.error(request, 'Session expired. Please try again.')
+                return redirect('student_forgot_password')
+            
+            new_password = request.POST.get('new_password')
+            confirm_password = request.POST.get('confirm_password')
+            
+            if new_password != confirm_password:
+                messages.error(request, 'Passwords do not match. Please try again.')
+                return render(request, 'student/forgot_password.html', {'new_password_form': True})
+            
+            try:
+                student = Student.objects.using('placement_portal').get(student_regno=registration_number)
+                student.student_password = encrypt_password(new_password)  # Update password with encryption
+                student.save()
+                messages.success(request, 'Password has been reset successfully. Please login with your new password.')
+                # Clear the session
+                if 'reset_reg_no' in request.session:
+                    del request.session['reset_reg_no']
+                return redirect('student_login')
+            except Student.DoesNotExist:
+                messages.error(request, 'Student not found. Please try again.')
+                return redirect('student_forgot_password')
+    
+    # GET request - show initial form
+    return render(request, 'student/forgot_password.html', {'new_password_form': False})
