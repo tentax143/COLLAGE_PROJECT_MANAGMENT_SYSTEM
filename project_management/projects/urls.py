@@ -32,4 +32,6 @@ urlpatterns = [
     path('export_to_excel/', views.export_to_excel, name='export_to_excel'),
     path('download_certificate/<str:reg_no>/', views.download_certificate, name='download_certificate'),
     path('student/forgot-password/', views.student_forgot_password, name='student_forgot_password'),
+    path('downlod_review_marks/', views.downlod_review_marks, name='downlod_review_marks'),
+    path('get_review_preview/<int:review_number>/', views.get_review_preview, name='get_review_preview'),
 ]

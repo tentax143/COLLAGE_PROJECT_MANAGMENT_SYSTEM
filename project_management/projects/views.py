@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome,review_assasment_criteria_master
 from datetime import datetime
 from django.contrib import messages
 import hashlib
@@ -846,6 +846,9 @@ def review1_markentry(request):
 
     # For GET requests, handle the display logic
     projects_list = Project.objects.filter(department=department)
+    review_criteria = review_assasment_criteria_master.objects.filter(review_number=1)
+    print(review_criteria,"review_criteria")
+
     
     # Check if HOD is assigned as a reviewer in assignreviewers table
     is_reviewer = assignreviewers.objects.filter(
@@ -895,7 +898,8 @@ def review1_markentry(request):
         'name': name,
         'guide_students': guide_students,
         'reviewer_students': reviewer_students,
-        'is_reviewer': is_reviewer
+        'is_reviewer': is_reviewer,
+        'review_criteria': review_criteria
     })
 
 
@@ -978,6 +982,7 @@ def review2_markentry(request):
 
     # For GET requests, handle the display logic
     projects_list = Project.objects.filter(department=department)
+    review_criteria = review_assasment_criteria_master.objects.filter(review_number=2)
     
     # Check if HOD is assigned as a reviewer in assignreviewers table
     is_reviewer = assignreviewers.objects.filter(
@@ -1027,131 +1032,10 @@ def review2_markentry(request):
         'name': name,
         'guide_students': guide_students,
         'reviewer_students': reviewer_students,
-        'is_reviewer': is_reviewer
-    })
-
-def faculty_review3_markentry(request):
-    role = request.session.get('role')
-    department = request.session.get('department')
-    name = request.session.get('name')
-
-    if request.method == "POST":
-        faculty_name = name
-        faculty_role = role
-        student_name = request.POST.get('student_name')
-        reg_no = request.POST.get('reg_no')
-        semester_value = request.POST.get('semester')
-        try:
-            semester = int(semester_value) if semester_value not in [None, ''] else 0
-        except ValueError:
-            semester = 0
-        
-        course_code = request.POST.get('course_code')
-        course_title = request.POST.get('course_title')
-        reviewer_type = request.POST.get('reviewer_type')
-        
-        # Get marks for each criteria
-        criteria_1 = int(request.POST.get('criteria_1', 0))
-        criteria_2 = int(request.POST.get('criteria_2', 0))
-        criteria_3 = int(request.POST.get('criteria_3', 0))
-        criteria_4 = int(request.POST.get('criteria_4', 0))
-        criteria_5 = int(request.POST.get('criteria_5', 0))
-        criteria_6 = int(request.POST.get('criteria_6', 0))
-        criteria_7 = int(request.POST.get('criteria_7', 0))
-        criteria_8 = int(request.POST.get('criteria_8', 0))
-        criteria_9 = int(request.POST.get('criteria_9', 0))
-        criteria_10 = int(request.POST.get('criteria_10', 0))
-        
-        total = (criteria_1 + criteria_2 + criteria_3 + criteria_4 + criteria_5 +
-                criteria_6 + criteria_7 + criteria_8 + criteria_9 + criteria_10)
-        
-        assign_record = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
-        if assign_record:
-            batch = assign_record.batch
-            regulations = assign_record.regulation  
-            company_guide_name = assign_record.company_name
-        else:
-            batch = ""
-            regulations = ""
-            company_guide_name = ""
-
-        # Create the review_marks_master record
-        review_marks_master.objects.create(
-            faculty_name=faculty_name,
-            faculty_role=faculty_role,
-            reviewer_type=reviewer_type,
-            student_name=student_name,
-            reg_no=reg_no,
-            batch=batch,
-            review_number=3,
-            regulations=regulations,
-            department=department,
-            semester=semester,
-            course_code=course_code,
-            company_guide_name=company_guide_name,
-            internal_guide_name=faculty_name,
-            criteria_1=criteria_1,
-            criteria_2=criteria_2,
-            criteria_3=criteria_3,
-            criteria_4=criteria_4,
-            criteria_5=criteria_5,
-            criteria_6=criteria_6,
-            criteria_7=criteria_7,
-            criteria_8=criteria_8,
-            criteria_9=criteria_9,
-            criteria_10=criteria_10,
-            total=total,
-        )
-        
-        return JsonResponse({'status': 'success'})
-
-    # For GET requests
-    projects_list = Project.objects.filter(department=department)
-
-    # Check if the faculty is a reviewer for Review 3 specifically
-    assigned_projects = assignreviewers.objects.filter(
-        department=department,
-        review_type="Review 3"  # Specifically check for Review 3
-    ).filter(
-        Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
-    )
-
-    is_reviewer = assigned_projects.exists()  # True if faculty is a reviewer for Review 3
-
-    # Get students whose marks have already been entered for Review 3 by either guide or reviewer
-    students_with_guide_marks = review_marks_master.objects.filter(
-        department=department,
-        review_number=3,
-        reviewer_type='Guide'
-    ).values_list('reg_no', flat=True)
-
-    students_with_reviewer_marks = review_marks_master.objects.filter(
-        department=department,
-        review_number=3,
-        reviewer_type='Reviewer'
-    ).values_list('reg_no', flat=True)
-
-    # If faculty is a reviewer for Review 3, fetch projects assigned to them
-    if is_reviewer:
-        filtered_students_list = Project.objects.filter(
-            department=department,
-            batch__in=assigned_projects.values_list('batch', flat=True)
-        ).exclude(reg_no__in=students_with_reviewer_marks)
-    else:
-        # If faculty is NOT a reviewer for Review 3, fetch projects where they are the internal guide
-        filtered_students_list = Project.objects.filter(
-            department=department,
-            internal_guide_name=name
-        ).exclude(reg_no__in=students_with_guide_marks)
-
-    return render(request, 'faculty/review/faculty_review3_markentry.html', {
-        'projects_list': filtered_students_list,
         'is_reviewer': is_reviewer,
-        'guide_students': filtered_students_list,
-        'role': role,
-        'department': department,
-        'name': name
+        'review_criteria': review_criteria
     })
+
 
 def review3_markentry(request):
     role = request.session.get('role')
@@ -1229,6 +1113,7 @@ def review3_markentry(request):
 
     # For GET requests, handle the display logic
     projects_list = Project.objects.filter(department=department)
+    review_criteria = review_assasment_criteria_master.objects.filter(review_number=3)
     
     # Check if HOD is assigned as a reviewer in assignreviewers table
     is_reviewer = assignreviewers.objects.filter(
@@ -1278,7 +1163,17 @@ def review3_markentry(request):
         'name': name,
         'guide_students': guide_students,
         'reviewer_students': reviewer_students,
-        'is_reviewer': is_reviewer
+        'is_reviewer': is_reviewer,
+        'review_criteria': review_criteria
+    })
+def downlod_review_marks(request):
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+    return render(request, "faculty/review/downlod_review_marks.html",{
+        'role': role,
+        'department': department,
+        'name': name
     })
 
 #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
@@ -1586,6 +1481,129 @@ def faculty_review2_markentry(request):
         'department': department,
         'name': name
     })
+def faculty_review3_markentry(request):
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+
+    if request.method == "POST":
+        faculty_name = name
+        faculty_role = role
+        student_name = request.POST.get('student_name')
+        reg_no = request.POST.get('reg_no')
+        semester_value = request.POST.get('semester')
+        try:
+            semester = int(semester_value) if semester_value not in [None, ''] else 0
+        except ValueError:
+            semester = 0
+        
+        course_code = request.POST.get('course_code')
+        course_title = request.POST.get('course_title')
+        reviewer_type = request.POST.get('reviewer_type')
+        
+        # Get marks for each criteria
+        criteria_1 = int(request.POST.get('criteria_1', 0))
+        criteria_2 = int(request.POST.get('criteria_2', 0))
+        criteria_3 = int(request.POST.get('criteria_3', 0))
+        criteria_4 = int(request.POST.get('criteria_4', 0))
+        criteria_5 = int(request.POST.get('criteria_5', 0))
+        criteria_6 = int(request.POST.get('criteria_6', 0))
+        criteria_7 = int(request.POST.get('criteria_7', 0))
+        criteria_8 = int(request.POST.get('criteria_8', 0))
+        criteria_9 = int(request.POST.get('criteria_9', 0))
+        criteria_10 = int(request.POST.get('criteria_10', 0))
+        
+        total = (criteria_1 + criteria_2 + criteria_3 + criteria_4 + criteria_5 +
+                criteria_6 + criteria_7 + criteria_8 + criteria_9 + criteria_10)
+        
+        assign_record = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
+        if assign_record:
+            batch = assign_record.batch
+            regulations = assign_record.regulation  
+            company_guide_name = assign_record.company_name
+        else:
+            batch = ""
+            regulations = ""
+            company_guide_name = ""
+
+        # Create the review_marks_master record
+        review_marks_master.objects.create(
+            faculty_name=faculty_name,
+            faculty_role=faculty_role,
+            reviewer_type=reviewer_type,
+            student_name=student_name,
+            reg_no=reg_no,
+            batch=batch,
+            review_number=3,
+            regulations=regulations,
+            department=department,
+            semester=semester,
+            course_code=course_code,
+            company_guide_name=company_guide_name,
+            internal_guide_name=faculty_name,
+            criteria_1=criteria_1,
+            criteria_2=criteria_2,
+            criteria_3=criteria_3,
+            criteria_4=criteria_4,
+            criteria_5=criteria_5,
+            criteria_6=criteria_6,
+            criteria_7=criteria_7,
+            criteria_8=criteria_8,
+            criteria_9=criteria_9,
+            criteria_10=criteria_10,
+            total=total,
+        )
+        
+        return JsonResponse({'status': 'success'})
+
+    # For GET requests
+    projects_list = Project.objects.filter(department=department)
+
+    # Check if the faculty is a reviewer for Review 3 specifically
+    assigned_projects = assignreviewers.objects.filter(
+        department=department,
+        review_type="Review 3"  # Specifically check for Review 3
+    ).filter(
+        Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
+    )
+
+    is_reviewer = assigned_projects.exists()  # True if faculty is a reviewer for Review 3
+
+    # Get students whose marks have already been entered for Review 3 by either guide or reviewer
+    students_with_guide_marks = review_marks_master.objects.filter(
+        department=department,
+        review_number=3,
+        reviewer_type='Guide'
+    ).values_list('reg_no', flat=True)
+
+    students_with_reviewer_marks = review_marks_master.objects.filter(
+        department=department,
+        review_number=3,
+        reviewer_type='Reviewer'
+    ).values_list('reg_no', flat=True)
+
+    # If faculty is a reviewer for Review 3, fetch projects assigned to them
+    if is_reviewer:
+        filtered_students_list = Project.objects.filter(
+            department=department,
+            batch__in=assigned_projects.values_list('batch', flat=True)
+        ).exclude(reg_no__in=students_with_reviewer_marks)
+    else:
+        # If faculty is NOT a reviewer for Review 3, fetch projects where they are the internal guide
+        filtered_students_list = Project.objects.filter(
+            department=department,
+            internal_guide_name=name
+        ).exclude(reg_no__in=students_with_guide_marks)
+
+    return render(request, 'faculty/review/faculty_review3_markentry.html', {
+        'projects_list': filtered_students_list,
+        'is_reviewer': is_reviewer,
+        'guide_students': filtered_students_list,
+        'role': role,
+        'department': department,
+        'name': name
+    })
+
 
 def handle_uploaded_file(file, batch, department, reg_no):
     # Create directory structure: batch/department/reg_no/
@@ -1936,6 +1954,7 @@ def criteria_analysis(request):
 
 def export_to_excel(request):
     department = request.session.get('department')
+    review_number = request.GET.get('review', None)
     
     # Get all projects for the department
     projects = Project.objects.filter(department=department)
@@ -1944,71 +1963,102 @@ def export_to_excel(request):
     data = []
     
     for project in projects:
-        # Try to get corresponding final_outcome record
+        # Try to get the latest review marks record for this student
         try:
-            outcome = final_outcome.objects.get(reg_no=project.reg_no)
+            review_marks = review_marks_master.objects.filter(
+                reg_no=project.reg_no,
+                department=department,
+                review_number=review_number
+            ).order_by('-id').first()  # Get the latest record based on ID
             
-            # Combine data from both models
+            if review_marks:
+                # Combine data from both models
+                row = {
+                    'Registration Number': project.reg_no,
+                    'Student Name': project.student_name,
+                    'Department': project.department,
+                    'Batch': project.batch,
+                    'Project Title': project.title,
+                    'Internal Guide': project.internal_guide_name,
+                    'Reviewer Type': review_marks.reviewer_type,
+                    'Faculty Name': review_marks.faculty_name,
+                    'Faculty Role': review_marks.faculty_role,
+                    'Criteria 1': review_marks.criteria_1,
+                    'Criteria 2': review_marks.criteria_2,
+                    'Criteria 3': review_marks.criteria_3,
+                    'Criteria 4': review_marks.criteria_4,
+                    'Criteria 5': review_marks.criteria_5,
+                    'Criteria 6': review_marks.criteria_6,
+                    'Criteria 7': review_marks.criteria_7,
+                    'Criteria 8': review_marks.criteria_8,
+                    'Criteria 9': review_marks.criteria_9,
+                    'Criteria 10': review_marks.criteria_10,
+                    'Total': review_marks.total,
+                    'Course Code': project.course_code,
+                    'Course Title': project.course_title,
+                    'Semester': project.semester,
+                    'Regulations': review_marks.regulations,
+                    'Company Guide Name': review_marks.company_guide_name
+                }
+                data.append(row)
+            else:
+                # If no review marks record exists, just use project data with empty review fields
+                row = {
+                    'Registration Number': project.reg_no,
+                    'Student Name': project.student_name,
+                    'Department': project.department,
+                    'Batch': project.batch,
+                    'Project Title': project.title,
+                    'Internal Guide': project.internal_guide_name,
+                    'Reviewer Type': '',
+                    'Faculty Name': '',
+                    'Faculty Role': '',
+                    'Criteria 1': '',
+                    'Criteria 2': '',
+                    'Criteria 3': '',
+                    'Criteria 4': '',
+                    'Criteria 5': '',
+                    'Criteria 6': '',
+                    'Criteria 7': '',
+                    'Criteria 8': '',
+                    'Criteria 9': '',
+                    'Criteria 10': '',
+                    'Total': '',
+                    'Course Code': project.course_code,
+                    'Course Title': project.course_title,
+                    'Semester': project.semester,
+                    'Regulations': '',
+                    'Company Guide Name': ''
+                }
+                data.append(row)
+        except Exception as e:
+            # If there's any error, add the project with empty review fields
             row = {
                 'Registration Number': project.reg_no,
                 'Student Name': project.student_name,
                 'Department': project.department,
                 'Batch': project.batch,
                 'Project Title': project.title,
-                'Project Type': project.project_type,
                 'Internal Guide': project.internal_guide_name,
-                'Project Outcome Type': project.project_outcome_type,
-                'Outcome': project.outcome,
-                'Achieved': project.achieved,
-                
-                # Final Outcome specific fields
-                'Journal Name': outcome.journal_name,
-                'Volume': outcome.volume,
-                'Page Number': outcome.page_no,
-                'DOI': outcome.doi,
-                'Impact Factor': outcome.impact_factor,
-                'Web URL': outcome.web_url,
-                
-                # Patent specific fields
-                'Patent Type': outcome.patent_type,
-                'Filed Name': outcome.filed_name,
-                'Inventor Name': outcome.inventor_name,
-                'Patent Number': outcome.patent_number,
-                'Filed Date': outcome.filed_date,
-                'Published Date': outcome.published_date,
-                'Granted Date': outcome.granted_date,
-                'Patent Web URL': outcome.patent_web_url,
-            }
-            data.append(row)
-        except final_outcome.DoesNotExist:
-            # If no final_outcome record exists, just use project data
-            row = {
-                'Registration Number': project.reg_no,
-                'Student Name': project.student_name,
-                'Department': project.department,
-                'Batch': project.batch,
-                'Project Title': project.title,
-                'Project Type': project.project_type,
-                'Internal Guide': project.internal_guide_name,
-                'Project Outcome Type': project.project_outcome_type,
-                'Outcome': project.outcome,
-                'Achieved': project.achieved,
-                
-                # Empty values for final_outcome fields
-                'Journal Name': '',
-                'Volume': '',
-                'Page Number': '',
-                'DOI': '',
-                'Impact Factor': '',
-                'Web URL': '',
-                'Patent Type': '',
-                'Filed Name': '',
-                'Inventor Name': '',
-                'Patent Number': '',
-                'Filed Date': '',
-                'Published Date': '',
-                'Granted Date': '',
-                'Patent Web URL': '',
+                'Reviewer Type': '',
+                'Faculty Name': '',
+                'Faculty Role': '',
+                'Criteria 1': '',
+                'Criteria 2': '',
+                'Criteria 3': '',
+                'Criteria 4': '',
+                'Criteria 5': '',
+                'Criteria 6': '',
+                'Criteria 7': '',
+                'Criteria 8': '',
+                'Criteria 9': '',
+                'Criteria 10': '',
+                'Total': '',
+                'Course Code': project.course_code,
+                'Course Title': project.course_title,
+                'Semester': project.semester,
+                'Regulations': '',
+                'Company Guide Name': ''
             }
             data.append(row)
     
@@ -2018,11 +2068,11 @@ def export_to_excel(request):
     # Create Excel file in memory
     excel_file = BytesIO()
     with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
-        df.to_excel(writer, sheet_name='Project Outcomes', index=False)
+        df.to_excel(writer, sheet_name=f'Review {review_number} Marks', index=False)
         
         # Get workbook and worksheet objects
         workbook = writer.book
-        worksheet = writer.sheets['Project Outcomes']
+        worksheet = writer.sheets[f'Review {review_number} Marks']
         
         # Add some formatting
         header_format = workbook.add_format({
@@ -2042,7 +2092,7 @@ def export_to_excel(request):
         excel_file.read(),
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = f'attachment; filename=project_outcomes_{department}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    response['Content-Disposition'] = f'attachment; filename=review_{review_number}_marks_{department}_{datetime.now().strftime("%Y%m%d")}.xlsx'
     
     return response
 
@@ -2143,3 +2193,47 @@ def student_forgot_password(request):
     
     # GET request - show initial form
     return render(request, 'student/forgot_password.html', {'new_password_form': False})
+
+def get_review_preview(request, review_number):
+    try:
+        department = request.session.get('department')
+        if not department:
+            return JsonResponse({'error': 'Department not found'}, status=400)
+        
+        # Get all projects for the department
+        projects = Project.objects.filter(department=department)
+        
+        # Create list to store preview data
+        preview_data = []
+        
+        for project in projects:
+            try:
+                # Get the latest review marks record for this student
+                review_marks = review_marks_master.objects.filter(
+                    reg_no=project.reg_no,
+                    department=department,
+                    review_number=review_number
+                ).order_by('-id').first()  # Get the latest record based on ID
+                
+                if review_marks:
+                    preview_data.append({
+                        'student_name': project.student_name,
+                        'reg_no': project.reg_no,
+                        'total': review_marks.total if hasattr(review_marks, 'total') else None
+                    })
+                else:
+                    preview_data.append({
+                        'student_name': project.student_name,
+                        'reg_no': project.reg_no,
+                        'total': None
+                    })
+            except Exception as e:
+                preview_data.append({
+                    'student_name': project.student_name,
+                    'reg_no': project.reg_no,
+                    'total': None
+                })
+        
+        return JsonResponse(preview_data, safe=False)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'project_management.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # Use MySQL as the database
-        'NAME': 'college_project_management', # Database name you created in phpMyAdmin
+        'NAME': 'rit_college_project_management', # Database name you created in phpMyAdmin
         'USER': 'root',                       # Default user in XAMPP
         'PASSWORD': '',                       # Leave blank if no password is set
         'HOST': '127.0.0.1',                  # Use localhost
@@ -102,9 +102,9 @@ DATABASES = {
         'HOST': 'localhost',          # Set to the address of your MySQL server
         'PORT': '3306',
     },
-    'course_master': {
+    'rit_course_master': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'course_master',
+        'NAME': 'rit_course_master',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',
@@ -123,7 +123,6 @@ DATABASES = {
     },
 
 }
-
 
 
 # Password validation
