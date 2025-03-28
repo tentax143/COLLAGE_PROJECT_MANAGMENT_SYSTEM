@@ -50,6 +50,9 @@
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            max-width: 70%;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         table {
@@ -95,6 +98,21 @@
             top: 20px;
             left: 20px;
             z-index: 1001;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #00407b;
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #dee2e6;
+            z-index: 1000;
+        }
+        .footer p {
+            color: white;
+            margin: 0;
         }
     </style>
 </head>
@@ -326,6 +344,7 @@
                 <table class="table table-bordered">
                     <thead>
                         <tr>
+                            <th>Serial No.</th>
                             <th>Name</th>
                             <th>Domain</th>
                             <th>Project Type</th>
@@ -337,6 +356,7 @@
                     <tbody>
                         {% for project in projects_list %}
                         <tr>
+                            <td>{{ forloop.counter }}</td>
                             <td>{{project.student_name}}
                             <td>{{ project.domain }}</td>
                             <td>{{ project.project_type }}</td>
@@ -360,6 +380,12 @@
             </div>
         </div>
     </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-0">Developed by Manish Kumar, Dept of Artificial Intelligence and Data Science, 2023-2027 batch</p>
+        </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>

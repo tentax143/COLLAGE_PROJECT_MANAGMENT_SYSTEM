@@ -256,9 +256,9 @@ class final_outcome(models.Model):
     granted_date=models.DateField(null=True,blank=True)
     inventor_name=models.CharField(max_length=200,null=True,blank=True)
     
-
-
-    
+class review_assasment_criteria_master(models.Model):
+    review_number=models.IntegerField()
+    review_criteria=models.CharField(max_length=200)
 
     
 

@@ -341,15 +341,16 @@ def hod_dashbord(request):
         cgpa_department = "B.TECH CSE"
     elif "ELECRICAL AND ELECTRONICS ENGINEERING" in department:
         department_code = "103"
-        cgpa_department = "B.TECH EEE"
+        cgpa_department ="B.TECH EEE"
 
     # Get all students from placement portal database for the specific department and batch
     all_students = Student_cgpa.objects.using('rit_cgpatrack').filter(
-        batch=current_batch,
-        department=cgpa_department  # Use the mapped department name
+        batch=project_batch,
+        department= "B.TECH AD" , # Use the mapped department name
     )
+    print(all_students, "all students")
     total_students = all_students.count()
-
+    print(total_students, "total students")
     # Calculate submission percentage
     submission_percentage = round((total_projects_submitted / total_students) * 100) if total_students > 0 else 0
     
@@ -372,7 +373,8 @@ def hod_dashbord(request):
         reg_no__in=submitted_student_regnos
     )
 
-    pending_submissions = total_students - total_projects_submitted
+    pending_submissions = max(0, total_students - total_projects_submitted)
+
 
     # Calculate project type distribution
     internal_projects = projects_list.filter(project_type='internal').count()
@@ -413,10 +415,10 @@ def hod_dashbord(request):
     
     return render(request, "faculty/hod_dashbord.html", context)
 
+
 # def allocate_commity(request):
 #     return render(request, 'allocate_commity.html')
-from django.shortcuts import render, redirect
-from .models import Course, assignreviewers
+
 
 def review1(request):
     role = request.session.get('role')
@@ -432,10 +434,10 @@ def review1(request):
     course_department = department_mapping.get(department, department)
 
     # Fetch courses only for 8th semester
-    courses = Course.objects.using('course_master').filter(department=course_department, semester=8)
+    courses = Course.objects.using('rit_course_master').filter(department=course_department, semester=8)
     
     projects_list = Project.objects.filter(department=department)
-    regulation = regulation_master.objects.using('course_master').all()
+    regulation = regulation_master.objects.using('rit_course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
 
     # Get current reviewers for this department
@@ -501,8 +503,6 @@ def review1(request):
         "current_reviewers": current_reviewers,
     })
 
-
-
 def review2(request):
     role = request.session.get('role')
     department = request.session.get('department')
@@ -517,10 +517,10 @@ def review2(request):
     course_department = department_mapping.get(department, department)
 
     # Fetch courses only for 8th semester
-    courses = Course.objects.using('course_master').filter(department=course_department, semester=8)
+    courses = Course.objects.using('rit_course_master').filter(department=course_department, semester=8)
     
     projects_list = Project.objects.filter(department=department)
-    regulation = regulation_master.objects.using('course_master').all()
+    regulation = regulation_master.objects.using('rit_course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
 
     # Get current reviewers for this department
@@ -609,10 +609,10 @@ def review3(request):
     course_department = department_mapping.get(department, department)
 
     # Fetch courses only for 8th semester
-    courses = Course.objects.using('course_master').filter(department=course_department, semester=8)
+    courses = Course.objects.using('rit_course_master').filter(department=course_department, semester=8)
     
     projects_list = Project.objects.filter(department=department)
-    regulation = regulation_master.objects.using('course_master').all()
+    regulation = regulation_master.objects.using('rit_course_master').all()
     faculty_list = User.objects.using('rit_e_approval').filter(Department=department)
 
     # Get current reviewers for this department
@@ -1281,7 +1281,7 @@ def review3_markentry(request):
         'is_reviewer': is_reviewer
     })
 
-#↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
+#↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑ hod part ↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓faculty mark entry part↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
 
 def faculty_dashboard(request):

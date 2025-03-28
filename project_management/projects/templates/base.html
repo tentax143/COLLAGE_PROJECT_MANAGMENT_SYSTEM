@@ -9,6 +9,17 @@
     <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     {% block extra_css %}{% endblock %}
+    <style>
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #f8f9fa;
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #dee2e6;
+        }
+    </style>
 </head>
 <body>
     {% block content %}{% endblock %}
@@ -18,5 +29,11 @@
     <!-- jQuery (needed for some Bootstrap features) -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     {% block extra_js %}{% endblock %}
+
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-0">Developed by Manish Kumar, Dept of Artificial Intelligence and Data Science, 2023-2027 batch</p>
+        </div>
+    </footer>
 </body>
 </html> 

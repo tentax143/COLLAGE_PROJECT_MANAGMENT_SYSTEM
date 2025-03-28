@@ -217,7 +217,7 @@
 
     <!-- Main Content -->
     <div class="page-content">
-        <h2>Review 1 Mark Entry</h2>
+        <h2>Review 3 Mark Entry</h2>
         {% if messages %}
         <div class="messages">
             {% for message in messages %}
@@ -341,7 +341,7 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="markEntryModalLabel">Enter Review 1 Marks</h5>
+                        <h5 class="modal-title" id="markEntryModalLabel">Enter Review 3 Marks</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -356,7 +356,7 @@
                             <input type="hidden" name="semester" id="modal_semester">
                             
                             <div class="form-group">
-                                <label>{{review_criteria.review_criteria}} (10)</label>
+                                <label>Literature Review (10)</label>
                                 <input type="number" name="criteria_1" class="form-control" min="0" max="10" required>
                             </div>
                             <div class="form-group">
@@ -437,7 +437,7 @@
             $('#modal_semester').val(semester);
             
             // Update modal title based on reviewer type
-            $('#markEntryModalLabel').text('Enter Review 1 Marks as ' + reviewerType);
+            $('#markEntryModalLabel').text('Enter Review 3 Marks as ' + reviewerType);
             
             $('#markEntryModal').modal('show');
         });

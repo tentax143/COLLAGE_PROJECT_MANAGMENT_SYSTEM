@@ -192,12 +192,23 @@
                 width: calc(100% - 23rem);
             }
         }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #00407b;
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #dee2e6;
+            z-index: 1000;
+        }
+        .footer p {
+            color: white;
+            margin: 0;
+        }
     </style>
-    </head>
-      <body>
-
-
-
+</head>
+<body>
     <div class="page-content p-5" id="content">
         <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
         <div class="vertical-nav bg-white" id="sidebar">
@@ -403,25 +414,33 @@
             </div>
         </div>
     
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                // Handle review button clicks
-                $('.review-btn').click(function() {
-                    // Get the review number
-                    var reviewNum = $(this).data('review');
-                    
-                    // Hide all review sections
-                    $('.review-section').hide();
-                    
-                    // Show the selected review section
-                    $('#review' + reviewNum).show();
-                    
-                    // Update button styles
-                    $('.review-btn').removeClass('btn-primary').addClass('btn-secondary');
-                    $(this).removeClass('btn-secondary').addClass('btn-primary');
-                });
+        <footer class="footer">
+            <div class="container">
+                <p class="mb-0">Developed by Manish Kumar, Dept of Artificial Intelligence and Data Science, 2023-2027 batch</p>
+            </div>
+        </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Handle review button clicks
+            $('.review-btn').click(function() {
+                // Get the review number
+                var reviewNum = $(this).data('review');
+                
+                // Hide all review sections
+                $('.review-section').hide();
+                
+                // Show the selected review section
+                $('#review' + reviewNum).show();
+                
+                // Update button styles
+                $('.review-btn').removeClass('btn-primary').addClass('btn-secondary');
+                $(this).removeClass('btn-secondary').addClass('btn-primary');
             });
-        </script>
+        });
+    </script>
+</body>
+</html>
