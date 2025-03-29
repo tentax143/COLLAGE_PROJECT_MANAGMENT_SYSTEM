@@ -34,4 +34,9 @@ urlpatterns = [
     path('student/forgot-password/', views.student_forgot_password, name='student_forgot_password'),
     path('downlod_review_marks/', views.downlod_review_marks, name='downlod_review_marks'),
     path('get_review_preview/<int:review_number>/', views.get_review_preview, name='get_review_preview'),
+    path('criteria_entry/', views.criteria_entry, name='criteria_entry'),
+    path('get-criteria/<int:review_number>/', views.get_criteria, name='get_criteria'),
+    path('update-criteria/', views.update_criteria, name='update_criteria'),
+    path('analysis_student_mark/', views.analysis_student_mark, name='analysis_student_mark'),
+    path('get_student_analytics/<str:register_number>/', views.get_student_analytics, name='get_student_analytics'),
 ]

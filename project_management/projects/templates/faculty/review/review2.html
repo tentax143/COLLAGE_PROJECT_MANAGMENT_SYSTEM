@@ -109,11 +109,13 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
+
+    {% if role == 'HOD' %}
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
                 <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    View Guide Detail
+                    Dashboard
                 </a>
             </li>
             <li class="nav-item">
@@ -174,19 +176,53 @@
                 </li>
             </ul>
         </li>
+        
         <li class="nav-item">
             <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-              <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-              Final Outcome Entry
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Final Outcome Entry
             </a>
-          </li>
-        </ul>  
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Download Review Marks
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Entry
+            </a>
+        </li>
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
                 Filter
             </a>
         </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Analysis
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Students Mark Analysis
+            </a>
+        </li>
+        
+        {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
+
         
             <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">
@@ -196,6 +232,7 @@
             </li>
         </ul>  
     </div>
+    {% endif %}
     <div class="container mt-5 d-flex flex-column align-items-center">
         <h1 class="text-center">Review 2</h1>
         <div class="card shadow-sm mt-3" style="width: 600px; border-radius: 10px; padding: 20px;">
