@@ -344,8 +344,9 @@
                                     <tr class="font-weight-bold bg-light">
                                         <td>Total</td>
                                         <td id="review2GuideTotal">-</td>
-                                        <td>-</td>
-                                        <td id="review2ReviewerTotal">-</td>
+                                        <td id="review2Reviewer1Total">-</td>
+                                        <td id="review2Reviewer2Total">-</td>
+                                        <td id="review2Reviewer3Total">-</td>
                                         <td id="review2AverageTotal">-</td>
                                     </tr>
                                 </tfoot>
@@ -366,8 +367,9 @@
                                     <tr>
                                         <th>Criteria</th>
                                         <th>Guide Marks</th>
-                                        <th>Reviewer Name</th>
-                                        <th>Reviewer Marks</th>
+                                        <th>Reviewer 1</th>
+                                        <th>Reviewer 2</th>
+                                        <th>Reviewer 3</th>
                                         <th>Average</th>
                                     </tr>
                                 </thead>
@@ -376,8 +378,9 @@
                                     <tr class="font-weight-bold bg-light">
                                         <td>Total</td>
                                         <td id="review3GuideTotal">-</td>
-                                        <td>-</td>
-                                        <td id="review3ReviewerTotal">-</td>
+                                        <td id="review3Reviewer1Total">-</td>
+                                        <td id="review3Reviewer2Total">-</td>
+                                        <td id="review3Reviewer3Total">-</td>
                                         <td id="review3AverageTotal">-</td>
                                     </tr>
                                 </tfoot>
@@ -432,8 +435,9 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Name</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1</th>
+                                    <th>Reviewer 2</th>
+                                    <th>Reviewer 3</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
@@ -442,8 +446,9 @@
                                 <tr class="font-weight-bold bg-light">
                                     <td>Total</td>
                                     <td id="review1GuideTotal">-</td>
-                                    <td>-</td>
-                                    <td id="review1ReviewerTotal">-</td>
+                                    <td id="review1Reviewer1Total">-</td>
+                                    <td id="review1Reviewer2Total">-</td>
+                                    <td id="review1Reviewer3Total">-</td>
                                     <td id="review1AverageTotal">-</td>
                                 </tr>
                             </tfoot>
@@ -464,8 +469,9 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Name</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1</th>
+                                    <th>Reviewer 2</th>
+                                    <th>Reviewer 3</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
@@ -474,8 +480,9 @@
                                 <tr class="font-weight-bold bg-light">
                                     <td>Total</td>
                                     <td id="review2GuideTotal">-</td>
-                                    <td>-</td>
-                                    <td id="review2ReviewerTotal">-</td>
+                                    <td id="review2Reviewer1Total">-</td>
+                                    <td id="review2Reviewer2Total">-</td>
+                                    <td id="review2Reviewer3Total">-</td>
                                     <td id="review2AverageTotal">-</td>
                                 </tr>
                             </tfoot>
@@ -496,8 +503,9 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Name</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1</th>
+                                    <th>Reviewer 2</th>
+                                    <th>Reviewer 3</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
@@ -506,8 +514,9 @@
                                 <tr class="font-weight-bold bg-light">
                                     <td>Total</td>
                                     <td id="review3GuideTotal">-</td>
-                                    <td>-</td>
-                                    <td id="review3ReviewerTotal">-</td>
+                                    <td id="review3Reviewer1Total">-</td>
+                                    <td id="review3Reviewer2Total">-</td>
+                                    <td id="review3Reviewer3Total">-</td>
                                     <td id="review3AverageTotal">-</td>
                                 </tr>
                             </tfoot>
@@ -553,7 +562,9 @@
                     tbody.innerHTML = ''; // Clear existing rows
 
                     let guideTotal = 0;
-                    let reviewerTotal = 0;
+                    let reviewer1Total = 0;
+                    let reviewer2Total = 0;
+                    let reviewer3Total = 0;
                     let averageTotal = 0;
                     let validMarksCount = 0;
 
@@ -561,12 +572,15 @@
                         const row = document.createElement('tr');
                         
                         const guideMarks = mark.guide_marks !== null ? parseFloat(mark.guide_marks) : null;
-                        const reviewerMarks = mark.reviewer_marks !== null ? parseFloat(mark.reviewer_marks) : null;
+                        const reviewer1Marks = mark.reviewer1_marks !== null ? parseFloat(mark.reviewer1_marks) : null;
+                        const reviewer2Marks = mark.reviewer2_marks !== null ? parseFloat(mark.reviewer2_marks) : null;
+                        const reviewer3Marks = mark.reviewer3_marks !== null ? parseFloat(mark.reviewer3_marks) : null;
                         
-                        // Calculate average only if both marks exist
+                        // Calculate average from all available marks
+                        const validMarks = [guideMarks, reviewer1Marks, reviewer2Marks, reviewer3Marks].filter(m => m !== null);
                         let average = '-';
-                        if (guideMarks !== null && reviewerMarks !== null) {
-                            average = ((guideMarks + reviewerMarks) / 2).toFixed(2);
+                        if (validMarks.length > 0) {
+                            average = (validMarks.reduce((a, b) => a + b, 0) / validMarks.length).toFixed(2);
                             averageTotal += parseFloat(average);
                             validMarksCount++;
                         }
@@ -574,24 +588,31 @@
                         row.innerHTML = `
                             <td>${mark.criteria || '-'}</td>
                             <td>${guideMarks !== null ? guideMarks.toFixed(2) : '-'}</td>
-                            <td>${mark.reviewer_name || '-'}</td>
-                            <td>${reviewerMarks !== null ? reviewerMarks.toFixed(2) : '-'}</td>
+                            <td>${reviewer1Marks !== null ? reviewer1Marks.toFixed(2) : '-'}</td>
+                            <td>${reviewer2Marks !== null ? reviewer2Marks.toFixed(2) : '-'}</td>
+                            <td>${reviewer3Marks !== null ? reviewer3Marks.toFixed(2) : '-'}</td>
                             <td>${average}</td>
                         `;
                         tbody.appendChild(row);
 
                         // Update totals
                         if (guideMarks !== null) guideTotal += guideMarks;
-                        if (reviewerMarks !== null) reviewerTotal += reviewerMarks;
+                        if (reviewer1Marks !== null) reviewer1Total += reviewer1Marks;
+                        if (reviewer2Marks !== null) reviewer2Total += reviewer2Marks;
+                        if (reviewer3Marks !== null) reviewer3Total += reviewer3Marks;
                     });
 
                     // Update totals in footer
                     const guideTotalElement = document.getElementById(`${tableId}GuideTotal`);
-                    const reviewerTotalElement = document.getElementById(`${tableId}ReviewerTotal`);
+                    const reviewer1TotalElement = document.getElementById(`${tableId}Reviewer1Total`);
+                    const reviewer2TotalElement = document.getElementById(`${tableId}Reviewer2Total`);
+                    const reviewer3TotalElement = document.getElementById(`${tableId}Reviewer3Total`);
                     const averageTotalElement = document.getElementById(`${tableId}AverageTotal`);
 
                     if (guideTotalElement) guideTotalElement.textContent = guideTotal > 0 ? guideTotal.toFixed(2) : '-';
-                    if (reviewerTotalElement) reviewerTotalElement.textContent = reviewerTotal > 0 ? reviewerTotal.toFixed(2) : '-';
+                    if (reviewer1TotalElement) reviewer1TotalElement.textContent = reviewer1Total > 0 ? reviewer1Total.toFixed(2) : '-';
+                    if (reviewer2TotalElement) reviewer2TotalElement.textContent = reviewer2Total > 0 ? reviewer2Total.toFixed(2) : '-';
+                    if (reviewer3TotalElement) reviewer3TotalElement.textContent = reviewer3Total > 0 ? reviewer3Total.toFixed(2) : '-';
                     if (averageTotalElement) averageTotalElement.textContent = validMarksCount > 0 ? (averageTotal / validMarksCount).toFixed(2) : '-';
                 }
 

@@ -2215,7 +2215,7 @@ def get_student_analytics(request, register_number):
                 
                 # Process guide marks first
                 guide_marks = marks_queryset.filter(reviewer_type='Guide').first()
-                reviewer_marks = marks_queryset.filter(reviewer_type='Reviewer')
+                reviewer_marks = marks_queryset.filter(reviewer_type='Reviewer').order_by('id')
                 
                 for criteria in criteria_list:
                     criteria_name = criteria.review_criteria
@@ -2237,6 +2237,9 @@ def get_student_analytics(request, register_number):
                 
                 # Process reviewer marks
                 for idx, reviewer_mark in enumerate(reviewer_marks, 1):
+                    if idx > 3:  # Only process up to 3 reviewers
+                        break
+                    
                     for i, criteria in enumerate(criteria_list, 1):
                         mark_value = getattr(reviewer_mark, f'criteria_{i}', None)
                         if mark_value is not None:
