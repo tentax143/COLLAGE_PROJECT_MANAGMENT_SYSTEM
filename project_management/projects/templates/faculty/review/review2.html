@@ -198,7 +198,7 @@
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter
+                Filter-Project outcome
             </a>
         </li>
         
@@ -233,116 +233,118 @@
         </ul>  
     </div>
     {% endif %}
-    <div class="container mt-5 d-flex flex-column align-items-center">
-        <h1 class="text-center">Review 2</h1>
-        <div class="card shadow-sm mt-3" style="width: 600px; border-radius: 10px; padding: 20px;">
-            <div class="card-body">
-                <!-- Current Reviewers Section -->
-                <div class="card mb-4">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Currently Assigned Reviewers</h3>
+    <div class="page-content">
+        <h1 class="text-center mb-4">Review 2</h1>
+        <div class="container d-flex justify-content-center" style="margin-top: 20px;">
+            <div class="card shadow-sm">
+                <div class="card-body d-flex flex-column align-items-center" style="background-color: white; width: 800px; border-radius: 8px; padding: 30px;">
+                    <!-- Current Reviewers Section -->
+                    <div class="card mb-4" style="width: 100%;">
+                        <div class="card-header bg-primary text-white">
+                            <h3 class="mb-0">Currently Assigned Reviewers</h3>
+                        </div>
+                        <div class="card-body">
+                            {% if current_reviewers %}
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 25%">Reviewer 1</th>
+                                                <th style="width: 25%">Reviewer 2</th>
+                                                <th style="width: 25%">Reviewer 3</th>
+                                                <th style="width: 25%">Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>{{ current_reviewers.reviewer1 }}</td>
+                                                <td>{{ current_reviewers.reviewer2 }}</td>
+                                                <td>{{ current_reviewers.reviewer3 }}</td>
+                                                <td>
+                                                    <button class="btn btn-warning" onclick="enableEditMode()">
+                                                        <i class="fas fa-edit"></i> Edit Reviewers
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            {% else %}
+                                <div class="alert alert-info">
+                                    No reviewers have been assigned yet for Review 2.
+                                </div>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="card-body">
-                        {% if current_reviewers %}
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Reviewer 1</th>
-                                            <th>Reviewer 2</th>
-                                            <th>Reviewer 3</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>{{ current_reviewers.reviewer1 }}</td>
-                                            <td>{{ current_reviewers.reviewer2 }}</td>
-                                            <td>{{ current_reviewers.reviewer3 }}</td>
-                                            <td>
-                                                <button class="btn btn-warning" onclick="enableEditMode()">
-                                                    <i class="fas fa-edit"></i> Edit Reviewers
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        {% else %}
-                            <div class="alert alert-info">
-                                No reviewers have been assigned yet for Review 2.
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
 
-                <!-- Reviewer Assignment Form -->
-                <div class="card mb-4" id="reviewerForm" {% if current_reviewers %}style="display: none;"{% endif %}>
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Assign Reviewers</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST" class="w-100">
-                            {% csrf_token %}
-                            <div class="row justify-content-center">
-                                <!-- Regulation Dropdown -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="regulation">Regulation</label>
-                                        <select id="regulation" name="regulation" class="form-control">
-                                            <option value="">Select Regulation</option>
-                                            {% for reg in regulation %}
-                                                <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
-                                            {% endfor %}
-                                        </select>
+                    <!-- Reviewer Assignment Form -->
+                    <div class="card mb-4" id="reviewerForm" {% if current_reviewers %}style="display: none;"{% endif %}>
+                        <div class="card-header bg-success text-white">
+                            <h3 class="mb-0">Assign Reviewers</h3>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" style="width: 100%;">
+                                {% csrf_token %}
+                                <div class="row justify-content-center">
+                                    <!-- Regulation Dropdown -->
+                                    <div class="col-md-10 mb-3">
+                                        <div class="form-group text-start">
+                                            <label for="regulation">Regulation</label>
+                                            <select id="regulation" name="regulation" class="form-control">
+                                                <option value="">Select Regulation</option>
+                                                {% for reg in regulation %}
+                                                    <option value="{{ reg.regulation_year }}">{{ reg.regulation_name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Reviewer 1 -->
+                                    <div class="col-md-10 mb-3">
+                                        <div class="form-group text-start">
+                                            <label for="reviewer1">Reviewer 1</label>
+                                            <select id="reviewer1" name="reviewer1" class="form-control">
+                                                <option value="">Select Reviewer 1</option>
+                                                {% for faculty in faculty_list %}
+                                                    <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Reviewer 2 -->
+                                    <div class="col-md-10 mb-3">
+                                        <div class="form-group text-start">
+                                            <label for="reviewer2">Reviewer 2</label>
+                                            <select id="reviewer2" name="reviewer2" class="form-control">
+                                                <option value="">Select Reviewer 2</option>
+                                                {% for faculty in faculty_list %}
+                                                    <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
+                                    </div>
+                
+                                    <!-- Reviewer 3 -->
+                                    <div class="col-md-10 mb-3">
+                                        <div class="form-group text-start">
+                                            <label for="reviewer3">Reviewer 3</label>
+                                            <select id="reviewer3" name="reviewer3" class="form-control">
+                                                <option value="">Select Reviewer 3</option>
+                                                {% for faculty in faculty_list %}
+                                                    <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
+                                                {% endfor %}
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                 
-                                <!-- Reviewer 1 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer1">Reviewer 1</label>
-                                        <select id="reviewer1" name="reviewer1" class="form-control">
-                                            <option value="">Select Reviewer 1</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
+                                <!-- Assign Button -->
+                                <div class="text-center mt-4">
+                                    <button type="submit" class="btn btn-success w-50">Assign</button>
                                 </div>
-                
-                                <!-- Reviewer 2 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer2">Reviewer 2</label>
-                                        <select id="reviewer2" name="reviewer2" class="form-control">
-                                            <option value="">Select Reviewer 2</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                
-                                <!-- Reviewer 3 -->
-                                <div class="col-md-10 mb-3">
-                                    <div class="form-group text-start">
-                                        <label for="reviewer3">Reviewer 3</label>
-                                        <select id="reviewer3" name="reviewer3" class="form-control">
-                                            <option value="">Select Reviewer 3</option>
-                                            {% for faculty in faculty_list %}
-                                                <option value="{{ faculty.id }}">{{ faculty.Name }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                
-                            <!-- Assign Button -->
-                            <div class="text-center mt-4">
-                                <button type="submit" class="btn btn-success w-50">Assign</button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from projects.views import admin_portal
+from .views import get_review_preview
 urlpatterns = [
     path('', views.home_page, name='home_page'),
     path('faculty_login/', views.faculty_login, name='faculty_login'),
@@ -11,7 +12,6 @@ urlpatterns = [
     path('view_marks/', views.view_marks, name='view_marks'),
     path('hod_dashbord/', views.hod_dashbord, name='hod_dashbord'),
     path('admin/admin_portal',admin_portal,name="admin_portal"),
-    # path('allocate_commity/', views.allocate_commity, name='allocate_commity'),
     path('review1/', views.review1, name='review1'),
     path('review2/', views.review2, name='review2'),
     path('review3/', views.review3, name='review3'),
@@ -36,7 +36,14 @@ urlpatterns = [
     path('get_review_preview/<int:review_number>/', views.get_review_preview, name='get_review_preview'),
     path('criteria_entry/', views.criteria_entry, name='criteria_entry'),
     path('get-criteria/<int:review_number>/', views.get_criteria, name='get_criteria'),
+    path('get_review<int:review_number>_marks/', views.get_review_marks, name='get_review_marks'),
     path('update-criteria/', views.update_criteria, name='update_criteria'),
     path('analysis_student_mark/', views.analysis_student_mark, name='analysis_student_mark'),
+    path('get_student_analytics/all/', views.get_student_analytics_all, name='get_student_analytics_all'),
     path('get_student_analytics/<str:register_number>/', views.get_student_analytics, name='get_student_analytics'),
+    path('get-review-marks-master/<int:review_number>/', views.get_review_marks_master, name='get_review_marks_master'),
+    path('get_review_preview/<int:review_number>/', get_review_preview, name='get_review_preview'),
 ]
+
+
+

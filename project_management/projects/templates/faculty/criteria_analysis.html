@@ -1,310 +1,88 @@
-<!DOCTYPE html>
+{% extends 'faculty/base.html' %}
 {% load static %}
-<html>
-<head>
-    <title>RIT PROJECT MANAGEMENT</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+{% block extra_head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f8f9fa;
-        }
-        .table-responsive {
-            max-height: 400px; /* Adjust height as needed */
-            overflow-y: auto;
-        }
-
-        .vertical-nav {
-            width: 27rem;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            z-index: 1000;
-        }
-
-        .page-content {
-            margin-left: 23rem;
-            transition: all 0.4s;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .table-container {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        th, td {
-            border: 1px solid #dee2e6;
-            padding: 12px;
-            text-align: left;
-        }
-
-        th {
-            background-color: #00407b;
-            color: white;
-            font-weight: 600;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        @media (max-width: 768px) {
-            .vertical-nav {
-                margin-left: -23rem;
-            }
-            .vertical-nav.active {
-                margin-left: 0;
-            }
-            .page-content {
-                width: 100%;
-                margin-left: 0;
-            }
-            .page-content.active {
-                margin-left: 23rem;
-            }
-        }
-
-        #sidebarCollapse {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-        }
+    .chart-container {
+        width: 100%;
+        height: 300px;
+        margin: 0 auto;
+    }
+    .criteria-chart-container {
+        width: 100%;
+        height: 250px;
+        margin: 0 auto;
+    }
+    .analysis-buttons-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    .analysis-button {
+        min-width: 200px;
+        margin: 5px;
+    }
+    .department-filter-card {
+        margin-bottom: 2rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .analysis-options-card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    }
+    .content-section {
+        margin-top: 2rem;
+    }
+    .review-container {
+        margin-bottom: 3rem;
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    }
+    .criteria-section {
+        margin-bottom: 2rem;
+    }
+    .criteria-title {
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+        background: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+    .outcome-analysis {
+        margin-top: 2rem;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+    }
+    .outcome-chart {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .outcome-stats {
+        margin-top: 1rem;
+        padding: 1rem;
+        border: 1px solid #dee2e6;
+        border-radius: 0.5rem;
+    }
+    @media (max-width: 768px) {
         .chart-container {
-            width: 200px;
-            height: 200px;
-            margin: auto;
+            height: 250px;
         }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #00407b;
-            text-align: center;
-            padding: 10px 0;
-            border-top: 1px solid #dee2e6;
-            z-index: 1000;
-        }
-        .footer p {
-            color: white;
-            margin: 0;
         }
     </style>
-</head>
-<body>
+{% endblock %}
 
-    <div class="vertical-nav" id="sidebar">
-        <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="media d-flex align-items-center">
-                <div class="media-body">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                    <h4 class="m-0">RIT</h4>
-                    <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
-                </div>
-            </div>
-        </div>
-        <div class="border-bottom mb-2">
-            <div class="card-body text-center">
-                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-                <h5 class="card-title">{{ name }}</h5>
-                <p class="card-text">{{ department }}</p>
-                <p class="card-text">{{ role }}</p>
-            </div>
-        </div>
 
-    {% if role == 'HOD' %}
-        <ul class="nav flex-column bg-white mb-0">
-            <li class="nav-item">
-                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
-                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Committee Members
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                    <li class="nav-item">
-                        <a href="{% url 'review1' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review2' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review3' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            <li class="nav-item">
-                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Guide
-                </a>
-            </li>
-        </ul>  
-        <li class="nav-item">
-            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                Review Mark Entry
-            </a>
-            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
-                <li class="nav-item">
-                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 1
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 2
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
-                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                        Review 3
-                    </a>
-                </li>
-            </ul>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                Final Outcome Entry
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{% url 'filter' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter
-            </a>
-        </li>
-        
-        <li class="nav-item">
-            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Criteria Analysis
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'analysis_student_mark' %}" class="nav-link bg-info text-white">
-                <i class="fa fa-chart-bar mr-3 text-primary fa-fw"></i>
-                Student Mark Analysis
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
-                <i class="fa fa-list-alt mr-3 text-primary fa-fw"></i>
-                Review Criteria
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-                <i class="fa fa-download mr-3 text-primary fa-fw"></i>
-                Download Review Marks
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'filter' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter
-            </a>
-        </li>
-        
-        {% load static %}
-            <li class="nav-item">
-                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                    Manual
-                </a>
-            </li>
 
-        
-            <li class="nav-item">
-                <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                    Logout
-                </a>
-            </li>
-        </ul>  
-    </div>
-    {% endif %}
-    {% if role == 'Principal' %}
-    <li class="nav-item">
-        <a href="{% url 'principal_dashboard' %}" class="nav-link text-dark">
-            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-            Dashboard
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
-            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-            Criteria Analysis
-        </a>
-    </li>
-    
-    
-    {% load static %}
-        <li class="nav-item">
-            <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                Manual
-            </a>
-        </li>
 
-    
-        <li class="nav-item">
-            <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                Logout
-            </a>
-        </li>
-    </ul>  
-</div>
-{% endif %}
+{% block content %}
+<input type="hidden" id="departmentValue" value="{{ department }}">
 
-<div class="page-content">
-    <!-- Department Filter Section -->
-    <div class="card mb-4">
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card department-filter-card">
         <div class="card-header bg-primary text-white">
             <h4 class="mb-0">Department Filter</h4>
         </div>
@@ -329,92 +107,67 @@
             </form>
         </div>
     </div>
-
-    <div class="container mt-5">
-        <h2 class="text-center mb-4">Review Criteria Analysis</h2>
+        </div>
+    </div>
         
-        <!-- Review Analysis Buttons Container -->
-        <div class="card mb-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card analysis-options-card">
             <div class="card-header bg-light">
                 <h4 class="mb-0">Review Analysis Options</h4>
             </div>
             <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-md-12">
-                        <div class="row row-cols-2 row-cols-md-4 g-3">
-                            <div class="col">
-                                <button type="button" class="btn btn-primary btn-lg w-100" onclick="showContent('review1')">
+                    <div class="analysis-buttons-container">
+                        <button type="button" class="btn btn-primary analysis-button" onclick="showContent('review1')">
                                     Review 1 Analysis
                                 </button>
-                            </div>
-                            <div class="col">
-                                <button type="button" class="btn btn-success btn-lg w-100" onclick="showContent('review2')">
+                        <button type="button" class="btn btn-success analysis-button" onclick="showContent('review2')">
                                     Review 2 Analysis
                                 </button>
-                            </div>
-                            <div class="col">
-                                <button type="button" class="btn btn-info btn-lg w-100" onclick="showContent('review3')">
+                        <button type="button" class="btn btn-info analysis-button" onclick="showContent('review3')">
                                     Review 3 Analysis
                                 </button>
-                            </div>
-                            <div class="col">
-                                <button type="button" class="btn btn-dark btn-lg w-100" onclick="showContent('allReviews')">
+                        <button type="button" class="btn analysis-button" 
+                                style="background: linear-gradient(to right, #f00567, #0ee44e); border: none; color: white;" 
+                                onclick="showContent('allReviews')">
                                     All Reviews Analysis
                                 </button>
-                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Outcome Analysis Button Container -->
-        <div class="card mb-4">
-            <div class="card-header bg-warning">
-                <h4 class="mb-0">Project Outcome Analysis</h4>
-            </div>
-            <div class="card-body">
-                <div class="row justify-content-center">
-                    <div class="col-md-6">
-                        <button type="button" class="btn btn-warning btn-lg w-100" onclick="showContent('outcomeAnalysis')">
-                            <i class="fas fa-chart-pie mr-2"></i>View Outcome Analysis
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Content Sections -->
         <div class="content-sections">
             <!-- Review 1 Container -->
             <div id="review1Content" class="content-section mb-4" style="display: none;">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Review 1 Criteria Analysis</h3>
+                        <h3 class="mb-0">Review 1 Analysis</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <div class="chart-container">
-                                            <canvas id="review1OverallScore"></canvas>
-                                        </div>
-                                        <h4 class="mt-3">Overall Score</h4>
-                                        <p>Average score across all criteria</p>
-                                    </div>
+                    <div class="criteria-analysis">
+                        <h4 class="mb-3">Criteria-wise Analysis</h4>
+                        <div id="review1CriteriaCharts"></div>
+                    </div>
+
+                    <div class="outcome-analysis">
+                        <h4 class="mb-3">Project Outcome Analysis</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="outcome-chart">
+                                    <canvas id="review1OutcomeChart"></canvas>
+                                 </div>
                                 </div>
+                            <div class="col-md-6">
+                                <div id="review1OutcomeStats" class="outcome-stats"></div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5>Criteria Breakdown</h5>
-                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review1CriteriaGrid">
-                                            <!-- Will be populated by JavaScript -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        </div>
+                    </div>
+
+                    <div class="marks-table mt-4">
+                        <h4 class="mb-3">Detailed Marks Analysis</h4>
+                        <div id="review1MarksTable"></div>
                         </div>
                     </div>
                 </div>
@@ -424,31 +177,31 @@
             <div id="review2Content" class="content-section mb-4" style="display: none;">
                 <div class="card">
                     <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Review 2 Criteria Analysis</h3>
+                        <h3 class="mb-0">Review 2 Analysis</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <div class="chart-container">
-                                            <canvas id="review2OverallScore"></canvas>
+                    <div class="criteria-analysis">
+                        <h4 class="mb-3">Criteria-wise Analysis</h4>
+                        <div id="review2CriteriaCharts"></div>
                                         </div>
-                                        <h4 class="mt-3">Overall Score</h4>
-                                        <p>Average score across all criteria</p>
+
+                    <div class="outcome-analysis">
+                        <h4 class="mb-3">Project Outcome Analysis</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="outcome-chart">
+                                    <canvas id="review2OutcomeChart"></canvas>
                                     </div>
                                 </div>
+                            <div class="col-md-6">
+                                <div id="review2OutcomeStats" class="outcome-stats"></div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5>Criteria Breakdown</h5>
-                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review2CriteriaGrid">
-                                            <!-- Will be populated by JavaScript -->
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+
+                    <div class="marks-table mt-4">
+                        <h4 class="mb-3">Detailed Marks Analysis</h4>
+                        <div id="review2MarksTable"></div>
                         </div>
                     </div>
                 </div>
@@ -458,31 +211,31 @@
             <div id="review3Content" class="content-section mb-4" style="display: none;">
                 <div class="card">
                     <div class="card-header bg-info text-white">
-                        <h3 class="mb-0">Review 3 Criteria Analysis</h3>
+                        <h3 class="mb-0">Review 3 Analysis</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <div class="card">
-                                    <div class="card-body text-center">
-                                        <div class="chart-container">
-                                            <canvas id="review3OverallScore"></canvas>
+                    <div class="criteria-analysis">
+                        <h4 class="mb-3">Criteria-wise Analysis</h4>
+                        <div id="review3CriteriaCharts"></div>
                                         </div>
-                                        <h4 class="mt-3">Overall Score</h4>
-                                        <p>Average score across all criteria</p>
+
+                    <div class="outcome-analysis">
+                        <h4 class="mb-3">Project Outcome Analysis</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="outcome-chart">
+                                    <canvas id="review3OutcomeChart"></canvas>
                                     </div>
                                 </div>
+                            <div class="col-md-6">
+                                <div id="review3OutcomeStats" class="outcome-stats"></div>
                             </div>
-                            <div class="col-md-8">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5>Criteria Breakdown</h5>
-                                        <div class="row row-cols-2 row-cols-md-3 g-4" id="review3CriteriaGrid">
-                                            <!-- Will be populated by JavaScript -->
                                         </div>
                                     </div>
-                                </div>
-                            </div>
+
+                    <div class="marks-table mt-4">
+                        <h4 class="mb-3">Detailed Marks Analysis</h4>
+                        <div id="review3MarksTable"></div>
                         </div>
                     </div>
                 </div>
@@ -492,130 +245,31 @@
             <div id="allReviewsContent" class="content-section mb-4" style="display: none;">
                 <div class="card">
                     <div class="card-header bg-dark text-white">
-                        <h3 class="mb-0">Overall Reviews Analysis</h3>
+                        <h3 class="mb-0">All Reviews Combined Analysis</h3>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5>Criteria Performance Across Reviews</h5>
-                                        <canvas id="allReviewsChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                        <div class="criteria-analysis">
+                            <h4 class="mb-3">Criteria-wise Analysis (All Reviews)</h4>
+                            <div id="allReviewsCriteriaCharts"></div>
             </div>
 
-            <!-- Outcome Analysis Container -->
-            <div id="outcomeAnalysisContent" class="content-section mb-4" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-warning text-dark">
-                        <h3 class="mb-0">Outcome Analysis for {{ selected_department }}</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <h5>Project Outcomes Overview</h5>
+                        <div class="outcome-analysis">
+                            <h4 class="mb-3">Project Outcome Analysis</h4>
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="card mb-3">
-                                                    <div class="card-body">
-                                                        <h4 class="text-center mb-4">Outcome Statistics</h4>
-                                                        <div class="row row-cols-2 g-4">
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="nationalConfMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">National Conferences</h6>
-                                                                    <p class="mb-0">{{ projects_1 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.national_conf }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="internationalConfMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">International Conference</h6>
-                                                                    <p class="mb-0">{{ projects_2 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.international_conf }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="scopusMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">Scopus</h6>
-                                                                    <p class="mb-0">{{ projects_3 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.scopus }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="scieMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">SCIE</h6>
-                                                                    <p class="mb-0">{{ projects_4 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.scie }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="sciMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">SCI</h6>
-                                                                    <p class="mb-0">{{ projects_5 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.sci }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="ugcMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">UGC</h6>
-                                                                    <p class="mb-0">{{ projects_6 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.ugc }}%</p>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col mb-4">
-                                                                <div class="text-center">
-                                                                    <div class="chart-container" style="width: 150px; height: 120px; margin: 0 auto;">
-                                                                        <canvas id="othersMeter"></canvas>
-                                                                    </div>
-                                                                    <h6 class="mt-3">Others</h6>
-                                                                    <p class="mb-0">{{ projects_7 }}</p>
-                                                                    <p class="text-muted">Percentage: {{ percentages.others }}%</p>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                    <div class="outcome-chart">
+                                        <canvas id="allReviewsOutcomeChart"></canvas>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="card mb-3">
-                                                    <div class="card-body text-center">
-                                                        <div class="chart-container" style="width: 100%; height: 400px; margin: 0 auto;">
-                                                            <canvas id="outcomeDistribution"></canvas>
+                                    <div id="allReviewsOutcomeStats" class="outcome-stats"></div>
                                                         </div>
-                                                        <h4 class="mt-3">Outcome Distribution</h4>
-                                                        <p class="text-muted">Total Projects: {{ total_projects }}</p>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+
+                        <div class="marks-table mt-4">
+                            <h4 class="mb-3">Detailed Marks Analysis</h4>
+                            <div id="allReviewsMarksTable"></div>
                         </div>
                     </div>
                 </div>
@@ -624,328 +278,895 @@
     </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    // Sample data - Replace with actual data from your backend
-    const criteriaNames = [
-        "Problem Identification",
-        "Literature Survey",
-        "Project Planning",
-        "Implementation Progress",
-        "Results & Analysis",
-        "Documentation",
-        "Presentation Skills",
-        "Innovation & Creativity",
-        "Team Collaboration",
-        "Overall Quality"
-    ];
+async function fetchReviewData(reviewNumber) {
+    try {
+        const department = document.getElementById('departmentValue').value;
+        
+        const criteriaResponse = await fetch(`/get-criteria/${reviewNumber}/`);
+        if (!criteriaResponse.ok) {
+            throw new Error(`Failed to fetch criteria data: ${criteriaResponse.statusText}`);
+        }
+        const criteriaData = await criteriaResponse.json();
+        
+        const marksResponse = await fetch(`/get-review-marks-master/${reviewNumber}/?department=${encodeURIComponent(department)}`);
+        if (!marksResponse.ok) {
+            throw new Error(`Failed to fetch marks data: ${marksResponse.statusText}`);
+        }
+        const marksData = await marksResponse.json();
+        
+        // Process criteria-wise data
+        const analysis = processCriteriaData(marksData, criteriaData);
+        
+        // Update UI
+        updateCriteriaCharts(reviewNumber, analysis, criteriaData);
+        updateOutcomeAnalysis(reviewNumber, marksData);
+        updateDetailedTable(reviewNumber, marksData, criteriaData);
 
-    const reviewData = {
-        review1: {
-            scores: [85, 72, 90, 65, 78, 88, 92, 70, 85, 80],
-            color: '#007bff',
-            gradient: {
-                start: '#007bff',
-                end: '#00c6ff'
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+    }
+}
+
+function processCriteriaData(marksData, criteriaData) {
+    const analysis = {};
+    
+    // Initialize criteria analysis structure
+    criteriaData.forEach((criteria, index) => {
+        analysis[`criteria_${index + 1}`] = {
+            guide: { total: 0, count: 0 },
+            reviewer1: { total: 0, count: 0 },
+            reviewer2: { total: 0, count: 0 },
+            reviewer3: { total: 0, count: 0 }
+        };
+    });
+
+    // Process marks for each student
+    marksData.forEach(record => {
+        // Process guide marks
+        if (record.guide_marks) {
+            Object.entries(record.guide_marks).forEach(([criteria, mark]) => {
+                const criteriaData = analysis[criteria];
+                if (criteriaData) {
+                    criteriaData.guide.total += parseFloat(mark || 0);
+                    criteriaData.guide.count++;
+                }
+            });
+        }
+
+        // Process reviewer marks
+        ['reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach((reviewer, index) => {
+            if (record[reviewer]) {
+                Object.entries(record[reviewer]).forEach(([criteria, mark]) => {
+                    const criteriaData = analysis[criteria];
+                    if (criteriaData) {
+                        criteriaData[`reviewer${index + 1}`].total += parseFloat(mark || 0);
+                        criteriaData[`reviewer${index + 1}`].count++;
+                    }
+                });
             }
+        });
+    });
+
+    return analysis;
+}
+
+function getReviewColor(reviewNumber) {
+    const colors = {
+        1: {
+            primary: '#0d6efd',    // Bootstrap primary
+            secondary: '#0a58ca'   // Darker shade
         },
-        review2: {
-            scores: [88, 75, 92, 70, 82, 90, 94, 75, 88, 85],
-            color: '#28a745',
-            gradient: {
-                start: '#28a745',
-                end: '#84fb95'
-            }
+        2: {
+            primary: '#198754',    // Bootstrap success
+            secondary: '#146c43'   // Darker shade
         },
-        review3: {
-            scores: [90, 80, 95, 75, 85, 92, 96, 80, 90, 88],
-            color: '#17a2b8',
-            gradient: {
-                start: '#17a2b8',
-                end: '#89ffff'
-            }
+        3: {
+            primary: '#0dcaf0',    // Bootstrap info
+            secondary: '#0aa2c0'   // Darker shade
         }
     };
+    return colors[reviewNumber] || colors[1];
+}
 
-    function createDoughnutChart(canvasId, score, color, showLabel = false) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        
-        // Create gradient based on review color
-        const gradient = ctx.createLinearGradient(0, 0, 0, 200);
-        if (color === reviewData.review1.color) {
-            gradient.addColorStop(0, reviewData.review1.gradient.start);
-            gradient.addColorStop(1, reviewData.review1.gradient.end);
-        } else if (color === reviewData.review2.color) {
-            gradient.addColorStop(0, reviewData.review2.gradient.start);
-            gradient.addColorStop(1, reviewData.review2.gradient.end);
-        } else {
-            gradient.addColorStop(0, reviewData.review3.gradient.start);
-            gradient.addColorStop(1, reviewData.review3.gradient.end);
+function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
+    const container = document.getElementById(`review${reviewNumber}CriteriaCharts`);
+    container.innerHTML = '';
+
+    // Get review-specific colors
+    const reviewColor = getReviewColor(parseInt(reviewNumber));
+
+    // Create two rows for the charts
+    const row1 = document.createElement('div');
+    row1.className = 'row mb-4';
+    const row2 = document.createElement('div');
+    row2.className = 'row';
+
+    // Destroy existing charts if they exist
+    criteriaData.forEach((_, index) => {
+        const existingChart = Chart.getChart(`review${reviewNumber}Criteria${index + 1}Chart`);
+        if (existingChart) {
+            existingChart.destroy();
         }
+    });
 
-        new Chart(ctx, {
+    criteriaData.forEach((criteria, index) => {
+        const criteriaKey = `criteria_${index + 1}`;
+        const criteriaData = analysis[criteriaKey];
+
+        // Create chart column (5 columns per row)
+        const col = document.createElement('div');
+        col.className = 'col-md-2-4';
+        col.style.cssText = `
+            flex: 0 0 20%;
+            max-width: 20%;
+            padding: 0 10px;
+        `;
+
+        // Create chart container with criteria name and guide marks
+        const chartWrapper = document.createElement('div');
+        chartWrapper.className = 'chart-wrapper text-center';
+        
+        // Add guide marks percentage at top
+        const guideData = criteriaData.guide;
+        const guidePercentage = guideData.count > 0 ? 
+            ((guideData.total / guideData.count) * 10).toFixed(1) : 0;
+        
+        const guideMarks = document.createElement('div');
+        guideMarks.className = 'guide-marks mb-2';
+        guideMarks.style.cssText = `
+            font-size: 1.1rem;
+            color: #4CAF50;
+            font-weight: bold;
+            padding: 5px;
+            background: #e8f5e9;
+            border-radius: 4px;
+            margin: 0 auto 10px auto;
+            max-width: 150px;
+        `;
+        guideMarks.textContent = `Guide: ${guidePercentage}%`;
+        chartWrapper.appendChild(guideMarks);
+
+        // Add criteria name from the database
+        const criteriaName = document.createElement('div');
+        criteriaName.className = 'criteria-name mb-2';
+        criteriaName.style.cssText = `
+            font-weight: bold;
+            color: ${reviewColor.primary};
+            font-size: 1rem;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        `;
+        criteriaName.textContent = criteria.review_criteria || `Criteria ${index + 1}`;
+        chartWrapper.appendChild(criteriaName);
+
+        // Create chart container
+        const chartContainer = document.createElement('div');
+        chartContainer.className = 'chart-container';
+        chartContainer.style.height = '180px';
+        
+        const canvas = document.createElement('canvas');
+        canvas.id = `review${reviewNumber}Criteria${index + 1}Chart`;
+        chartContainer.appendChild(canvas);
+        chartWrapper.appendChild(chartContainer);
+
+        // Add cumulative percentages container
+        const cumulativeContainer = document.createElement('div');
+        cumulativeContainer.className = 'cumulative-percentages mt-2';
+        cumulativeContainer.style.cssText = `
+            font-size: 0.9rem;
+            color: #666;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-top: 10px;
+        `;
+
+        // Calculate individual percentages
+        const reviewer1Percentage = criteriaData.reviewer1.count > 0 ? 
+            ((criteriaData.reviewer1.total / criteriaData.reviewer1.count) * 10).toFixed(1) : 0;
+        const reviewer2Percentage = criteriaData.reviewer2.count > 0 ? 
+            ((criteriaData.reviewer2.total / criteriaData.reviewer2.count) * 10).toFixed(1) : 0;
+        const reviewer3Percentage = criteriaData.reviewer3.count > 0 ? 
+            ((criteriaData.reviewer3.total / criteriaData.reviewer3.count) * 10).toFixed(1) : 0;
+
+        cumulativeContainer.innerHTML = `
+            <div><small>R1: ${reviewer1Percentage}%</small></div>
+            <div><small>R2: ${reviewer2Percentage}%</small></div>
+            <div><small>R3: ${reviewer3Percentage}%</small></div>
+        `;
+        chartWrapper.appendChild(cumulativeContainer);
+
+        col.appendChild(chartWrapper);
+
+        // Calculate combined percentage score
+        let totalScore = 0;
+        let totalCount = 0;
+
+        ['guide', 'reviewer1', 'reviewer2', 'reviewer3'].forEach(evaluator => {
+            const data = criteriaData[evaluator];
+            if (data.count > 0) {
+                totalScore += data.total;
+                totalCount += data.count;
+            }
+        });
+
+        // Convert to percentage (0-100 scale)
+        const percentage = totalCount > 0 ? ((totalScore / totalCount) * 10).toFixed(1) : 0;
+
+        // Create gradient for chart
+        const ctx = canvas.getContext('2d');
+        const chartGradient = ctx.createLinearGradient(0, 0, canvas.width, 0);
+        chartGradient.addColorStop(0, reviewColor.primary);
+        chartGradient.addColorStop(1, reviewColor.secondary);
+
+        // Create doughnut chart
+        new Chart(canvas, {
             type: 'doughnut',
             data: {
+                labels: ['Score', 'Remaining'],
                 datasets: [{
-                    data: [score, 100 - score],
-                    backgroundColor: [gradient, '#eee'],
+                    data: [percentage, 100 - percentage],
+                    backgroundColor: [chartGradient, '#f0f0f0'],
                     borderWidth: 0
                 }]
             },
             options: {
-                cutout: '75%',
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
                 plugins: {
-                    legend: { display: false },
-                    tooltip: { enabled: false }
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataIndex === 0 ? 
+                                    `Overall: ${percentage}%` : 
+                                    `Remaining: ${(100 - percentage).toFixed(1)}%`;
+                            }
+                        }
+                    }
                 }
             },
             plugins: [{
                 id: 'centerText',
-                afterDraw: (chart) => {
-                    const ctx = chart.ctx;
+                afterDraw: function(chart) {
                     const width = chart.width;
                     const height = chart.height;
-
+                    const ctx = chart.ctx;
                     ctx.restore();
-                    ctx.font = 'bold 20px Arial';
-                    ctx.textBaseline = 'middle';
-                    ctx.textAlign = 'center';
-
-                    const text = score + '%';
-                    const textX = width / 2;
+                    
+                    // Draw percentage
+                    const fontSize = (height / 100).toFixed(2);
+                    ctx.font = `bold ${fontSize}em Arial`;
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = "center";
+                    
+                    const text = percentage + "%";
                     const textY = height / 2;
 
-                    ctx.fillStyle = '#000';
-                    ctx.fillText(text, textX, textY);
+                    ctx.fillStyle = reviewColor.primary;
+                    ctx.fillText(text, width / 2, textY);
+
+                    // Draw evaluator counts
+                    ctx.font = `${fontSize * 0.3}em Arial`;
+                    ctx.fillStyle = '#666';
+                    const countText = `${totalCount} evals`;
+                    ctx.fillText(countText, width / 2, textY + (fontSize * 15));
+                    
                     ctx.save();
                 }
             }]
         });
+
+        // Add to appropriate row (first 5 to row1, rest to row2)
+        if (index < 5) {
+            row1.appendChild(col);
+        } else {
+            row2.appendChild(col);
+        }
+    });
+
+    // Add custom CSS for 5-column layout
+    const style = document.createElement('style');
+    style.textContent = `
+        @media (min-width: 768px) {
+            .col-md-2-4 {
+                flex: 0 0 20%;
+                max-width: 20%;
+            }
+        }
+        @media (max-width: 767px) {
+            .col-md-2-4 {
+                flex: 0 0 50%;
+                max-width: 50%;
+                margin-bottom: 20px;
+            }
+        }
+    `;
+    container.appendChild(style);
+
+    // Add rows to container
+    container.appendChild(row1);
+    container.appendChild(row2);
+}
+
+function updateOutcomeAnalysis(reviewNumber, marksData) {
+    // Destroy existing chart if it exists
+    const existingChart = Chart.getChart(`review${reviewNumber}OutcomeChart`);
+    if (existingChart) {
+        existingChart.destroy();
     }
 
-    function populateCriteriaGrid(reviewNumber, scores, color) {
-        const grid = document.getElementById(`review${reviewNumber}CriteriaGrid`);
-        grid.innerHTML = '';
+    const outcomeStats = {
+        achieved: 0,
+        notAchieved: 0,
+        total: marksData.length
+    };
+
+    // Calculate outcome statistics
+    marksData.forEach(record => {
+        const scores = [];
         
-        scores.forEach((score, index) => {
-            const col = document.createElement('div');
-            col.className = 'col mb-4';
-            
-            const card = document.createElement('div');
-            card.className = 'card h-100';
-            
-            const cardBody = document.createElement('div');
-            cardBody.className = 'card-body text-center';
-            
-            const canvasContainer = document.createElement('div');
-            canvasContainer.style.position = 'relative';
-            canvasContainer.style.width = '120px';
-            canvasContainer.style.height = '120px';
-            canvasContainer.style.margin = '0 auto';
-            
-            const canvas = document.createElement('canvas');
-            canvas.id = `review${reviewNumber}Criteria${index}`;
-            
-            const title = document.createElement('h6');
-            title.className = 'mt-3 mb-0';
-            title.textContent = criteriaNames[index];
-            
-            canvasContainer.appendChild(canvas);
-            cardBody.appendChild(canvasContainer);
-            cardBody.appendChild(title);
-            card.appendChild(cardBody);
-            col.appendChild(card);
-            grid.appendChild(col);
-            
-            // Create doughnut chart with percentage label
-            createDoughnutChart(canvas.id, score, color, true);
+        if (record.guide_marks) {
+            scores.push(Object.values(record.guide_marks).reduce((sum, val) => sum + parseFloat(val || 0), 0) / 10);
+        }
+        
+        ['reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(reviewer => {
+            if (record[reviewer]) {
+                scores.push(Object.values(record[reviewer]).reduce((sum, val) => sum + parseFloat(val || 0), 0) / 10);
+            }
+        });
+
+        const avgScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
+        if (avgScore >= 5) { // Assuming 5 out of 10 is the passing score
+            outcomeStats.achieved++;
+        } else {
+            outcomeStats.notAchieved++;
+        }
+    });
+
+    // Update outcome chart
+    const canvas = document.getElementById(`review${reviewNumber}OutcomeChart`);
+    new Chart(canvas, {
+        type: 'pie',
+        data: {
+            labels: ['Achieved', 'Not Achieved'],
+            datasets: [{
+                data: [outcomeStats.achieved, outcomeStats.notAchieved],
+                backgroundColor: ['#4CAF50', '#f44336']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Project Outcome Achievement'
+                }
+            }
+        }
+    });
+
+    // Update outcome stats
+    const statsContainer = document.getElementById(`review${reviewNumber}OutcomeStats`);
+    statsContainer.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Outcome Statistics</h5>
+                <p>Total Students: ${outcomeStats.total}</p>
+                <p>Achieved: ${outcomeStats.achieved} (${((outcomeStats.achieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+                <p>Not Achieved: ${outcomeStats.notAchieved} (${((outcomeStats.notAchieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+            </div>
+        </div>
+    `;
+}
+
+function updateDetailedTable(reviewNumber, marksData, criteriaData) {
+    const tableContainer = document.getElementById(`review${reviewNumber}MarksTable`);
+    const table = document.createElement('table');
+    table.className = 'table table-bordered table-striped';
+
+    // Create header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th rowspan="2">Register Number</th>
+        <th colspan="${criteriaData.length}">Guide Marks</th>
+        <th colspan="${criteriaData.length}">Reviewer 1 Marks</th>
+        <th colspan="${criteriaData.length}">Reviewer 2 Marks</th>
+        <th colspan="${criteriaData.length}">Reviewer 3 Marks</th>
+        <th rowspan="2">Average</th>
+        <th rowspan="2">Outcome</th>
+    `;
+    thead.appendChild(headerRow);
+
+    // Create criteria headers
+    const criteriaRow = document.createElement('tr');
+    for (let i = 0; i < 4; i++) { // For each evaluator type
+        criteriaData.forEach((criteria, index) => {
+            criteriaRow.innerHTML += `<th>C${index + 1}</th>`;
         });
     }
+    thead.appendChild(criteriaRow);
+    table.appendChild(thead);
 
-    function createAllReviewsChart() {
-        const ctx = document.getElementById('allReviewsChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: criteriaNames,
-                datasets: [
-                    {
-                        label: 'Review 1',
-                        data: reviewData.review1.scores,
-                        backgroundColor: reviewData.review1.color,
-                    },
-                    {
-                        label: 'Review 2',
-                        data: reviewData.review2.scores,
-                        backgroundColor: reviewData.review2.color,
-                    },
-                    {
-                        label: 'Review 3',
-                        data: reviewData.review3.scores,
-                        backgroundColor: reviewData.review3.color,
+    // Create body
+    const tbody = document.createElement('tbody');
+    marksData.forEach(record => {
+        const row = document.createElement('tr');
+        let cellsHtml = `<td>${record.register_number}</td>`;
+
+        // Add marks for each evaluator
+        ['guide_marks', 'reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(evaluator => {
+            const marks = record[evaluator] || {};
+            criteriaData.forEach((_, index) => {
+                const mark = marks[`criteria_${index + 1}`] || '-';
+                cellsHtml += `<td>${mark}</td>`;
+            });
+        });
+
+        // Calculate average and outcome
+        const allMarks = [];
+        ['guide_marks', 'reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(evaluator => {
+            if (record[evaluator]) {
+                const total = Object.values(record[evaluator]).reduce((sum, val) => sum + parseFloat(val || 0), 0);
+                allMarks.push(total / 10);
+            }
+        });
+
+        const average = allMarks.length > 0 ? 
+            (allMarks.reduce((sum, mark) => sum + mark, 0) / allMarks.length).toFixed(2) : '-';
+        const outcome = average !== '-' && parseFloat(average) >= 5 ? 'Achieved' : 'Not Achieved';
+        const outcomeClass = outcome === 'Achieved' ? 'text-success' : 'text-danger';
+
+        cellsHtml += `
+            <td>${average}</td>
+            <td class="${outcomeClass}">${outcome}</td>
+        `;
+
+        row.innerHTML = cellsHtml;
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    tableContainer.innerHTML = '';
+    tableContainer.appendChild(table);
+}
+
+async function fetchAllReviewsData() {
+    try {
+        const department = document.getElementById('departmentValue').value;
+        const reviews = [1, 2, 3];
+        const allData = {
+            criteria: [],
+            marks: []
+        };
+
+        // Fetch data for all reviews
+        for (const reviewNumber of reviews) {
+            const criteriaResponse = await fetch(`/get-criteria/${reviewNumber}/`);
+            const marksResponse = await fetch(`/get-review-marks-master/${reviewNumber}/?department=${encodeURIComponent(department)}`);
+            
+            if (!criteriaResponse.ok || !marksResponse.ok) {
+                throw new Error(`Failed to fetch data for Review ${reviewNumber}`);
+            }
+
+            const criteriaData = await criteriaResponse.json();
+            const marksData = await marksResponse.json();
+
+            allData.criteria.push({
+                reviewNumber,
+                criteria: criteriaData
+            });
+            allData.marks.push({
+                reviewNumber,
+                marks: marksData
+            });
+        }
+
+        // Process and display combined data
+        const combinedAnalysis = processCombinedData(allData);
+        updateCombinedCharts(combinedAnalysis, allData.criteria[0].criteria);
+        updateCombinedOutcomeAnalysis(allData.marks);
+        updateCombinedDetailedTable(allData);
+
+    } catch (error) {
+        console.error('Error:', error);
+        alert(error.message);
+    }
+}
+
+function processCombinedData(allData) {
+    const combinedAnalysis = {};
+    
+    // Initialize criteria analysis structure
+    allData.criteria[0].criteria.forEach((criteria, index) => {
+        combinedAnalysis[`criteria_${index + 1}`] = {
+            guide: { total: 0, count: 0 },
+            reviewer1: { total: 0, count: 0 },
+            reviewer2: { total: 0, count: 0 },
+            reviewer3: { total: 0, count: 0 }
+        };
+    });
+
+    // Process marks from all reviews
+    allData.marks.forEach(reviewData => {
+        reviewData.marks.forEach(record => {
+            // Process guide marks
+            if (record.guide_marks) {
+                Object.entries(record.guide_marks).forEach(([criteria, mark]) => {
+                    const criteriaData = combinedAnalysis[criteria];
+                    if (criteriaData) {
+                        criteriaData.guide.total += parseFloat(mark || 0);
+                        criteriaData.guide.count++;
                     }
-                ]
+                });
+            }
+
+            // Process reviewer marks
+            ['reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach((reviewer, index) => {
+                if (record[reviewer]) {
+                    Object.entries(record[reviewer]).forEach(([criteria, mark]) => {
+                        const criteriaData = combinedAnalysis[criteria];
+                        if (criteriaData) {
+                            criteriaData[`reviewer${index + 1}`].total += parseFloat(mark || 0);
+                            criteriaData[`reviewer${index + 1}`].count++;
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+    return combinedAnalysis;
+}
+
+function updateCombinedCharts(analysis, criteriaData) {
+    const container = document.getElementById('allReviewsCriteriaCharts');
+    container.innerHTML = '';
+
+    // Create two rows for the charts
+    const row1 = document.createElement('div');
+    row1.className = 'row mb-4';
+    const row2 = document.createElement('div');
+    row2.className = 'row';
+
+    // Destroy existing charts
+    criteriaData.forEach((_, index) => {
+        const existingChart = Chart.getChart(`allReviewsCriteria${index + 1}Chart`);
+        if (existingChart) {
+            existingChart.destroy();
+        }
+    });
+
+    criteriaData.forEach((criteria, index) => {
+        const criteriaKey = `criteria_${index + 1}`;
+        const criteriaData = analysis[criteriaKey];
+
+        const col = document.createElement('div');
+        col.className = 'col-md-2-4';
+        col.style.cssText = `
+            flex: 0 0 20%;
+            max-width: 20%;
+            padding: 0 10px;
+        `;
+
+        const chartWrapper = document.createElement('div');
+        chartWrapper.className = 'chart-wrapper text-center';
+        
+        // Add criteria name
+        const criteriaName = document.createElement('div');
+        criteriaName.className = 'criteria-name mb-2';
+        criteriaName.style.cssText = `
+            font-weight: bold;
+            color: #343a40;
+            font-size: 1rem;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        `;
+        criteriaName.textContent = criteria.review_criteria || `Criteria ${index + 1}`;
+        chartWrapper.appendChild(criteriaName);
+
+        // Create chart container
+        const chartContainer = document.createElement('div');
+        chartContainer.className = 'chart-container';
+        chartContainer.style.height = '180px';
+        
+        const canvas = document.createElement('canvas');
+        canvas.id = `allReviewsCriteria${index + 1}Chart`;
+        chartContainer.appendChild(canvas);
+        chartWrapper.appendChild(chartContainer);
+
+        // Calculate percentages for each evaluator
+        const evaluatorPercentages = {
+            guide: criteriaData.guide.count > 0 ? 
+                ((criteriaData.guide.total / criteriaData.guide.count) * 10).toFixed(1) : 0,
+            reviewer1: criteriaData.reviewer1.count > 0 ? 
+                ((criteriaData.reviewer1.total / criteriaData.reviewer1.count) * 10).toFixed(1) : 0,
+            reviewer2: criteriaData.reviewer2.count > 0 ? 
+                ((criteriaData.reviewer2.total / criteriaData.reviewer2.count) * 10).toFixed(1) : 0,
+            reviewer3: criteriaData.reviewer3.count > 0 ? 
+                ((criteriaData.reviewer3.total / criteriaData.reviewer3.count) * 10).toFixed(1) : 0
+        };
+
+        // Add evaluator percentages
+        const percentagesContainer = document.createElement('div');
+        percentagesContainer.className = 'evaluator-percentages mt-2';
+        percentagesContainer.style.cssText = `
+            font-size: 0.9rem;
+            color: #666;
+            padding: 5px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        `;
+        percentagesContainer.innerHTML = `
+            <div><small>Guide: ${evaluatorPercentages.guide}%</small></div>
+            <div><small>R1: ${evaluatorPercentages.reviewer1}%</small></div>
+            <div><small>R2: ${evaluatorPercentages.reviewer2}%</small></div>
+            <div><small>R3: ${evaluatorPercentages.reviewer3}%</small></div>
+        `;
+        chartWrapper.appendChild(percentagesContainer);
+
+        col.appendChild(chartWrapper);
+
+        // Calculate overall percentage
+        const totalScore = Object.values(evaluatorPercentages).reduce((sum, val) => sum + parseFloat(val), 0);
+        const totalCount = Object.values(evaluatorPercentages).filter(val => parseFloat(val) > 0).length;
+        const percentage = totalCount > 0 ? (totalScore / totalCount).toFixed(1) : 0;
+
+        // Create chart
+        new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+                labels: ['Score', 'Remaining'],
+                datasets: [{
+                    data: [percentage, 100 - percentage],
+                    backgroundColor: ['#343a40', '#f0f0f0'],
+                    borderWidth: 0
+                }]
             },
             options: {
                 responsive: true,
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        max: 100
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return context.dataIndex === 0 ? 
+                                    `Overall: ${percentage}%` : 
+                                    `Remaining: ${(100 - percentage).toFixed(1)}%`;
+                            }
+                        }
                     }
                 }
+            },
+            plugins: [{
+                id: 'centerText',
+                afterDraw: function(chart) {
+                    const width = chart.width;
+                    const height = chart.height;
+                    const ctx = chart.ctx;
+                    ctx.restore();
+                    
+                    const fontSize = (height / 100).toFixed(2);
+                    ctx.font = `bold ${fontSize}em Arial`;
+                    ctx.textBaseline = "middle";
+                    ctx.textAlign = "center";
+                    
+                    const text = percentage + "%";
+                    const textY = height / 2;
+                    
+                    ctx.fillStyle = '#343a40';
+                    ctx.fillText(text, width / 2, textY);
+                    
+                    ctx.font = `${fontSize * 0.3}em Arial`;
+                    ctx.fillStyle = '#666';
+                    const countText = `${totalCount} evals`;
+                    ctx.fillText(countText, width / 2, textY + (fontSize * 15));
+                    
+                    ctx.save();
+                }
+            }]
+        });
+
+        // Add to appropriate row
+        if (index < 5) {
+            row1.appendChild(col);
+        } else {
+            row2.appendChild(col);
+        }
+    });
+
+    container.appendChild(row1);
+    container.appendChild(row2);
+}
+
+function updateCombinedOutcomeAnalysis(marksData) {
+    // Destroy existing chart if it exists
+    const existingChart = Chart.getChart('allReviewsOutcomeChart');
+    if (existingChart) {
+        existingChart.destroy();
+    }
+
+    const outcomeStats = {
+        achieved: 0,
+        notAchieved: 0,
+        total: marksData.length
+    };
+
+    // Calculate outcome statistics
+    marksData.forEach(record => {
+        const scores = [];
+        
+        if (record.guide_marks) {
+            scores.push(Object.values(record.guide_marks).reduce((sum, val) => sum + parseFloat(val || 0), 0) / 10);
+        }
+        
+        ['reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(reviewer => {
+            if (record[reviewer]) {
+                scores.push(Object.values(record[reviewer]).reduce((sum, val) => sum + parseFloat(val || 0), 0) / 10);
             }
         });
-    }
 
-    function createHalfCircleMeter(canvasId, value, color) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        const width = 150;
-        const height = 120;
-        
-        // Set canvas dimensions
-        ctx.canvas.width = width;
-        ctx.canvas.height = height;
-        
-        // Clear the canvas
-        ctx.clearRect(0, 0, width, height);
-        
-        // Calculate center and radius
-        const centerX = width / 2;
-        const centerY = height - 40;
-        const radius = width / 2 - 15;
-        
-        // Draw the background arc
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, Math.PI, 0);
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 10;
-        ctx.stroke();
-        
-        // Draw the value arc
-        const percentage = Math.min(value / 10, 1);
-        ctx.beginPath();
-        ctx.arc(centerX, centerY, radius, Math.PI, Math.PI + (Math.PI * percentage));
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 8;
-        ctx.stroke();
-        
-        // Add the value text
-        ctx.fillStyle = '#000';
-        ctx.font = 'bold 20px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText(value, centerX, centerY - 20);
-    }
-
-    function showContent(contentId) {
-        console.log('Showing content:', contentId); // Debug log
-        
-        // Hide all content sections
-        document.querySelectorAll('.content-section').forEach(section => {
-            section.style.display = 'none';
-        });
-        
-        // Show the selected content section
-        const selectedSection = document.getElementById(contentId + 'Content');
-        if (selectedSection) {
-            selectedSection.style.display = 'block';
-            console.log('Section found:', contentId + 'Content'); // Debug log
+        const avgScore = scores.length > 0 ? scores.reduce((sum, score) => sum + score, 0) / scores.length : 0;
+        if (avgScore >= 5) { // Assuming 5 out of 10 is the passing score
+            outcomeStats.achieved++;
         } else {
-            console.error('Section not found:', contentId + 'Content'); // Debug log
+            outcomeStats.notAchieved++;
         }
+    });
 
-        // Initialize charts based on the selected section
-        if (contentId === 'review1') {
-            const avgScore = Math.round(reviewData.review1.scores.reduce((a, b) => a + b) / reviewData.review1.scores.length);
-            createDoughnutChart('review1OverallScore', avgScore, reviewData.review1.color, true);
-            populateCriteriaGrid(1, reviewData.review1.scores, reviewData.review1.color);
-        } else if (contentId === 'review2') {
-            const avgScore = Math.round(reviewData.review2.scores.reduce((a, b) => a + b) / reviewData.review2.scores.length);
-            createDoughnutChart('review2OverallScore', avgScore, reviewData.review2.color, true);
-            populateCriteriaGrid(2, reviewData.review2.scores, reviewData.review2.color);
-        } else if (contentId === 'review3') {
-            const avgScore = Math.round(reviewData.review3.scores.reduce((a, b) => a + b) / reviewData.review3.scores.length);
-            createDoughnutChart('review3OverallScore', avgScore, reviewData.review3.color, true);
-            populateCriteriaGrid(3, reviewData.review3.scores, reviewData.review3.color);
-        } else if (contentId === 'allReviews') {
-            createAllReviewsChart();
-        } else if (contentId === 'outcomeAnalysis') {
-            // Create outcome distribution chart
-            const ctx = document.getElementById('outcomeDistribution').getContext('2d');
-            new Chart(ctx, {
+    // Update outcome chart
+    const canvas = document.getElementById('allReviewsOutcomeChart');
+    new Chart(canvas, {
                 type: 'pie',
                 data: {
-                    labels: [
-                        'National Conferences',
-                        'International Conference',
-                        'Scopus',
-                        'SCIE',
-                        'SCI',
-                        'UGC',
-                        'Others'
-                    ],
+            labels: ['Achieved', 'Not Achieved'],
                     datasets: [{
-                        data: [
-                            {{ projects_1 }},
-                            {{ projects_2 }},
-                            {{ projects_3 }},
-                            {{ projects_4 }},
-                            {{ projects_5 }},
-                            {{ projects_6 }},
-                            {{ projects_7 }}
-                        ],
-                        backgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-                            '#9966FF',
-                            '#FF9F40',
-                            '#FF6384'
-                        ]
+                data: [outcomeStats.achieved, outcomeStats.notAchieved],
+                backgroundColor: ['#4CAF50', '#f44336']
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: {
-                            position: 'right'
+                title: {
+                    display: true,
+                    text: 'Project Outcome Achievement'
                         }
                     }
                 }
             });
 
-            // Create half-circle meters for each outcome
-            createHalfCircleMeter('nationalConfMeter', {{ projects_1 }}, '#FF6384');
-            createHalfCircleMeter('internationalConfMeter', {{ projects_2 }}, '#36A2EB');
-            createHalfCircleMeter('scopusMeter', {{ projects_3 }}, '#FFCE56');
-            createHalfCircleMeter('scieMeter', {{ projects_4 }}, '#4BC0C0');
-            createHalfCircleMeter('sciMeter', {{ projects_5 }}, '#9966FF');
-            createHalfCircleMeter('ugcMeter', {{ projects_6 }}, '#FF9F40');
-            createHalfCircleMeter('othersMeter', {{ projects_7 }}, '#FF6384');
+    // Update outcome stats
+    const statsContainer = document.getElementById('allReviewsOutcomeStats');
+    statsContainer.innerHTML = `
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Outcome Statistics</h5>
+                <p>Total Students: ${outcomeStats.total}</p>
+                <p>Achieved: ${outcomeStats.achieved} (${((outcomeStats.achieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+                <p>Not Achieved: ${outcomeStats.notAchieved} (${((outcomeStats.notAchieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+            </div>
+        </div>
+    `;
+}
+
+function updateCombinedDetailedTable(allData) {
+    const tableContainer = document.getElementById('allReviewsMarksTable');
+    const table = document.createElement('table');
+    table.className = 'table table-bordered table-striped';
+
+    // Create header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    headerRow.innerHTML = `
+        <th rowspan="2">Register Number</th>
+        <th colspan="${allData.criteria[0].criteria.length}">Guide Marks</th>
+        <th colspan="${allData.criteria[0].criteria.length}">Reviewer 1 Marks</th>
+        <th colspan="${allData.criteria[0].criteria.length}">Reviewer 2 Marks</th>
+        <th colspan="${allData.criteria[0].criteria.length}">Reviewer 3 Marks</th>
+        <th rowspan="2">Average</th>
+        <th rowspan="2">Outcome</th>
+    `;
+    thead.appendChild(headerRow);
+
+    // Create criteria headers
+    const criteriaRow = document.createElement('tr');
+    for (let i = 0; i < 4; i++) { // For each evaluator type
+        allData.criteria[i].criteria.forEach((criteria, index) => {
+            criteriaRow.innerHTML += `<th>C${index + 1}</th>`;
+        });
+    }
+    thead.appendChild(criteriaRow);
+    table.appendChild(thead);
+
+    // Create body
+    const tbody = document.createElement('tbody');
+    allData.marks.forEach(reviewData => {
+        const row = document.createElement('tr');
+        let cellsHtml = `<td>${reviewData.marks[0].register_number}</td>`;
+
+        // Add marks for each evaluator
+        ['guide_marks', 'reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(evaluator => {
+            const marks = reviewData.marks[0][evaluator] || {};
+            allData.criteria[0].criteria.forEach((criteria, index) => {
+                const mark = marks[`criteria_${index + 1}`] || '-';
+                cellsHtml += `<td>${mark}</td>`;
+            });
+        });
+
+        // Calculate average and outcome
+        const allMarks = [];
+        ['guide_marks', 'reviewer1_marks', 'reviewer2_marks', 'reviewer3_marks'].forEach(evaluator => {
+            if (reviewData.marks[0][evaluator]) {
+                const total = Object.values(reviewData.marks[0][evaluator]).reduce((sum, val) => sum + parseFloat(val || 0), 0);
+                allMarks.push(total / 10);
+            }
+        });
+
+        const average = allMarks.length > 0 ? 
+            (allMarks.reduce((sum, mark) => sum + mark, 0) / allMarks.length).toFixed(2) : '-';
+        const outcome = average !== '-' && parseFloat(average) >= 5 ? 'Achieved' : 'Not Achieved';
+        const outcomeClass = outcome === 'Achieved' ? 'text-success' : 'text-danger';
+
+        cellsHtml += `
+            <td>${average}</td>
+            <td class="${outcomeClass}">${outcome}</td>
+        `;
+
+        row.innerHTML = cellsHtml;
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    tableContainer.innerHTML = '';
+    tableContainer.appendChild(table);
+}
+
+function showContent(section) {
+    // Hide all content sections
+    document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+    
+    // Show selected section
+    const selectedContent = document.getElementById(section + 'Content');
+    if (selectedContent) {
+        selectedContent.style.display = 'block';
+        if (section === 'allReviews') {
+            fetchAllReviewsData();
+        } else {
+            const reviewNumber = section.replace('review', '');
+            fetchReviewData(reviewNumber);
         }
     }
+}
 
-    // Make sure the script runs after the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('DOM loaded'); // Debug log
-        showContent('review1'); // Show Review 1 by default
-    });
-
-    // Update table styles
-    const tableStyles = `
-        <style>
-            .table td {
-                vertical-align: middle;
-            }
-            .table td:last-child {
-                width: 80px;
-                text-align: center;
-            }
-        </style>
-    `
+// Initialize with Review 1
+document.addEventListener('DOMContentLoaded', function() {
+    showContent('review1');
+});
 </script>
-</body>
-</html>
+{% endblock %}
+

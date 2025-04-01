@@ -13,8 +13,10 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- JavaScript Libraries -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             min-height: 100vh;
@@ -85,6 +87,7 @@
             z-index: 1001;
         }
     </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
     <div class="vertical-nav" id="sidebar">
@@ -105,45 +108,47 @@
                 <p class="card-text">{{ role }}</p>
             </div>
         </div>
-        <ul class="nav flex-column bg-white mb-0">
-            <li class="nav-item">
-                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
-                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    View Guide Detail
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Committee Members
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                    <li class="nav-item">
-                        <a href="{% url 'review1' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review2' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review3' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Guide
-                </a>
-            </li>
+
+        {% if role == 'HOD' %}
+            <ul class="nav flex-column bg-white mb-0">
+                <li class="nav-item">
+                    <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
+                        <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                        Allocate Committee Members
+                    </a>
+                    <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
+                        <li class="nav-item">
+                            <a href="{% url 'review1' %}" class="nav-link text-dark">
+                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                                Review 1
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'review2' %}" class="nav-link text-dark">
+                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                                Review 2
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'review3' %}" class="nav-link text-dark">
+                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                                Review 3
+                            </a>
+                        </li>
+                    </ul>
+                <li class="nav-item">
+                    <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                        Allocate Guide
+                    </a>
+                </li>
+            </ul>  
             <li class="nav-item">
                 <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
                     <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
@@ -170,10 +175,23 @@
                     </li>
                 </ul>
             </li>
+            
             <li class="nav-item">
                 <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
                     <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
                     Final Outcome Entry
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
+                    <i class="fa fa-Download-alt mr-3 text-primary fa-fw"></i>
+                    Download Review Marks
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
+                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                    Criteria Entry
                 </a>
             </li>
             <li class="nav-item">
@@ -182,21 +200,39 @@
                     Filter
                 </a>
             </li>
+            
+            <li class="nav-item">
+                <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                    Criteria Analysis
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
+                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                    Students Mark Analysis
+                </a>
+            </li>
+            
             {% load static %}
-            <li class="nav-item">
-                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                    Manual
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                    Logout
-                </a>
-            </li>
-        </ul>
-    </div>
+                <li class="nav-item">
+                    <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                        <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                        Manual
+                    </a>
+                </li>
+    
+            
+                <li class="nav-item">
+                    <a href="{% url 'home_page' %}" class="nav-link text-dark">
+                        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                        Logout
+                    </a>
+                </li>
+            </ul>  
+        </div>
+        {% endif %}
+
     <div class="page-content">
         {% if messages %}
         <div class="messages mb-4">
@@ -214,5 +250,6 @@
         {% block content %}
         {% endblock %}
     </div>
+    {% block scripts %}{% endblock %}
 </body>
 </html> 

@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome,review_assasment_criteria_master
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome,review_assasment_criteria_master, ProjectsReviewMarksMaster
 from datetime import datetime
 from django.contrib import messages
 import hashlib
@@ -13,6 +13,7 @@ import pandas as pd
 from io import BytesIO
 from django.db.models import Count
 import json
+from django.contrib.auth.decorators import login_required
 
 def encrypt_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -184,7 +185,83 @@ def student_entry(request):
     })
 
 
+from django.http import JsonResponse
+from .models import review_marks_master
 
+def get_review_preview(request, review_number):
+    try:
+        department = request.session.get('department')
+        
+        # First get all students from the Project model for this department
+        all_students = Project.objects.filter(department=department)
+        
+        # Initialize student data dictionary with all students
+        student_data = {
+            student.reg_no: {
+                'student_name': student.student_name,
+                'reg_no': student.reg_no,
+                'guide_total': None,
+                'reviewer1_total': None,
+                'reviewer2_total': None,
+                'reviewer3_total': None,
+                'average': None
+            }
+            for student in all_students
+        }
+        
+        # Get all review marks for this department and review number
+        review_marks = review_marks_master.objects.filter(
+            department=department,
+            review_number=review_number
+        )
+        
+        # Update marks for students who have them
+        for mark in review_marks:
+            # Calculate total marks for this review
+            criteria_marks = [
+                mark.criteria_1 or 0,
+                mark.criteria_2 or 0,
+                mark.criteria_3 or 0,
+                mark.criteria_4 or 0,
+                mark.criteria_5 or 0,
+                mark.criteria_6 or 0,
+                mark.criteria_7 or 0,
+                mark.criteria_8 or 0,
+                mark.criteria_9 or 0,
+                mark.criteria_10 or 0
+            ]
+            total_marks = sum(criteria_marks)
+            
+            # Assign total marks based on reviewer type
+            if mark.reviewer_type == 'Guide':
+                student_data[mark.reg_no]['guide_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 1':
+                student_data[mark.reg_no]['reviewer1_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 2':
+                student_data[mark.reg_no]['reviewer2_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 3':
+                student_data[mark.reg_no]['reviewer3_total'] = total_marks
+        
+        # Calculate averages for all students
+        for student in student_data.values():
+            totals = [
+                student['guide_total'],
+                student['reviewer1_total'],
+                student['reviewer2_total'],
+                student['reviewer3_total']
+            ]
+            valid_totals = [t for t in totals if t is not None]
+            average = sum(valid_totals) / len(valid_totals) if valid_totals else None
+            student['average'] = round(average, 2) if average is not None else None
+        
+        return JsonResponse(list(student_data.values()), safe=False)
+        
+    except Exception as e:
+        print(f"Error in get_review_preview: {str(e)}")
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+    
 def view_marks(request):
     student_regno = request.session.get('student_regno')
     student_name = request.session.get('student_name')
@@ -789,7 +866,22 @@ def review1_markentry(request):
         
         course_code = request.POST.get('course_code')
         course_title = request.POST.get('course_title')
-        reviewer_type = request.POST.get('reviewer_type')
+        
+        # Get the project and assigned reviewer info
+        project = Project.objects.filter(reg_no=reg_no, department=department).first()
+        assigned_reviewer = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
+        
+        # Determine reviewer type
+        reviewer_type = ""
+        if project and project.internal_guide_name == name:
+            reviewer_type = "Guide"
+        elif assigned_reviewer:
+            if assigned_reviewer.reviewer1 == name:
+                reviewer_type = "Reviewer 1"
+            elif assigned_reviewer.reviewer2 == name:
+                reviewer_type = "Reviewer 2"
+            elif assigned_reviewer.reviewer3 == name:
+                reviewer_type = "Reviewer 3"
         
         # Get marks for each criteria
         criteria_1 = int(request.POST.get('criteria_1', 0))
@@ -850,7 +942,6 @@ def review1_markentry(request):
     review_criteria = review_assasment_criteria_master.objects.filter(review_number=1)
     print(review_criteria,"review_criteria")
 
-    
     # Check if HOD is assigned as a reviewer in assignreviewers table
     is_reviewer = assignreviewers.objects.filter(
         department=department,
@@ -869,7 +960,7 @@ def review1_markentry(request):
     students_with_reviewer_marks = review_marks_master.objects.filter(
         department=department,
         review_number=1,
-        reviewer_type='Reviewer'
+        reviewer_type__startswith='Reviewer'
     ).values_list('reg_no', flat=True)
 
     # Get students where HOD is the internal guide
@@ -905,8 +996,6 @@ def review1_markentry(request):
 
 
 
-
-
 def review2_markentry(request):
     role = request.session.get('role')
     department = request.session.get('department')
@@ -925,7 +1014,22 @@ def review2_markentry(request):
         
         course_code = request.POST.get('course_code')
         course_title = request.POST.get('course_title')
-        reviewer_type = request.POST.get('reviewer_type')
+        
+        # Get the project and assigned reviewer info
+        project = Project.objects.filter(reg_no=reg_no, department=department).first()
+        assigned_reviewer = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
+        
+        # Determine reviewer type
+        reviewer_type = ""
+        if project and project.internal_guide_name == name:
+            reviewer_type = "Guide"
+        elif assigned_reviewer:
+            if assigned_reviewer.reviewer1 == name:
+                reviewer_type = "Reviewer 1"
+            elif assigned_reviewer.reviewer2 == name:
+                reviewer_type = "Reviewer 2"
+            elif assigned_reviewer.reviewer3 == name:
+                reviewer_type = "Reviewer 3"
         
         # Get marks for each criteria
         criteria_1 = int(request.POST.get('criteria_1', 0))
@@ -941,16 +1045,6 @@ def review2_markentry(request):
         
         total = (criteria_1 + criteria_2 + criteria_3 + criteria_4 + criteria_5 +
                 criteria_6 + criteria_7 + criteria_8 + criteria_9 + criteria_10)
-        
-        assign_record = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
-        if assign_record:
-            batch = assign_record.batch
-            regulations = assign_record.regulation  
-            company_guide_name = assign_record.company_name
-        else:
-            batch = ""
-            regulations = ""
-            company_guide_name = ""
 
         # Create the review_marks_master record
         review_marks_master.objects.create(
@@ -997,13 +1091,7 @@ def review2_markentry(request):
     students_with_guide_marks = review_marks_master.objects.filter(
         department=department,
         review_number=2,
-        reviewer_type='Guide'
-    ).values_list('reg_no', flat=True)
-
-    students_with_reviewer_marks = review_marks_master.objects.filter(
-        department=department,
-        review_number=2,
-        reviewer_type='Reviewer'
+        reviewer_type__in=['Guide', 'Reviewer 1', 'Reviewer 2', 'Reviewer 3']
     ).values_list('reg_no', flat=True)
 
     # Get students where HOD is the internal guide
@@ -1022,7 +1110,7 @@ def review2_markentry(request):
             ).filter(
                 Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
             ).values_list('batch', flat=True)
-        ).exclude(reg_no__in=students_with_reviewer_marks)
+        ).exclude(reg_no__in=students_with_guide_marks)
     else:
         reviewer_students = Project.objects.none()
 
@@ -1056,7 +1144,22 @@ def review3_markentry(request):
         
         course_code = request.POST.get('course_code')
         course_title = request.POST.get('course_title')
-        reviewer_type = request.POST.get('reviewer_type')
+        
+        # Get the project and assigned reviewer info
+        project = Project.objects.filter(reg_no=reg_no, department=department).first()
+        assigned_reviewer = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
+        
+        # Determine reviewer type
+        reviewer_type = ""
+        if project and project.internal_guide_name == name:
+            reviewer_type = "Guide"
+        elif assigned_reviewer:
+            if assigned_reviewer.reviewer1 == name:
+                reviewer_type = "Reviewer 1"
+            elif assigned_reviewer.reviewer2 == name:
+                reviewer_type = "Reviewer 2"
+            elif assigned_reviewer.reviewer3 == name:
+                reviewer_type = "Reviewer 3"
         
         # Get marks for each criteria
         criteria_1 = int(request.POST.get('criteria_1', 0))
@@ -1072,16 +1175,6 @@ def review3_markentry(request):
         
         total = (criteria_1 + criteria_2 + criteria_3 + criteria_4 + criteria_5 +
                 criteria_6 + criteria_7 + criteria_8 + criteria_9 + criteria_10)
-        
-        assign_record = assignreviewers.objects.filter(coursecode=course_code, department=department).first()
-        if assign_record:
-            batch = assign_record.batch
-            regulations = assign_record.regulation  
-            company_guide_name = assign_record.company_name
-        else:
-            batch = ""
-            regulations = ""
-            company_guide_name = ""
 
         # Create the review_marks_master record
         review_marks_master.objects.create(
@@ -1124,7 +1217,7 @@ def review3_markentry(request):
         Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
     ).exists()
 
-    # Get students whose marks have already been entered for Review 3 by either guide or reviewer
+    # Get students whose marks have already been entered for Review 3
     students_with_guide_marks = review_marks_master.objects.filter(
         department=department,
         review_number=3,
@@ -1144,18 +1237,15 @@ def review3_markentry(request):
     ).exclude(reg_no__in=students_with_guide_marks)
 
     # If HOD is a reviewer, get reviewer students
-    if is_reviewer:
-        reviewer_students = Project.objects.filter(
+    reviewer_students = Project.objects.filter(
+        department=department,
+        batch__in=assignreviewers.objects.filter(
             department=department,
-            batch__in=assignreviewers.objects.filter(
-                department=department,
-                review_type="Review 3"
-            ).filter(
-                Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
-            ).values_list('batch', flat=True)
-        ).exclude(reg_no__in=students_with_reviewer_marks)
-    else:
-        reviewer_students = Project.objects.none()
+            review_type="Review 3"
+        ).filter(
+            Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
+        ).values_list('batch', flat=True)
+    ).exclude(reg_no__in=students_with_reviewer_marks) if is_reviewer else Project.objects.none()
 
     return render(request, "faculty/review/review3_markentry.html", {
         "projects": projects_list,
@@ -1167,6 +1257,9 @@ def review3_markentry(request):
         'is_reviewer': is_reviewer,
         'review_criteria': review_criteria
     })
+
+
+
 def downlod_review_marks(request):
     role = request.session.get('role')
     department = request.session.get('department')
@@ -2053,51 +2146,71 @@ def get_review_preview(request, review_number):
     try:
         department = request.session.get('department')
         
-        # Get all projects for the department
-        projects = Project.objects.filter(department=department)
+        # Get all review marks for this department and review number
+        review_marks = review_marks_master.objects.filter(
+            department=department,
+            review_number=review_number
+        )
         
-        # Create list to store preview data
-        preview_data = []
+        # Group marks by student registration number
+        student_data = {}
         
-        for project in projects:
-            # Get all review marks for this project and review number (both Guide and Reviewer)
-            review_marks_list = review_marks_master.objects.filter(
-                reg_no=project.reg_no,
-                department=department,
-                review_number=review_number
-            )
+        for mark in review_marks:
+            if mark.reg_no not in student_data:
+                student_data[mark.reg_no] = {
+                    'student_name': mark.student_name,
+                    'reg_no': mark.reg_no,
+                    'guide_total': None,
+                    'reviewer1_total': None,
+                    'reviewer2_total': None,
+                    'reviewer3_total': None
+                }
             
-            if review_marks_list.exists():
-                # Calculate average of total marks from Guide and Reviewer
-                total_marks = 0
-                count = 0
-                reviewer_types = []
-                
-                for marks in review_marks_list:
-                    total_marks += marks.total
-                    count += 1
-                    reviewer_types.append(marks.reviewer_type)
-                
-                average_total = round(total_marks / count, 2) if count > 0 else None
-                reviewer_info = ' & '.join(reviewer_types)
-                
-                preview_data.append({
-                    'student_name': project.student_name,
-                    'reg_no': project.reg_no,
-                    'total': average_total,
-                    'reviewer_types': reviewer_info
-                })
-            else:
-                preview_data.append({
-                    'student_name': project.student_name,
-                    'reg_no': project.reg_no,
-                    'total': None,
-                    'reviewer_types': 'No marks entered'
-                })
+            # Calculate total marks for this review
+            criteria_marks = [
+                mark.criteria_1 or 0,
+                mark.criteria_2 or 0,
+                mark.criteria_3 or 0,
+                mark.criteria_4 or 0,
+                mark.criteria_5 or 0,
+                mark.criteria_6 or 0,
+                mark.criteria_7 or 0,
+                mark.criteria_8 or 0,
+                mark.criteria_9 or 0,
+                mark.criteria_10 or 0
+            ]
+            total_marks = sum(criteria_marks)
+            
+            # Assign total marks based on reviewer type
+            if mark.reviewer_type == 'Guide':
+                student_data[mark.reg_no]['guide_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 1':
+                student_data[mark.reg_no]['reviewer1_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 2':
+                student_data[mark.reg_no]['reviewer2_total'] = total_marks
+            elif mark.reviewer_type == 'Reviewer 3':
+                student_data[mark.reg_no]['reviewer3_total'] = total_marks
+        
+        # Convert dictionary to list and calculate averages
+        preview_data = []
+        for student in student_data.values():
+            # Calculate average from non-None values
+            totals = [
+                student['guide_total'],
+                student['reviewer1_total'],
+                student['reviewer2_total'],
+                student['reviewer3_total']
+            ]
+            valid_totals = [t for t in totals if t is not None]
+            average = sum(valid_totals) / len(valid_totals) if valid_totals else None
+            
+            student['average'] = round(average, 2) if average is not None else None
+            preview_data.append(student)
         
         return JsonResponse(preview_data, safe=False)
+        
     except Exception as e:
-        print(f"Error in get_review_preview: {str(e)}")  # Add logging
+        print(f"Error in get_review_preview: {str(e)}")
         return JsonResponse({'error': str(e)}, status=500)
 def criteria_entry(request):
     role = request.session.get('role')
@@ -2170,119 +2283,264 @@ def analysis_student_mark(request):
     else:
         return redirect('home_page')
     
+@login_required
 def get_student_analytics(request, register_number):
-    if request.session.get('role') == 'HOD':
-        try:
-            # Get student details - try both with and without leading zeros
-            try:
-                student = Project.objects.get(reg_no=register_number)
-            except Project.DoesNotExist:
-                # Try removing leading zeros if present
-                stripped_regno = register_number.lstrip('0')
-                student = Project.objects.get(reg_no=stripped_regno)
+    try:
+        # Get student details
+        student = Student.objects.get(register_number=register_number)
+        
+        # Initialize response data
+        response_data = {
+            'student_name': student.student_name,
+            'register_number': student.register_number,
+            'batch': student.batch,
+            'semester': student.semester,
+            'review1_marks': [],
+            'review2_marks': [],
+            'review3_marks': []
+        }
+        
+        # Process each review
+        for review_number in [1, 2, 3]:
+            # Get marks for this review
+            marks = review_marks_master.objects.filter(
+                reg_no=register_number,
+                review_number=review_number
+            )
             
-            # Get review marks for the student - use the actual reg_no from found student
-            review1_marks = review_marks_master.objects.filter(
-                reg_no=student.reg_no,
-                review_number=1
-            ).order_by('reviewer_type')
-            
-            review2_marks = review_marks_master.objects.filter(
-                reg_no=student.reg_no,
-                review_number=2
-            ).order_by('reviewer_type')
-            
-            review3_marks = review_marks_master.objects.filter(
-                reg_no=student.reg_no,
-                review_number=3
-            ).order_by('reviewer_type')
-
-            def process_review_marks(marks_queryset, review_number):
-                if not marks_queryset.exists():
-                    return []
-
+            if marks.exists():
                 # Get criteria for this review
                 criteria_list = review_assasment_criteria_master.objects.filter(
                     review_number=review_number
                 ).order_by('id')
-
-                # Initialize marks dictionary
-                marks_by_criteria = {}
                 
-                # First pass: Process guide marks
-                # Second pass: Process reviewer marks in order
-                reviewer_count = 0
-                
-                # Process guide marks first
-                guide_marks = marks_queryset.filter(reviewer_type='Guide').first()
-                reviewer_marks = marks_queryset.filter(reviewer_type='Reviewer').order_by('id')
-                
+                # Process each criteria
                 for criteria in criteria_list:
-                    criteria_name = criteria.review_criteria
-                    marks_by_criteria[criteria_name] = {
-                        'criteria': criteria_name,
+                    criteria_num = criteria.id
+                    criteria_data = {
+                        'criteria': criteria.review_criteria,
+                        'guide_marks': None,
+                        'reviewer_marks': [],
+                        'average': None
+                    }
+                    
+                    # Get guide marks
+                    guide_marks = marks.filter(reviewer_type='Guide').first()
+                    if guide_marks:
+                        guide_value = getattr(guide_marks, f'criteria_{criteria_num}', None)
+                        if guide_value is not None:
+                            criteria_data['guide_marks'] = float(guide_value)
+                    
+                    # Get reviewer marks
+                    for reviewer_type in ['Reviewer 1', 'Reviewer 2', 'Reviewer 3']:
+                        reviewer_marks = marks.filter(reviewer_type=reviewer_type).first()
+                        if reviewer_marks:
+                            reviewer_value = getattr(reviewer_marks, f'criteria_{criteria_num}', None)
+                            if reviewer_value is not None:
+                                criteria_data['reviewer_marks'].append({
+                                    'type': reviewer_type,
+                                    'mark': float(reviewer_value)
+                                })
+                    
+                    # Calculate average
+                    marks_list = []
+                    if criteria_data['guide_marks'] is not None:
+                        marks_list.append(criteria_data['guide_marks'])
+                    marks_list.extend([m['mark'] for m in criteria_data['reviewer_marks']])
+                    
+                    if marks_list:
+                        criteria_data['average'] = sum(marks_list) / len(marks_list)
+                    
+                    response_data[f'review{review_number}_marks'].append(criteria_data)
+        
+        return JsonResponse(response_data)
+    
+    except Student.DoesNotExist:
+        return JsonResponse({'error': 'Student not found'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def get_student_analytics_all(request):
+    if request.session.get('role') == 'HOD':
+        try:
+            department = request.session.get('department')
+            
+            # Get all students in the department
+            students = Project.objects.filter(department=department)
+            
+            all_students_data = []
+            
+            for student in students:
+                # Get review marks for each student
+                for review_number in [1, 2, 3]:
+                    review_marks = review_marks_master.objects.filter(
+                        reg_no=student.reg_no,
+                        review_number=review_number,
+                        department=department
+                    ).order_by('reviewer_type')
+                    
+                    if review_marks.exists():
+                        # Get criteria for this review
+                        criteria_list = review_assasment_criteria_master.objects.filter(
+                            review_number=review_number
+                        ).order_by('id')
+                        
+                        # Process marks
+                        guide_marks = review_marks.filter(reviewer_type='Guide').first()
+                        reviewer_marks = review_marks.filter(reviewer_type='Reviewer').order_by('id')
+                        
+                        marks_data = {
+                            'student_name': student.student_name,
+                            'register_number': student.reg_no,
+                            'batch': student.batch,
+                            'semester': student.semester,
+                            'review_number': review_number,
+                            'guide_marks': {},
+                            'reviewer1_marks': {},
+                            'reviewer2_marks': {},
+                            'reviewer3_marks': {}
+                        }
+                        
+                        # Process guide marks
+                        if guide_marks:
+                            for i, criteria in enumerate(criteria_list, 1):
+                                mark_value = getattr(guide_marks, f'criteria_{i}', None)
+                                if mark_value is not None:
+                                    marks_data['guide_marks'][f'criteria_{i}'] = float(mark_value)
+                        
+                        # Process reviewer marks
+                        for idx, reviewer_mark in enumerate(reviewer_marks[:3], 1):
+                            for i, criteria in enumerate(criteria_list, 1):
+                                mark_value = getattr(reviewer_mark, f'criteria_{i}', None)
+                                if mark_value is not None:
+                                    marks_data[f'reviewer{idx}_marks'][f'criteria_{i}'] = float(mark_value)
+                        
+                        all_students_data.append(marks_data)
+            
+            return JsonResponse(all_students_data, safe=False)
+            
+        except Exception as e:
+            print(f"Error fetching all students analytics: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+def get_review_marks(request, review_number):
+    if request.session.get('role') == 'HOD':
+        try:
+            department = request.session.get('department')
+            
+            # Get all marks for this review in the department
+            review_marks = review_marks_master.objects.filter(
+                review_number=review_number,
+                department=department
+            ).order_by('register_number')
+            
+            # Group marks by student
+            students_data = {}
+            for mark in review_marks:
+                if mark.reg_no not in students_data:
+                    students_data[mark.reg_no] = {
+                        'student_name': mark.student_name,
+                        'register_number': mark.reg_no,
+                        'batch': mark.batch,
+                        'semester': mark.semester,
                         'guide_marks': None,
                         'reviewer1_marks': None,
                         'reviewer2_marks': None,
-                        'reviewer3_marks': None,
-                        'average': None
+                        'reviewer3_marks': None
                     }
                 
-                # Process guide marks
-                if guide_marks:
-                    for i, criteria in enumerate(criteria_list, 1):
-                        mark_value = getattr(guide_marks, f'criteria_{i}', None)
-                        if mark_value is not None:
-                            marks_by_criteria[criteria.review_criteria]['guide_marks'] = float(mark_value)
+                # Create marks dictionary
+                marks_dict = {
+                    'criteria_1': mark.criteria_1,
+                    'criteria_2': mark.criteria_2,
+                    'criteria_3': mark.criteria_3,
+                    'criteria_4': mark.criteria_4,
+                    'criteria_5': mark.criteria_5,
+                    'criteria_6': mark.criteria_6,
+                    'criteria_7': mark.criteria_7,
+                    'criteria_8': mark.criteria_8,
+                    'criteria_9': mark.criteria_9,
+                    'criteria_10': mark.criteria_10,
+                    'total': mark.total
+                }
                 
-                # Process reviewer marks
-                for idx, reviewer_mark in enumerate(reviewer_marks, 1):
-                    if idx > 3:  # Only process up to 3 reviewers
-                        break
-                    
-                    for i, criteria in enumerate(criteria_list, 1):
-                        mark_value = getattr(reviewer_mark, f'criteria_{i}', None)
-                        if mark_value is not None:
-                            marks_by_criteria[criteria.review_criteria][f'reviewer{idx}_marks'] = float(mark_value)
-
-                # Calculate averages
-                result = []
-                for criteria_data in marks_by_criteria.values():
-                    marks = [
-                        criteria_data['guide_marks'],
-                        criteria_data['reviewer1_marks'],
-                        criteria_data['reviewer2_marks'],
-                        criteria_data['reviewer3_marks']
-                    ]
-                    valid_marks = [m for m in marks if m is not None]
-                    if valid_marks:
-                        criteria_data['average'] = sum(valid_marks) / len(valid_marks)
-                    result.append(criteria_data)
-
-                return result
-
-            response_data = {
-                'student_name': student.student_name,
-                'register_number': student.reg_no,
-                'batch': student.batch,
-                'semester': student.semester or '8',
-                'review1_marks': process_review_marks(review1_marks, 1),
-                'review2_marks': process_review_marks(review2_marks, 2),
-                'review3_marks': process_review_marks(review3_marks, 3)
-            }
-
-            return JsonResponse(response_data)
-        except Project.DoesNotExist:
-            print(f"Student not found with register number: {register_number}")
-            return JsonResponse({
-                'error': f'Student not found with register number: {register_number}. Please check if the registration number is correct.'
-            }, status=404)
+                # Assign marks to appropriate reviewer type
+                if mark.reviewer_type == 'Guide':
+                    students_data[mark.reg_no]['guide_marks'] = marks_dict
+                elif mark.reviewer_type == 'Reviewer':
+                    # Find first empty reviewer slot
+                    for i in range(1, 4):
+                        reviewer_key = f'reviewer{i}_marks'
+                        if students_data[mark.reg_no][reviewer_key] is None:
+                            students_data[mark.reg_no][reviewer_key] = marks_dict
+                            break
+            
+            return JsonResponse(list(students_data.values()), safe=False)
+            
         except Exception as e:
-            import traceback
-            print(f"Error in get_student_analytics: {str(e)}")
-            print(traceback.format_exc())
-            return JsonResponse({
-                'error': f'An error occurred while fetching student data: {str(e)}'
-            }, status=500)
-    else:
-        return JsonResponse({'error': 'Unauthorized access. Only HOD can view analytics.'}, status=403)
+            print(f"Error fetching review {review_number} marks: {str(e)}")
+            return JsonResponse({'error': str(e)}, status=500)
+    
+    return JsonResponse({'error': 'Unauthorized'}, status=403)
+
+
+
+from django.http import JsonResponse
+from django.core.exceptions import ObjectDoesNotExist
+from traceback import format_exc
+
+def get_review_marks_master(request, review_number):
+    try:
+        department = request.GET.get('department', None)
+        print(f"Fetching marks for review {review_number}, department: {department}")
+        
+        # Filter marks by review number
+        marks_query = review_marks_master.objects.filter(review_number=review_number)
+        if department:
+            marks_query = marks_query.filter(department=department)
+        
+        mark_count = marks_query.count()
+        print(f"Found {mark_count} records")
+        
+        if mark_count == 0:
+            return JsonResponse([], safe=False)
+        
+        marks_data = {}
+        
+        for mark in marks_query:
+            try:
+                criteria_marks = {f'criteria_{i}': getattr(mark, f'criteria_{i}', None) for i in range(1, 11)}
+                
+                if mark.reg_no not in marks_data:
+                    marks_data[mark.reg_no] = {
+                        'register_number': mark.reg_no,
+                        'guide_marks': None,
+                        'reviewer1_marks': None,
+                        'reviewer2_marks': None,
+                        'reviewer3_marks': None
+                    }
+                
+                if mark.reviewer_type == 'Guide':
+                    marks_data[mark.reg_no]['guide_marks'] = criteria_marks
+                else:
+                    for i in range(1, 4):
+                        key = f'reviewer{i}_marks'
+                        if marks_data[mark.reg_no][key] is None:
+                            marks_data[mark.reg_no][key] = criteria_marks
+                            break
+            
+            except Exception as e:
+                print(f"Error processing mark {mark.reg_no}: {e}\n{format_exc()}")
+                continue
+        
+        result = list(marks_data.values())
+        print(f"Successfully processed {len(result)} marks records")
+        return JsonResponse(result, safe=False)
+    
+    except ObjectDoesNotExist:
+        return JsonResponse({'error': 'Requested data not found'}, status=404)
+    except Exception as e:
+        print(f"Error in get_review_marks_master: {e}\n{format_exc()}")
+        return JsonResponse({'error': str(e)}, status=500)

@@ -217,7 +217,7 @@
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter
+                Filter-Project outcome
             </a>
         </li>
         
@@ -425,7 +425,7 @@
                             </div>
                         </div>
                         <div class="col-12 text-center">
-                            <button type="submit" class="btn btn-primary">Apply Filters</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
                 </div>
@@ -445,18 +445,17 @@
                                 <tr>
                                     <th>Student Name</th>
                                     <th>Registration No</th>
-                                    <th>Batch</th>
                                     <th>Outcome Type</th>
                                     <th>Outcome</th>
                                     <th>Achieved</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for project in projects %}
+                                
+                                {% for project in projects|dictsort:"reg_no" %}  <!-- Sorting in ascending order -->
                                 <tr>
                                     <td>{{ project.student_name }}</td>
-                                    <td>{{ project.reg_no }}</td>
-                                    <td>{{ project.batch }}</td>
+                                    <td>{{ project.reg_no }}</td>                                    
                                     <td>{{ project.project_outcome_type }}</td>
                                     <td>{{ project.outcome }}</td>
                                     <td>{{ project.achieved|title }}</td>
@@ -467,6 +466,7 @@
                                 </tr>
                                 {% endfor %}
                             </tbody>
+                            
                         </table>
                     </div>
                 </div>

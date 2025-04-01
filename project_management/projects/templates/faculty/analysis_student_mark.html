@@ -137,7 +137,7 @@
 </head>
 <body>
     <!-- Include navigation -->
-    {% include "faculty/nav.html" %}
+    {% include "faculty/base.html" %}
 
     <div class="page-content">
         <div class="container-fluid">
@@ -150,9 +150,7 @@
                         <thead>
                             <tr>
                                 <th>Student Name</th>
-                                <th>Register Number</th>
-                                <th>Batch</th>
-                                <th>Semester</th>
+                                <th>Register Number</th>                             
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -161,8 +159,7 @@
                             <tr>
                                 <td>{{ student.student_name }}</td>
                                 <td>{{ student.register_number }}</td>
-                                <td>{{ student.batch }}</td>
-                                <td>{{ student.semester }}</td>
+                              
                                 <td>
                                     <button class="btn btn-view" onclick="viewAnalytics('{{ student.register_number }}')">
                                         <i class="fas fa-chart-line mr-2"></i>View Analytics
@@ -190,7 +187,7 @@
                     <!-- Student info will be populated here -->
                 </div>
                 
-                <!-- Review 1 Section -->
+                <!-- Review Sections -->
                 <div class="review-section">
                     <h4 class="review-title">Review 1</h4>
                     <div class="table-responsive">
@@ -199,18 +196,17 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1 Marks</th>
+                                    <th>Reviewer 2 Marks</th>
+                                    <th>Reviewer 3 Marks</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
-                            <tbody id="review1Marks">
-                                <!-- Review 1 marks will be populated here -->
-                            </tbody>
+                            <tbody id="review1Marks"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Review 2 Section -->
                 <div class="review-section">
                     <h4 class="review-title">Review 2</h4>
                     <div class="table-responsive">
@@ -219,18 +215,17 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1 Marks</th>
+                                    <th>Reviewer 2 Marks</th>
+                                    <th>Reviewer 3 Marks</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
-                            <tbody id="review2Marks">
-                                <!-- Review 2 marks will be populated here -->
-                            </tbody>
+                            <tbody id="review2Marks"></tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- Review 3 Section -->
                 <div class="review-section">
                     <h4 class="review-title">Review 3</h4>
                     <div class="table-responsive">
@@ -239,13 +234,13 @@
                                 <tr>
                                     <th>Criteria</th>
                                     <th>Guide Marks</th>
-                                    <th>Reviewer Marks</th>
+                                    <th>Reviewer 1 Marks</th>
+                                    <th>Reviewer 2 Marks</th>
+                                    <th>Reviewer 3 Marks</th>
                                     <th>Average</th>
                                 </tr>
                             </thead>
-                            <tbody id="review3Marks">
-                                <!-- Review 3 marks will be populated here -->
-                            </tbody>
+                            <tbody id="review3Marks"></tbody>
                         </table>
                     </div>
                 </div>
@@ -259,15 +254,12 @@
 
     <script>
         function viewAnalytics(registerNumber) {
-            // Show loading indicator
             document.getElementById('loadingIndicator').style.display = 'block';
             document.getElementById('analyticsContainer').style.display = 'none';
 
-            // Fetch student analytics data
             fetch(`/get_student_analytics/${registerNumber}/`)
                 .then(response => response.json())
                 .then(data => {
-                    // Hide loading indicator
                     document.getElementById('loadingIndicator').style.display = 'none';
                     
                     if (data.error) {
@@ -275,7 +267,6 @@
                         return;
                     }
 
-                    // Update student info
                     document.getElementById('studentInfo').innerHTML = `
                         <div class="card">
                             <div class="card-body">
@@ -289,18 +280,12 @@
                         </div>
                     `;
 
-                    // Update review marks
                     updateReviewMarks('review1Marks', data.review1_marks);
                     updateReviewMarks('review2Marks', data.review2_marks);
                     updateReviewMarks('review3Marks', data.review3_marks);
 
-                    // Show analytics container
                     document.getElementById('analyticsContainer').style.display = 'block';
-
-                    // Scroll to analytics
-                    document.getElementById('analyticsContainer').scrollIntoView({
-                        behavior: 'smooth'
-                    });
+                    document.getElementById('analyticsContainer').scrollIntoView({ behavior: 'smooth' });
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -314,11 +299,7 @@
             tbody.innerHTML = '';
 
             if (!marks || marks.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="4" class="text-center">No marks available</td>
-                    </tr>
-                `;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center">No marks available</td></tr>`;
                 return;
             }
 
@@ -327,22 +308,14 @@
                 row.innerHTML = `
                     <td>${mark.criteria}</td>
                     <td>${mark.guide_marks || '-'}</td>
-                    <td>${mark.reviewer_marks || '-'}</td>
+                    <td>${mark.reviewer1_marks || '-'}</td>
+                    <td>${mark.reviewer2_marks || '-'}</td>
+                    <td>${mark.reviewer3_marks || '-'}</td>
                     <td>${mark.average || '-'}</td>
                 `;
                 tbody.appendChild(row);
             });
-
-            // Add total row
-            const totalRow = document.createElement('tr');
-            totalRow.innerHTML = `
-                <td><strong>Total</strong></td>
-                <td><strong>${marks.reduce((sum, mark) => sum + (mark.guide_marks || 0), 0)}</strong></td>
-                <td><strong>${marks.reduce((sum, mark) => sum + (mark.reviewer_marks || 0), 0)}</strong></td>
-                <td><strong>${marks.reduce((sum, mark) => sum + (mark.average || 0), 0)}</strong></td>
-            `;
-            tbody.appendChild(totalRow);
         }
     </script>
 </body>
-</html> 
+</html>

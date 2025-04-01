@@ -1,931 +1,173 @@
-<!DOCTYPE html>
-{% load static %}
-<html>
-<head>
-    <title>RIT PROJECT MANAGEMENT</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f8f9fa;
-        }
+{% extends 'faculty/base.html' %}
 
-        .vertical-nav {
-            width: 26rem;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-            background-color: #fff;
-            z-index: 1000;
-        }
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .back-button {
+        margin-bottom: 20px;
+    }
+    .view-analytics, 
+    .view-analytics img {
+        cursor: pointer;
+        z-index: 1;
+        position: relative;
+    }
+    .view-analytics.btn:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    /* Style for image button */
+    .view-analytics-img {
+        border: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+    }
+    .view-analytics-img:hover {
+        opacity: 0.8;
+    }
+    .view-analytics-img img {
+        max-width: 100px;
+        height: auto;
+    }
+</style>
+{% endblock %}
 
-        .page-content {
-            margin-left: 23rem;
-            transition: all 0.4s;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .card {
-            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            border: none;
-            margin-bottom: 1rem;
-        }
-
-        .card-header {
-            border-bottom: none;
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-            border-color: #6c757d;
-        }
-
-        .btn-secondary:hover {
-            background-color: #5a6268;
-            border-color: #545b62;
-        }
-
-        .student-name {
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .student-details {
-            color: #6c757d;
-            font-size: 1.1rem;
-        }
-
-        .table-responsive {
-            border-radius: 0.25rem;
-            margin-bottom: 1rem;
-        }
-
-        .table thead th {
-            border-bottom: 2px solid #dee2e6;
-        }
-
-        .table td, .table th {
-            vertical-align: middle;
-        }
-
-        @media (max-width: 768px) {
-            .vertical-nav {
-                margin-left: -23rem;
-            }
-            .vertical-nav.active {
-                margin-left: 0;
-            }
-            .page-content {
-                width: 100%;
-                margin-left: 0;
-            }
-            .page-content.active {
-                margin-left: 23rem;
-            }
-        }
-
-        #sidebarCollapse {
-            position: fixed;
-            top: 20px;
-            left: 20px;
-            z-index: 1001;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #00407b;
-            text-align: center;
-            padding: 10px 0;
-            border-top: 1px solid #dee2e6;
-            z-index: 1000;
-        }
-        .footer p {
-            color: white;
-            margin: 0;
-        }
-
-        .table {
-            font-size: 14px;
-        }
-        .table td, .table th {
-            padding: 8px;
-            vertical-align: middle;
-        }
-        .btn-sm {
-            padding: 4px 8px;
-            font-size: 12px;
-        }
-        .text-truncate {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        @media (max-width: 768px) {
-            .table {
-                font-size: 12px;
-            }
-            .table td, .table th {
-                padding: 6px;
-            }
-        }
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 20px auto;
-            height: 600px;
-            padding: 15px;
-            background-color: #fff;
-            border-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .btn-chart {
-            padding: 0.25rem 0.5rem;
-            font-size: 0.875rem;
-            margin: 10px 0;
-        }
-        .card-body {
-            padding-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div class="vertical-nav" id="sidebar">
-        <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="media d-flex align-items-center">
-                <div class="media-body">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                    <h4 class="m-0">RIT</h4>
-                    <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
-                </div>
-            </div>
+{% block content %}
+<div class="container">
+    <!-- Student List Table Section -->
+    <div id="studentTableSection">
+        <h2 class="text-center mb-4">Student Marks Analysis</h2>
+        <div class="table-responsive">
+            <table class="table table-striped table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th style="width: 40%">Student Name</th>
+                        <th style="width: 30%">Register Number</th>
+                        <th style="width: 30%">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students|dictsort:"register_number" %}
+                    <tr>
+                        <td class="text-nowrap text-truncate" style="max-width: 200px;" title="{{ student.student_name }}">
+                            {{ student.student_name }}
+                        </td>
+                        <td class="text-center">{{ student.register_number }}</td>
+                        <td class="text-center">
+                            <button type="button" class="view-analytics-img" data-register="{{ student.register_number }}">
+                                <img src="/static/images/view_analytics.png" alt="View Analytics">
+                            </button>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="border-bottom mb-2">
-            <div class="card-body text-center">
-                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-                <h5 class="card-title">{{ name }}</h5>
-                <p class="card-text">{{ department }}</p>
-                <p class="card-text">{{ role }}</p>
-            </div>
-        </div>
-
-    {% if role == 'HOD' %}
-        <ul class="nav flex-column bg-white mb-0">
-            <li class="nav-item">
-                <a href="{% url 'hod_dashbord' %}" class="nav-link text-dark">
-                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    Dashboard
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Committee Members
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                    <li class="nav-item">
-                        <a href="{% url 'review1' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review2' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review3' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Guide
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Review Mark Entry
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
-                    <li class="nav-item">
-                        <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'analysis_student_mark' %}" class="nav-link bg-info text-white">
-                    <i class="fa fa-chart-bar mr-3 text-primary fa-fw"></i>
-                    Student Mark Analysis
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
-                    <i class="fa fa-list-alt mr-3 text-primary fa-fw"></i>
-                    Review Criteria
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-                    <i class="fa fa-download mr-3 text-primary fa-fw"></i>
-                    Download Review Marks
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'filter' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Filter
-                </a>
-            </li>
-        </ul>
-    {% endif %}
     </div>
 
-    <div class="page-content">
-        <div class="container-fluid">
-            <!-- Student List Table Section -->
-            <div id="studentTableSection">
-                <h2 class="text-center mb-4">Student Marks Analysis</h2>
-                <div class="table-responsive">
-                    <table class="table table-striped table-bordered" style="max-width: 800px; margin: 0 auto;">
-                        <thead class="thead-dark">
-                            <tr>
-                                <th style="width: 40%">Student Name</th>
-                                <th style="width: 30%">Register Number</th>
-                                <th style="width: 30%">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for student in students|dictsort:"register_number" %}
-                            <tr>
-                                <td class="text-nowrap text-truncate" style="max-width: 200px;" title="{{ student.student_name }}">
-                                    {{ student.student_name }}
-                                </td>
-                                <td class="text-center">{{ student.register_number }}</td>
-                                <td class="text-center">
-                                    <button class="btn btn-primary btn-sm view-analytics" 
-                                            data-register="{{ student.register_number }}"
-                                            onclick="viewAnalytics('{{ student.register_number }}')">
-                                        View Analytics
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+    <!-- Analytics Section (Initially Hidden) -->
+    <div id="analyticsSection" style="display: none;">
+        <button type="button" class="btn btn-secondary back-button">
+            <i class="fas fa-arrow-left"></i> Back to Student List
+        </button>
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title text-center">Student Analytics</h5>
+                <div id="studentInfo" class="text-center mb-4">
+                    <h5 class="student-name">Loading...</h5>
+                    <p class="student-details small"></p>
                 </div>
-            </div>
-
-            <!-- Analytics Section (Initially Hidden) -->
-            <div id="analyticsSection" style="display: none;">
-                <div class="d-flex flex-column align-items-center text-center mb-4">
-                    <h4 class="mb-2">Student Analytics</h4>
-                    <button class="btn btn-secondary btn-sm" onclick="showStudentTable()">
-                        <i class="fas fa-arrow-left"></i> Back to Student List
-                    </button>
-                </div>
-
-                <div id="studentInfo" class="mb-4 text-center">
-                    <h5 class="student-name mb-1">Loading...</h5>
-                    <p class="student-details small mb-0"></p>
-                </div>
-
-                <style>
-                    .analytics-table {
-                        font-size: 13px;
-                        width: 90%;
-                        max-width: 900px;
-                        margin: 0 auto;
-                    }
-                    .analytics-table th,
-                    .analytics-table td {
-                        padding: 6px 8px;
-                        text-align: center;
-                        vertical-align: middle;
-                    }
-                    .analytics-table th:first-child,
-                    .analytics-table td:first-child {
-                        text-align: left;
-                        width: 25%;
-                    }
-                    .analytics-table th {
-                        background-color: #f8f9fa;
-                        font-weight: 600;
-                    }
-                    .analytics-table .guide-col,
-                    .analytics-table .reviewer-col {
-                        width: 10%;
-                    }
-                    .analytics-table .average-col,
-                    .analytics-table .total-col {
-                        width: 12%;
-                        font-weight: 500;
-                    }
-                    .card {
-                        max-width: 900px;
-                        margin: 0 auto 1rem auto;
-                    }
-                    .card-body {
-                        padding: 1rem;
-                    }
-                    .card-header {
-                        padding: 0.5rem 1rem;
-                    }
-                    .table-responsive {
-                        margin: 0;
-                    }
-                    @media (max-width: 768px) {
-                        .analytics-table {
-                            font-size: 12px;
-                        }
-                        .analytics-table th,
-                        .analytics-table td {
-                            padding: 4px 6px;
-                        }
-                    }
-                </style>
-
-                <!-- Review 1 Section -->
-                <div class="card mb-3">
-                    <div class="card-header bg-primary text-white py-2">
-                        <h6 class="mb-0">Review 1 Marks</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-bordered analytics-table mb-0" id="review1Table">
-                                <thead>
-                                    <tr>
-                                        <th class="guide-col">Guide</th>
-                                        <th class="reviewer-col">Rev 1</th>
-                                        <th class="reviewer-col">Rev 2</th>
-                                        <th class="reviewer-col">Rev 3</th>
-                                        <th class="average-col">Average</th>
-                                        <th class="total-col">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr class="font-weight-bold bg-light">
-                                        <td id="review1GuideTotal">-</td>
-                                        <td id="review1Reviewer1Total">-</td>
-                                        <td id="review1Reviewer2Total">-</td>
-                                        <td id="review1Reviewer3Total">-</td>
-                                        <td id="review1AverageTotal">-</td>
-                                        <td id="review1GrandTotal">-</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-primary btn-sm" onclick="toggleChart('review1')">
-                                <i class="fas fa-chart-bar"></i> Show Chart
-                            </button>
-                        </div>
-                        <div id="review1Chart" class="chart-container" style="display: none;">
-                            <canvas id="review1Canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Review 2 Section -->
-                <div class="card mb-3">
-                    <div class="card-header bg-success text-white py-2">
-                        <h6 class="mb-0">Review 2 Marks</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-bordered analytics-table mb-0" id="review2Table">
-                                <thead>
-                                    <tr>
-                                        <th class="guide-col">Guide</th>
-                                        <th class="reviewer-col">Rev 1</th>
-                                        <th class="reviewer-col">Rev 2</th>
-                                        <th class="reviewer-col">Rev 3</th>
-                                        <th class="average-col">Average</th>
-                                        <th class="total-col">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr class="font-weight-bold bg-light">
-                                        <td id="review2GuideTotal">-</td>
-                                        <td id="review2Reviewer1Total">-</td>
-                                        <td id="review2Reviewer2Total">-</td>
-                                        <td id="review2Reviewer3Total">-</td>
-                                        <td id="review2AverageTotal">-</td>
-                                        <td id="review2GrandTotal">-</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-success btn-sm" onclick="toggleChart('review2')">
-                                <i class="fas fa-chart-bar"></i> Show Chart
-                            </button>
-                        </div>
-                        <div id="review2Chart" class="chart-container" style="display: none;">
-                            <canvas id="review2Canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Review 3 Section -->
-                <div class="card mb-3">
-                    <div class="card-header bg-info text-white py-2">
-                        <h6 class="mb-0">Review 3 Marks</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-bordered analytics-table mb-0" id="review3Table">
-                                <thead>
-                                    <tr>
-                                        <th class="guide-col">Guide</th>
-                                        <th class="reviewer-col">Rev 1</th>
-                                        <th class="reviewer-col">Rev 2</th>
-                                        <th class="reviewer-col">Rev 3</th>
-                                        <th class="average-col">Average</th>
-                                        <th class="total-col">Total</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                                <tfoot>
-                                    <tr class="font-weight-bold bg-light">
-                                        <td id="review3GuideTotal">-</td>
-                                        <td id="review3Reviewer1Total">-</td>
-                                        <td id="review3Reviewer2Total">-</td>
-                                        <td id="review3Reviewer3Total">-</td>
-                                        <td id="review3AverageTotal">-</td>
-                                        <td id="review3GrandTotal">-</td>
-                                    </tr>
-                                </tfoot>
-                            </table>
-                        </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-info btn-sm" onclick="toggleChart('review3')">
-                                <i class="fas fa-chart-bar"></i> Show Chart
-                            </button>
-                        </div>
-                        <div id="review3Chart" class="chart-container" style="display: none;">
-                            <canvas id="review3Canvas"></canvas>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Grand Total Section -->
-                <div class="card mb-3">
-                    <div class="card-header bg-dark text-white py-2">
-                        <h6 class="mb-0">Overall Performance</h6>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-bordered analytics-table mb-0" id="grandTotalTable">
-                                <thead>
-                                    <tr>
-                                        <th>Review</th>
-                                        <th>Total Marks</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Review 1</td>
-                                        <td id="review1FinalTotal">-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Review 2</td>
-                                        <td id="review2FinalTotal">-</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Review 3</td>
-                                        <td id="review3FinalTotal">-</td>
-                                    </tr>
-                                    <tr class="font-weight-bold bg-dark text-white">
-                                        <td>Grand Total</td>
-                                        <td id="overallGrandTotal">-</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div class="text-center mt-3">
-                            <button class="btn btn-dark btn-sm" onclick="toggleChart('grandTotal')">
-                                <i class="fas fa-chart-bar"></i> Show Overall Chart
-                            </button>
-                        </div>
-                        <div id="grandTotalChart" class="chart-container" style="display: none;">
-                            <canvas id="grandTotalCanvas"></canvas>
-                        </div>
-                    </div>
+                <div id="analyticsContent">
+                    <!-- Content will be added here -->
                 </div>
             </div>
         </div>
     </div>
+</div>
+{% endblock %}
 
-    <div class="footer">
-        <p>&copy; 2024 RIT Project Management System. All rights reserved.</p>
-    </div>
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded'); // Debug log
 
-    <script>
+    // Function to show student table
     function showStudentTable() {
         document.getElementById('studentTableSection').style.display = 'block';
         document.getElementById('analyticsSection').style.display = 'none';
     }
 
+    // Function to show analytics section
     function showAnalyticsSection() {
         document.getElementById('studentTableSection').style.display = 'none';
         document.getElementById('analyticsSection').style.display = 'block';
     }
 
-    function viewAnalytics(registerNumber) {
+    // Function to handle analytics button click
+    function handleAnalyticsClick(event) {
+        console.log('Button clicked'); // Debug log
+        event.preventDefault();
+        event.stopPropagation();
+        
+        // Get the button element (works for both button and image)
+        const button = event.currentTarget;
+        const registerNumber = button.getAttribute('data-register');
+        
+        if (!registerNumber) {
+            console.error('No register number found');
+            return;
+        }
+
+        console.log('Register number:', registerNumber); // Debug log
+
+        // Show loading state
+        document.querySelector('.student-name').textContent = 'Loading...';
+        document.querySelector('.student-details').textContent = '';
+        
+        // Show analytics section
         showAnalyticsSection();
-        
-        // Fetch analytics data
-        fetch(`/get_student_analytics/${registerNumber}/`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                return response.json();
-            })
-            .then(data => {
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                // Update student info
-                document.querySelector('#studentInfo .student-name').textContent = data.student_name;
-                document.querySelector('#studentInfo .student-details').textContent = 
-                    `Register Number: ${data.register_number} | Batch: ${data.batch} | Semester: ${data.semester}`;
-
-                // Function to populate review table
-                function populateReviewTable(tableId, reviewData) {
-                    if (!reviewData || !Array.isArray(reviewData)) {
-                        console.error('Invalid review data for table:', tableId);
-                        return;
-                    }
-
-                    const tbody = document.querySelector(`#${tableId} tbody`);
-                    if (!tbody) {
-                        console.error('Table body not found for:', tableId);
-                        return;
-                    }
-
-                    tbody.innerHTML = ''; // Clear existing rows
-
-                    let guideTotal = 0;
-                    let reviewer1Total = 0;
-                    let reviewer2Total = 0;
-                    let reviewer3Total = 0;
-                    let averageTotal = 0;
-                    let validMarksCount = 0;
-
-                    // Add criteria rows
-                    reviewData.forEach(mark => {
-                        const row = document.createElement('tr');
-                        
-                        const guideMarks = mark.guide_marks !== null ? parseFloat(mark.guide_marks) : 0;
-                        const reviewer1Marks = mark.reviewer1_marks !== null ? parseFloat(mark.reviewer1_marks) : 0;
-                        const reviewer2Marks = mark.reviewer2_marks !== null ? parseFloat(mark.reviewer2_marks) : 0;
-                        const reviewer3Marks = mark.reviewer3_marks !== null ? parseFloat(mark.reviewer3_marks) : 0;
-                        
-                        // Calculate average from all available marks
-                        const validMarks = [guideMarks, reviewer1Marks, reviewer2Marks, reviewer3Marks].filter(m => m > 0);
-                        let average = '-';
-                        if (validMarks.length > 0) {
-                            average = (validMarks.reduce((a, b) => a + b, 0) / validMarks.length).toFixed(2);
-                            averageTotal += parseFloat(average);
-                            validMarksCount++;
-                        }
-
-                        row.innerHTML = `
-                            <td>${guideMarks > 0 ? guideMarks.toFixed(2) : '-'}</td>
-                            <td>${reviewer1Marks > 0 ? reviewer1Marks.toFixed(2) : '-'}</td>
-                            <td>${reviewer2Marks > 0 ? reviewer2Marks.toFixed(2) : '-'}</td>
-                            <td>${reviewer3Marks > 0 ? reviewer3Marks.toFixed(2) : '-'}</td>
-                            <td>${average}</td>
-                            <td>${average}</td>
-                        `;
-                        tbody.appendChild(row);
-
-                        // Update totals
-                        if (guideMarks > 0) guideTotal += guideMarks;
-                        if (reviewer1Marks > 0) reviewer1Total += reviewer1Marks;
-                        if (reviewer2Marks > 0) reviewer2Total += reviewer2Marks;
-                        if (reviewer3Marks > 0) reviewer3Total += reviewer3Marks;
-                    });
-
-                    // Calculate final average
-                    const finalAverage = validMarksCount > 0 ? (averageTotal / validMarksCount) : 0;
-                    
-                    // Add total row
-                    const totalRow = document.createElement('tr');
-                    totalRow.classList.add('font-weight-bold', 'bg-light');
-                    totalRow.innerHTML = `
-                        <td>${guideTotal > 0 ? guideTotal.toFixed(2) : '-'}</td>
-                        <td>${reviewer1Total > 0 ? reviewer1Total.toFixed(2) : '-'}</td>
-                        <td>${reviewer2Total > 0 ? reviewer2Total.toFixed(2) : '-'}</td>
-                        <td>${reviewer3Total > 0 ? reviewer3Total.toFixed(2) : '-'}</td>
-                        <td>${finalAverage > 0 ? finalAverage.toFixed(2) : '-'}</td>
-                        <td>${finalAverage > 0 ? finalAverage.toFixed(2) : '-'}</td>
-                    `;
-                    tbody.appendChild(totalRow);
-
-                    // Add cumulative total row for Review 3
-                    if (tableId === 'review3Table') {
-                        const review1Total = parseFloat(document.querySelector('#review1Table tbody tr:last-child td:last-child').textContent) || 0;
-                        const review2Total = parseFloat(document.querySelector('#review2Table tbody tr:last-child td:last-child').textContent) || 0;
-                        const review3Total = parseFloat(document.querySelector('#review3Table tbody tr:last-child td:last-child').textContent) || 0;
-                        
-                        const cumulativeTotal = ((review1Total + review2Total + review3Total) / 3).toFixed(2);
-                        
-                        const cumulativeTotalRow = document.createElement('tr');
-                        cumulativeTotalRow.classList.add('font-weight-bold', 'bg-dark', 'text-white');
-                        cumulativeTotalRow.innerHTML = `
-                            <td colspan="5">Cumulative Total (Review 1 + Review 2 + Review 3)</td>
-                            <td>${cumulativeTotal}</td>
-                        `;
-                        tbody.appendChild(cumulativeTotalRow);
-                    }
-                    
-                    // Update totals in footer
-                    const guideTotalElement = document.getElementById(`${tableId}GuideTotal`);
-                    const reviewer1TotalElement = document.getElementById(`${tableId}Reviewer1Total`);
-                    const reviewer2TotalElement = document.getElementById(`${tableId}Reviewer2Total`);
-                    const reviewer3TotalElement = document.getElementById(`${tableId}Reviewer3Total`);
-                    const averageTotalElement = document.getElementById(`${tableId}AverageTotal`);
-                    const grandTotalElement = document.getElementById(`${tableId}GrandTotal`);
-
-                    if (guideTotalElement) guideTotalElement.textContent = guideTotal > 0 ? guideTotal.toFixed(2) : '-';
-                    if (reviewer1TotalElement) reviewer1TotalElement.textContent = reviewer1Total > 0 ? reviewer1Total.toFixed(2) : '-';
-                    if (reviewer2TotalElement) reviewer2TotalElement.textContent = reviewer2Total > 0 ? reviewer2Total.toFixed(2) : '-';
-                    if (reviewer3TotalElement) reviewer3TotalElement.textContent = reviewer3Total > 0 ? reviewer3Total.toFixed(2) : '-';
-                    if (averageTotalElement) averageTotalElement.textContent = finalAverage > 0 ? finalAverage.toFixed(2) : '-';
-                    if (grandTotalElement) grandTotalElement.textContent = finalAverage > 0 ? finalAverage.toFixed(2) : '-';
-
-                    // Update the chart if it's visible
-                    const chartDiv = document.getElementById(`${tableId.replace('Table', '')}Chart`);
-                    if (chartDiv && chartDiv.style.display !== 'none') {
-                        updateChart(tableId.replace('Table', ''));
-                    }
-                }
-
-                // Populate all review tables
-                populateReviewTable('review1Table', data.review1_marks);
-                populateReviewTable('review2Table', data.review2_marks);
-                populateReviewTable('review3Table', data.review3_marks);
-
-                // Update grand total table
-                const review1Total = parseFloat(document.getElementById('review1GrandTotal').textContent) || 0;
-                const review2Total = parseFloat(document.getElementById('review2GrandTotal').textContent) || 0;
-                const review3Total = parseFloat(document.getElementById('review3GrandTotal').textContent) || 0;
-                
-                document.getElementById('review1FinalTotal').textContent = review1Total.toFixed(2);
-                document.getElementById('review2FinalTotal').textContent = review2Total.toFixed(2);
-                document.getElementById('review3FinalTotal').textContent = review3Total.toFixed(2);
-                
-                const overallTotal = ((review1Total + review2Total + review3Total) / 3).toFixed(2);
-                document.getElementById('overallGrandTotal').textContent = overallTotal;
-
-                // Update grand total chart if visible
-                const grandTotalChartDiv = document.getElementById('grandTotalChart');
-                if (grandTotalChartDiv && grandTotalChartDiv.style.display !== 'none') {
-                    updateChart('grandTotal');
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching analytics:', error);
-                const analyticsSection = document.getElementById('analyticsSection');
-                analyticsSection.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h2 class="mb-0">Student Analytics</h2>
-                        <button class="btn btn-secondary" onclick="showStudentTable()">
-                            <i class="fas fa-arrow-left"></i> Back to Student List
-                        </button>
-                    </div>
-                    <div class="alert alert-danger" role="alert">
-                        <p>Error fetching analytics data: ${error.message}</p>
-                        <p>Please try again or contact support if the problem persists.</p>
-                    </div>`;
-            });
     }
 
-    let charts = {};
+    // Add click event listeners to all analytics buttons (both types)
+    const analyticsButtons = document.querySelectorAll('.view-analytics-img, .view-analytics');
+    console.log('Found buttons:', analyticsButtons.length); // Debug log
 
-    function toggleChart(reviewId) {
-        const chartDiv = document.getElementById(`${reviewId}Chart`);
-        const button = chartDiv.previousElementSibling.querySelector('button');
-        
-        if (chartDiv.style.display === 'none') {
-            chartDiv.style.display = 'block';
-            button.innerHTML = '<i class="fas fa-chart-bar"></i> Hide Chart';
-            updateChart(reviewId);
-        } else {
-            chartDiv.style.display = 'none';
-            button.innerHTML = '<i class="fas fa-chart-bar"></i> Show Chart';
-            if (charts[`${reviewId}Canvas`]) {
-                charts[`${reviewId}Canvas`].destroy();
-                delete charts[`${reviewId}Canvas`];
-            }
-        }
-    }
+    analyticsButtons.forEach(button => {
+        button.addEventListener('click', handleAnalyticsClick);
+        console.log('Added click listener to button'); // Debug log
+    });
 
-    function updateChart(reviewId) {
-        const tableId = `${reviewId}Table`;
-        const table = document.getElementById(tableId);
-        if (!table) return;
-
-        const rows = table.querySelectorAll('tbody tr');
-        const labels = Array.from(rows).map((_, index) => `Criteria ${index + 1}`);
-        const datasets = [];
-
-        if (reviewId === 'grandTotal') {
-            // For grand total chart
-            const review1Total = parseFloat(document.getElementById('review1FinalTotal').textContent) || 0;
-            const review2Total = parseFloat(document.getElementById('review2FinalTotal').textContent) || 0;
-            const review3Total = parseFloat(document.getElementById('review3FinalTotal').textContent) || 0;
-
-            createChart(`${reviewId}Canvas`, 'Overall Performance', ['Review 1', 'Review 2', 'Review 3'], [{
-                label: 'Total Marks',
-                data: [review1Total, review2Total, review3Total],
-                backgroundColor: [
-                    'rgba(54, 162, 235, 0.7)',
-                    'rgba(75, 192, 192, 0.7)',
-                    'rgba(255, 99, 132, 0.7)'
-                ],
-                borderColor: [
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(75, 192, 192, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }], true);
-        } else {
-            // For individual review charts
-            const guideData = [];
-            const rev1Data = [];
-            const rev2Data = [];
-            const rev3Data = [];
-            const avgData = [];
-            const totalData = [];
-
-            rows.forEach(row => {
-                if (!row.classList.contains('bg-dark') && !row.classList.contains('bg-light')) {
-                    const cells = row.cells;
-                    guideData.push(cells[0].textContent === '-' ? 0 : parseFloat(cells[0].textContent));
-                    rev1Data.push(cells[1].textContent === '-' ? 0 : parseFloat(cells[1].textContent));
-                    rev2Data.push(cells[2].textContent === '-' ? 0 : parseFloat(cells[2].textContent));
-                    rev3Data.push(cells[3].textContent === '-' ? 0 : parseFloat(cells[3].textContent));
-                    avgData.push(cells[4].textContent === '-' ? 0 : parseFloat(cells[4].textContent));
-                    totalData.push(cells[5].textContent === '-' ? 0 : parseFloat(cells[5].textContent));
-                }
-            });
-
-            datasets.push(
-                {
-                    label: 'Guide',
-                    data: guideData,
-                    backgroundColor: 'rgba(255, 99, 132, 0.7)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    type: 'bar'
-                },
-                {
-                    label: 'Rev 1',
-                    data: rev1Data,
-                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1,
-                    type: 'bar'
-                },
-                {
-                    label: 'Rev 2',
-                    data: rev2Data,
-                    backgroundColor: 'rgba(255, 206, 86, 0.7)',
-                    borderColor: 'rgba(255, 206, 86, 1)',
-                    borderWidth: 1,
-                    type: 'bar'
-                },
-                {
-                    label: 'Rev 3',
-                    data: rev3Data,
-                    backgroundColor: 'rgba(75, 192, 192, 0.7)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
-                    borderWidth: 1,
-                    type: 'bar'
-                },
-                {
-                    label: 'Average',
-                    data: avgData,
-                    backgroundColor: 'rgba(153, 102, 255, 0.7)',
-                    borderColor: 'rgba(153, 102, 255, 1)',
-                    borderWidth: 2,
-                    type: 'line',
-                    fill: false
-                },
-                {
-                    label: 'Total',
-                    data: totalData,
-                    backgroundColor: 'rgba(255, 159, 64, 0.7)',
-                    borderColor: 'rgba(255, 159, 64, 1)',
-                    borderWidth: 2,
-                    type: 'line',
-                    fill: false
-                }
-            );
-
-            createChart(`${reviewId}Canvas`, `${reviewId.charAt(0).toUpperCase() + reviewId.slice(1)} Performance`, labels, datasets, true);
-        }
-    }
-
-    function createChart(canvasId, title, labels, datasets, isHorizontal = true) {
-        const ctx = document.getElementById(canvasId);
-        if (!ctx) return;
-
-        if (charts[canvasId]) {
-            charts[canvasId].destroy();
-        }
-
-        charts[canvasId] = new Chart(ctx, {
-            type: isHorizontal ? 'bar' : 'bar',
-            data: {
-                labels: labels,
-                datasets: datasets
-            },
-            options: {
-                indexAxis: 'y',
-                responsive: true,
-                maintainAspectRatio: false,
-                scales: {
-                    x: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Marks'
-                        }
-                    },
-                    y: {
-                        title: {
-                            display: true,
-                            text: 'Criteria'
-                        }
-                    }
-                },
-                plugins: {
-                    legend: {
-                        position: 'right',
-                    },
-                    title: {
-                        display: true,
-                        text: title
-                    }
-                },
-                barPercentage: 0.8,
-                categoryPercentage: 0.9
+    // Also add click listeners to the images inside buttons
+    document.querySelectorAll('.view-analytics-img img').forEach(img => {
+        img.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            const button = this.closest('.view-analytics-img');
+            if (button) {
+                button.click();
             }
         });
+    });
+
+    // Add click listener for back button
+    const backButton = document.querySelector('.back-button');
+    if (backButton) {
+        backButton.addEventListener('click', function(event) {
+            event.preventDefault();
+            event.stopPropagation();
+            showStudentTable();
+        });
     }
-    </script>
-</body>
-</html>
+});
+</script>
+{% endblock %}
