@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'rit_college_project_management', # Database name you created in phpMyAdmin
         'USER': 'root',                       # Default user in XAMPP
         'PASSWORD': '',                       # Leave blank if no password is set
-        'HOST': '127.0.0.1',                  # Use localhost
+        'HOST': 'localhost',                  # Use localhost
         'PORT': '3306',                       # Default MySQL port
     },
     'placement_portal': {

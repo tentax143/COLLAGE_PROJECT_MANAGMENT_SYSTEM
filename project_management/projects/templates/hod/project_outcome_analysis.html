@@ -1,0 +1,117 @@
+<!-- Page Content Wrapper -->
+<div class="page-content">
+  <div class="container">
+    <!-- Project Outcome Analysis Section -->
+    <div class="row mb-4">
+      <!-- Project Outcome Achievement Chart -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Project Outcome Achievement</h4>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="outcomeChart"></canvas>
+            </div>
+            <div class="mt-3">
+              <div class="d-flex align-items-center">
+                <div class="mr-2" style="width: 20px; height: 20px; background-color: #28a745;"></div>
+                <span>Achieved</span>
+              </div>
+              <div class="d-flex align-items-center mt-2">
+                <div class="mr-2" style="width: 20px; height: 20px; background-color: #dc3545;"></div>
+                <span>Not Achieved</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Outcome Statistics -->
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Outcome Statistics</h4>
+          </div>
+          <div class="card-body">
+            <div class="stats-container">
+              <p><strong>Total Students:</strong> {{ total_students }}</p>
+              <p><strong>Achieved:</strong> {{ achieved_count }} ({{ achieved_percentage }}%)</p>
+              <p><strong>Not Achieved:</strong> {{ not_achieved_count }} ({{ not_achieved_percentage }}%)</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Detailed Marks Analysis Section -->
+    <div class="card">
+      <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Detailed Marks Analysis</h4>
+      </div>
+      <div class="card-body">
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th>Register Number</th>
+                <th>Student Name</th>
+                <th>Project Title</th>
+                <th>Guide</th>
+                <th>Reviewer 1</th>
+                <th>Reviewer 2</th>
+                <th>Reviewer 3</th>
+                <th>Average</th>
+                <th>Outcome</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if detailed_marks %}
+                {% for mark in detailed_marks %}
+                <tr>
+                  <td>{{ mark.register_number }}</td>
+                  <td>{{ mark.student_name }}</td>
+                  <td>{{ mark.project_title }}</td>
+                  <td>{{ mark.guide_marks }}</td>
+                  <td>{{ mark.reviewer1_marks }}</td>
+                  <td>{{ mark.reviewer2_marks }}</td>
+                  <td>{{ mark.reviewer3_marks }}</td>
+                  <td>{{ mark.average }}</td>
+                  <td>{{ mark.outcome }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="9" class="text-center">No data available</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Existing chart initialization script
+var ctx = document.getElementById('outcomeChart').getContext('2d');
+var outcomeChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: ['Achieved', 'Not Achieved'],
+        datasets: [{
+            data: [{{ achieved_count }}, {{ not_achieved_count }}],
+            backgroundColor: ['#28a745', '#dc3545'],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        legend: {
+            position: 'bottom'
+        }
+    }
+});
+</script> 

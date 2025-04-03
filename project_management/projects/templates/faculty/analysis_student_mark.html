@@ -1,321 +1,140 @@
-<!DOCTYPE html>
-{% load static %}
-<html>
-<head>
-    <title>RIT PROJECT MANAGEMENT</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <style>
-        body {
-            min-height: 100vh;
-            overflow-x: hidden;
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: #f8f9fa;
+{% extends 'faculty/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Student Marks Analysis</h2>
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Student Name</th>
+                    <th>Register Number</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students|dictsort:"register_number" %}
+                <tr>
+                    <td>{{ student.student_name }}</td>
+                    <td>{{ student.register_number }}</td>
+                    <td class="text-center">
+                        <form method="post" action="{% url 'get_review_preview' review_number=student.register_number %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-chart-bar"></i> View Analyticsss
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Analytics Display Section -->
+    <div id="analyticsDisplay" style="display: none;">
+        <div id="studentDetails"></div>
+        <div id="marksAnalysis"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Make sure jQuery is loaded -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    console.log("Document ready!");
+
+    // Using jQuery event handler instead of onclick
+    $('.view-analytics-btn').on('click', function(e) {
+        e.preventDefault();
+        const registerNumber = $(this).data('register');
+        console.log("Button clicked for register number:", registerNumber);
+        viewAnalytics(registerNumber);
+    });
+});
+
+function viewAnalytics(registerNumber) {
+    if (!registerNumber) {
+        console.error("No register number provided");
+        return;
+    }
+
+    console.log("Starting viewAnalytics function with register number:", registerNumber);
+    
+    // Show that we're loading
+    $('#analyticsDisplay').show();
+    $('#studentDetails').html('<div class="text-center mt-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Loading analytics...</p></div>');
+
+    // Make the API call with the correct URL
+    const url = `/faculty/get_student_analytics/${registerNumber}/`;  // Updated URL path
+    console.log("Making API call to:", url);
+
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        console.log("Received response:", response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
         }
-
-        .vertical-nav {
-            min-width: 17rem;
-            width: 17rem;
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s;
-            background-color: white;
-            z-index: 1;
-        }
-
-        .page-content {
-            width: calc(100% - 17rem);
-            margin-left: 17rem;
-            transition: all 0.4s;
-            padding: 20px;
-        }
-
-        .table-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .table thead th {
-            background-color: #00407b;
-            color: white;
-            border: none;
-        }
-
-        .table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
-
-        .btn-view {
-            background-color: #00407b;
-            color: white;
-            border: none;
-            padding: 5px 15px;
-            border-radius: 4px;
-            transition: all 0.3s;
-        }
-
-        .btn-view:hover {
-            background-color: #002d5a;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .analytics-container {
-            display: none;
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 0 15px rgba(0,0,0,0.1);
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .review-section {
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-        }
-
-        .review-title {
-            color: #00407b;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .marks-table th {
-            background-color: #e9ecef;
-            color: #00407b;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #00407b;
-            text-align: center;
-            padding: 10px 0;
-            color: white;
-            z-index: 1000;
-        }
-
-        @media (max-width: 768px) {
-            .vertical-nav {
-                margin-left: -17rem;
-            }
-            .vertical-nav.active {
-                margin-left: 0;
-            }
-            .page-content {
-                width: 100%;
-                margin-left: 0;
-            }
-            .page-content.active {
-                margin-left: 17rem;
-                width: calc(100% - 17rem);
-            }
-        }
-    </style>
-</head>
-<body>
-    <!-- Include navigation -->
-    {% include "faculty/base.html" %}
-
-    <div class="page-content">
-        <div class="container-fluid">
-            <h2 class="text-center mb-4">Student Marks Analysis</h2>
-
-            <!-- Students Table -->
-            <div class="table-container">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Student Name</th>
-                                <th>Register Number</th>                             
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for student in students %}
-                            <tr>
-                                <td>{{ student.student_name }}</td>
-                                <td>{{ student.register_number }}</td>
-                              
-                                <td>
-                                    <button class="btn btn-view" onclick="viewAnalytics('{{ student.register_number }}')">
-                                        <i class="fas fa-chart-line mr-2"></i>View Analytics
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+        return response.json();
+    })
+    .then(data => {
+        console.log("Received data:", data);
+        displayAnalytics(data);
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        $('#studentDetails').html(`
+            <div class="alert alert-danger mt-4" role="alert">
+                Error loading analytics: ${error.message}
             </div>
+        `);
+    });
+}
 
-            <!-- Loading Indicator -->
-            <div id="loadingIndicator" class="loading">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="sr-only">Loading...</span>
-                </div>
-                <p class="mt-2">Loading analytics...</p>
-            </div>
+function displayAnalytics(data) {
+    console.log("Displaying analytics for data:", data);
 
-            <!-- Analytics Container -->
-            <div id="analyticsContainer" class="analytics-container">
-                <h3 class="text-center mb-4">Student Performance Analysis</h3>
-                <div id="studentInfo" class="mb-4">
-                    <!-- Student info will be populated here -->
-                </div>
-                
-                <!-- Review Sections -->
-                <div class="review-section">
-                    <h4 class="review-title">Review 1</h4>
-                    <div class="table-responsive">
-                        <table class="table marks-table">
-                            <thead>
-                                <tr>
-                                    <th>Criteria</th>
-                                    <th>Guide Marks</th>
-                                    <th>Reviewer 1 Marks</th>
-                                    <th>Reviewer 2 Marks</th>
-                                    <th>Reviewer 3 Marks</th>
-                                    <th>Average</th>
-                                </tr>
-                            </thead>
-                            <tbody id="review1Marks"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="review-section">
-                    <h4 class="review-title">Review 2</h4>
-                    <div class="table-responsive">
-                        <table class="table marks-table">
-                            <thead>
-                                <tr>
-                                    <th>Criteria</th>
-                                    <th>Guide Marks</th>
-                                    <th>Reviewer 1 Marks</th>
-                                    <th>Reviewer 2 Marks</th>
-                                    <th>Reviewer 3 Marks</th>
-                                    <th>Average</th>
-                                </tr>
-                            </thead>
-                            <tbody id="review2Marks"></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="review-section">
-                    <h4 class="review-title">Review 3</h4>
-                    <div class="table-responsive">
-                        <table class="table marks-table">
-                            <thead>
-                                <tr>
-                                    <th>Criteria</th>
-                                    <th>Guide Marks</th>
-                                    <th>Reviewer 1 Marks</th>
-                                    <th>Reviewer 2 Marks</th>
-                                    <th>Reviewer 3 Marks</th>
-                                    <th>Average</th>
-                                </tr>
-                            </thead>
-                            <tbody id="review3Marks"></tbody>
-                        </table>
-                    </div>
-                </div>
+    // Display student details
+    $('#studentDetails').html(`
+        <div class="card mt-4">
+            <div class="card-body">
+                <h3 class="card-title">Student Details</h3>
+                <p class="card-text">
+                    <strong>Name:</strong> ${data.student_name || 'N/A'}<br>
+                    <strong>Register Number:</strong> ${data.register_number || 'N/A'}
+                </p>
             </div>
         </div>
-    </div>
+    `);
 
-    <div class="footer">
-        <p>&copy; 2024 RIT Project Management System. All rights reserved.</p>
-    </div>
-
-    <script>
-        function viewAnalytics(registerNumber) {
-            document.getElementById('loadingIndicator').style.display = 'block';
-            document.getElementById('analyticsContainer').style.display = 'none';
-
-            fetch(`/get_student_analytics/${registerNumber}/`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                    
-                    if (data.error) {
-                        alert(data.error);
-                        return;
-                    }
-
-                    document.getElementById('studentInfo').innerHTML = `
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">${data.student_name}</h5>
-                                <p class="card-text">
-                                    <strong>Register Number:</strong> ${data.register_number}<br>
-                                    <strong>Batch:</strong> ${data.batch}<br>
-                                    <strong>Semester:</strong> ${data.semester}
-                                </p>
-                            </div>
-                        </div>
-                    `;
-
-                    updateReviewMarks('review1Marks', data.review1_marks);
-                    updateReviewMarks('review2Marks', data.review2_marks);
-                    updateReviewMarks('review3Marks', data.review3_marks);
-
-                    document.getElementById('analyticsContainer').style.display = 'block';
-                    document.getElementById('analyticsContainer').scrollIntoView({ behavior: 'smooth' });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    document.getElementById('loadingIndicator').style.display = 'none';
-                    alert('Error fetching analytics data');
-                });
-        }
-
-        function updateReviewMarks(tableId, marks) {
-            const tbody = document.getElementById(tableId);
-            tbody.innerHTML = '';
-
-            if (!marks || marks.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center">No marks available</td></tr>`;
-                return;
-            }
-
-            marks.forEach(mark => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${mark.criteria}</td>
-                    <td>${mark.guide_marks || '-'}</td>
-                    <td>${mark.reviewer1_marks || '-'}</td>
-                    <td>${mark.reviewer2_marks || '-'}</td>
-                    <td>${mark.reviewer3_marks || '-'}</td>
-                    <td>${mark.average || '-'}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-    </script>
-</body>
-</html>
+    // Display marks analysis
+    if (data.marks && Object.keys(data.marks).length > 0) {
+        $('#marksAnalysis').html(`
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h3 class="card-title">Marks Analysis</h3>
+                    <pre class="bg-light p-3">${JSON.stringify(data.marks, null, 2)}</pre>
+                </div>
+            </div>
+        `);
+    } else {
+        $('#marksAnalysis').html(`
+            <div class="card mt-4">
+                <div class="card-body">
+                    <p class="text-muted">No marks data available</p>
+                </div>
+            </div>
+        `);
+    }
+}
+</script>
+{% endblock %}

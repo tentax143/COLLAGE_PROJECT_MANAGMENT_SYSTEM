@@ -22,7 +22,7 @@
             background-color: #f8f9fa;
         }
         .table-responsive {
-            max-height: 400px;
+            max-height: 700px;
             overflow-y: auto;
         }
         .vertical-nav {
@@ -54,6 +54,7 @@
         }
         .text-center {
             margin-bottom: 15px;
+            font-size: 1.3rem;
         }
         h2.text-center {
             margin: 10px 0;
@@ -201,22 +202,30 @@
 
         .table {
             margin-bottom: 0;
+            border-collapse: separate;
+            border-spacing: 0;
         }
 
         .table thead th {
             background-color: #00407b;
             color: white;
             border: none;
-            padding: 12px 15px;
+            padding: 15px 20px;
             font-weight: 600;
             text-align: center;
+            font-size: 1.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .table tbody td {
-            padding: 12px 15px;
+            padding: 15px 20px;
             border: 1px solid #e3e6f0;
             text-align: center;
             vertical-align: middle;
+            font-size: 1.3rem;
+            font-weight: 500;
+            line-height: 1.5;
         }
 
         .table tbody tr:nth-child(even) {
@@ -253,15 +262,106 @@
             display: inline-block;
             padding: 8px 20px;
         }
+
+        /* Reviewer Cards Styles */
+        .reviewer-summary {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 15px;
+            justify-content: center;
+            margin: 20px 0;
+            padding: 15px;
+        }
+
+        .reviewer-card {
+            flex: 1;
+            min-width: 200px;
+            max-width: 250px;
+            padding: 20px;
+            border-radius: 8px;
+            color: white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .reviewer-card:hover {
+            transform: translateY(-3px);
+        }
+
+        /* Guide card - blue to yellow gradient */
+        .guide-card {
+            background: linear-gradient(135deg, #007bff 0%, #ffd700 100%);
+        }
+
+        /* Reviewer 1 card - green to yellow gradient */
+        .reviewer1-card {
+            background: linear-gradient(135deg, #28a745 0%, #ffd700 100%);
+        }
+
+        /* Reviewer 2 card - info blue to yellow gradient */
+        .reviewer2-card {
+            background: linear-gradient(135deg, #17a2b8 0%, #ffd700 100%);
+        }
+
+        /* Reviewer 3 card - red to yellow gradient */
+        .reviewer3-card {
+            background: linear-gradient(135deg, #dc3545 0%, #ffd700 100%);
+        }
+
+        .reviewer-card h4 {
+            margin: 0 0 12px 0;
+            font-size: 1.4rem;
+            font-weight: bold;
+            opacity: 0.9;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .reviewer-card .reviewer-name {
+            font-size: 1.3rem;
+            opacity: 1;
+            margin: 0;
+            word-wrap: break-word;
+            line-height: 1.5;
+            font-weight: 500;
+            padding: 5px 0;
+        }
+
+        .reviewer-card i {
+            margin-right: 10px;
+            font-size: 1.4rem;
+        }
+
+        @media (max-width: 768px) {
+            .reviewer-summary {
+                flex-wrap: wrap;
+            }
+            .reviewer-card {
+                min-width: 180px;
+            }
+            .reviewer-card h4 {
+                font-size: 1.3rem;
+            }
+            .reviewer-card .reviewer-name {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* Make the loading text larger */
+        #loading p {
+            font-size: 1.3rem;
+            margin-top: 15px;
+        }
     </style>
 </head>
 <body>
 
     <div class="vertical-nav" id="sidebar">
         <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="py-4 px-3 mb-4 bg-light border-bottom text-center">
-                <div class="d-flex flex-column align-items-center">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="rounded-bottom img-thumbnail shadow-sm mb-2">
+            <div class="media d-flex align-items-center">
+                <div class="media-body">
+                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
                     <h4 class="m-0">RIT</h4>
                     <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
                 </div>
@@ -276,129 +376,129 @@
             </div>
         </div>
 
-        {% if role == 'HOD' %}
-            <ul class="nav flex-column bg-white mb-0">
-                <li class="nav-item">
-                    <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
-                        <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                        Allocate Committee Members
-                    </a>
-                    <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                        <li class="nav-item">
-                            <a href="{% url 'review1' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 1
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'review2' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 2
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'review3' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 3
-                            </a>
-                        </li>
-                    </ul>
-                <li class="nav-item">
-                    <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                        Allocate Guide
-                    </a>
-                </li>
-            </ul>  
+    {% if role == 'HOD' %}
+        <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
-                <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Review Mark Entry
+                <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
+                    <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
+                    Dashboard
                 </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+            </li>
+            <li class="nav-item">
+                <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Committee Members
+                </a>
+                <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
                     <li class="nav-item">
-                        <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                        <a href="{% url 'review1' %}" class="nav-link text-dark">
                             <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                             Review 1
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                        <a href="{% url 'review2' %}" class="nav-link text-dark">
                             <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                             Review 2
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                        <a href="{% url 'review3' %}" class="nav-link text-dark">
                             <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
                             Review 3
                         </a>
                     </li>
                 </ul>
-            </li>
-            
             <li class="nav-item">
-                <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+                <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                    Allocate Guide
+                </a>
+            </li>
+        </ul>  
+        <li class="nav-item">
+            <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+                <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+                Review Mark Entry
+            </a>
+            <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+                <li class="nav-item">
+                    <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 1
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 2
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                        <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                        Review 3
+                    </a>
+                </li>
+            </ul>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Final Outcome Entry
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
+                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                Download Review Marks
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Entry
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'filter' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Filter-Project outcome
+            </a>
+        </li>
+        
+        <li class="nav-item">
+            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Criteria Analysis
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
+                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
+                Students Mark Analysis
+            </a>
+        </li>
+        
+        {% load static %}
+            <li class="nav-item">
+                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
+                    Manual
+                </a>
+            </li>
+
+        
+            <li class="nav-item">
+                <a href="{% url 'home_page' %}" class="nav-link text-dark">
                     <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                    Final Outcome Entry
+                    Logout
                 </a>
             </li>
-            <li class="nav-item">
-                <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-                    <i class="fa fa-Download-alt mr-3 text-primary fa-fw"></i>
-                    Download Review Marks
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Criteria Entry
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'filter' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Filter
-                </a>
-            </li>
-            
-            <li class="nav-item">
-                <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Criteria Analysis
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Students Mark Analysis
-                </a>
-            </li>
-            
-            {% load static %}
-                <li class="nav-item">
-                    <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                        <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                        Manual
-                    </a>
-                </li>
-    
-            
-                <li class="nav-item">
-                    <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                        Logout
-                    </a>
-                </li>
-            </ul>  
-        </div>
-        {% endif %}
+        </ul>  
+    </div>
+    {% endif %}
 
         <div class="page-content">
             <div class="top-buttons-section">
@@ -435,44 +535,66 @@
             </div>
         
             <div class="container">
-                <div id="previewTable" class="table-container" style="display: none;">
+                <!-- Removing the Review Marks heading -->
+                <!-- <h2 class="text-center">Review {{ review_number }} Marks</h2> -->
+
+                <!-- Reviewer Summary Cards -->
+                <div class="reviewer-summary">
+                    <div class="reviewer-card guide-card">
+                        <h4><i class="fas fa-user-tie"></i>Guide</h4>
+                        <div class="reviewer-name">{{ guide_name|default:'Not Assigned' }}</div>
+                    </div>
+                    <div class="reviewer-card reviewer1-card">
+                        <h4><i class="fas fa-user-check"></i>Reviewer 1</h4>
+                        <div class="reviewer-name">{{ reviewer1_name|default:'Not Assigned' }}</div>
+                    </div>
+                    <div class="reviewer-card reviewer2-card">
+                        <h4><i class="fas fa-user-check"></i>Reviewer 2</h4>
+                        <div class="reviewer-name">{{ reviewer2_name|default:'Not Assigned' }}</div>
+                    </div>
+                    <div class="reviewer-card reviewer3-card">
+                        <h4><i class="fas fa-user-check"></i>Reviewer 3</h4>
+                        <div class="reviewer-name">{{ reviewer3_name|default:'Not Assigned' }}</div>
+                    </div>
+                </div>
+
+                <div class="table-container">
                     <div class="excel-download-btn">
                         <a href="#" id="excelDownloadBtn" class="btn btn-success" style="display: none;">
                             <i class="fa fa-file-excel-o mr-2"></i>Download Excel
                         </a>
                     </div>
                     
-                    <div id="reviewerInfo" class="text-center mb-3" style="display: none;"></div>
-                    
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Student Name</th>
-                                    <th>Registration Number</th>
-                                    <th>Guide Total</th>
-                                    <th>Reviewer 1 Total</th>
-                                    <th>Reviewer 2 Total</th>
-                                    <th>Reviewer 3 Total</th>
-                                    <th>Average</th>
-                                </tr>
-                            </thead>
-                            <tbody id="previewTableBody"></tbody>
-                        </table>
+                    <div id="previewTable" class="table-container" style="display: none;">
+                        <div id="reviewerInfo" class="text-center mb-3" style="display: none;"></div>
+                        
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Student Name</th>
+                                        <th>Registration Number</th>
+                                        <th>Guide Total</th>
+                                        <th>Reviewer 1 Total</th>
+                                        <th>Reviewer 2 Total</th>
+                                        <th>Reviewer 3 Total</th>
+                                        <th>Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody"></tbody>
+                            </table>
+                        </div>
                     </div>
-                </div>
-        
-                <div id="loading" class="loading">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="sr-only">Loading...</span>
+            
+                    <div id="loading" class="loading">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                        <p class="mt-2">Preparing your download...</p>
                     </div>
-                    <p class="mt-2">Preparing your download...</p>
                 </div>
             </div>
         </div>
-
-
-
 
         <table id="previewTable" border="1" style="display: none;">
             <thead>
@@ -491,8 +613,71 @@
     console.log("Page Loaded. Initializing event listeners...");
 });
 
+function updateReviewerNames(data) {
+    // Initialize reviewer information
+    let reviewerInfo = {
+        guide: { name: 'Not Assigned', total: '-' },
+        reviewer1: { name: 'Not Assigned', total: '-' },
+        reviewer2: { name: 'Not Assigned', total: '-' },
+        reviewer3: { name: 'Not Assigned', total: '-' }
+    };
+
+    // Process each student's data to find reviewer information
+    data.forEach(student => {
+        // Guide information
+        if (student.guide_name && student.guide_total !== null) {
+            reviewerInfo.guide = {
+                name: student.guide_name,
+                total: student.guide_total.toFixed(2)
+            };
+        }
+        // Reviewer 1 information
+        if (student.reviewer1_name && student.reviewer1_total !== null) {
+            reviewerInfo.reviewer1 = {
+                name: student.reviewer1_name,
+                total: student.reviewer1_total.toFixed(2)
+            };
+        }
+        // Reviewer 2 information
+        if (student.reviewer2_name && student.reviewer2_total !== null) {
+            reviewerInfo.reviewer2 = {
+                name: student.reviewer2_name,
+                total: student.reviewer2_total.toFixed(2)
+            };
+        }
+        // Reviewer 3 information
+        if (student.reviewer3_name && student.reviewer3_total !== null) {
+            reviewerInfo.reviewer3 = {
+                name: student.reviewer3_name,
+                total: student.reviewer3_total.toFixed(2)
+            };
+        }
+    });
+
+    // Update the UI cards
+    // Guide Card
+    $('.guide-card .reviewer-name').text(reviewerInfo.guide.name);
+    $('.guide-card .marks').text(reviewerInfo.guide.total);
+
+    // Reviewer 1 Card
+    $('.reviewer1-card .reviewer-name').text(reviewerInfo.reviewer1.name);
+    $('.reviewer1-card .marks').text(reviewerInfo.reviewer1.total);
+
+    // Reviewer 2 Card
+    $('.reviewer2-card .reviewer-name').text(reviewerInfo.reviewer2.name);
+    $('.reviewer2-card .marks').text(reviewerInfo.reviewer2.total);
+
+    // Reviewer 3 Card
+    $('.reviewer3-card .reviewer-name').text(reviewerInfo.reviewer3.name);
+    $('.reviewer3-card .marks').text(reviewerInfo.reviewer3.total);
+}
+
 function showPreviewAndDownload(reviewNumber) {
     console.log(`Fetching data for review ${reviewNumber}...`);
+
+    // Reset the reviewer cards first
+    $('.reviewer-card .reviewer-name').text('Not Assigned');
+    $('.reviewer-card .marks').text('-');
 
     // Get required elements
     const previewTable = document.getElementById('previewTable');
@@ -539,7 +724,15 @@ function showPreviewAndDownload(reviewNumber) {
             }
             reviewerInfo.style.display = 'block';
 
-            // Display data
+            // Display data in table
+            // Sort data by registration number in ascending order
+            data.sort((a, b) => {
+                const regA = a.reg_no || '';
+                const regB = b.reg_no || '';
+                return regA.localeCompare(regB);
+            });
+
+            // Display sorted data in table
             data.forEach(student => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -553,6 +746,9 @@ function showPreviewAndDownload(reviewNumber) {
                 `;
                 tbody.appendChild(row);
             });
+
+            // Update the reviewer cards
+            updateReviewerNames(data);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -561,7 +757,6 @@ function showPreviewAndDownload(reviewNumber) {
             excelBtn.style.display = 'none';
         });
 }
-
 
 </script>
     

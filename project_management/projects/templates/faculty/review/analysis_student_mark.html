@@ -1,173 +1,515 @@
 {% extends 'faculty/base.html' %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<style>
-    .container {
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+    .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+    .chart-container { position: relative; height: 400px; margin-bottom: 30px; }
+    .marks-table th { background-color: #f8f9fa; }
+    .total-row { font-weight: bold; background-color: #e9ecef; }
+    .nav-tabs .nav-link.active { background-color: #007bff; color: white; }
+    
+    /* New styles for reviewer cards */
+    .reviewer-cards {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        gap: 15px;
     }
-    .back-button {
-        margin-bottom: 20px;
+    
+    .reviewer-card {
+        flex: 1;
+        min-width: 200px;
+        padding: 15px;
+        border-radius: 10px;
+        color: white;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
-    .view-analytics, 
-    .view-analytics img {
-        cursor: pointer;
-        z-index: 1;
-        position: relative;
+    
+    .guide-card {
+        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     }
-    .view-analytics.btn:hover {
-        background-color: #0056b3;
-        border-color: #0056b3;
+    
+    .reviewer1-card {
+        background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
     }
-    .table td {
-        vertical-align: middle;
+    
+    .reviewer2-card {
+        background: linear-gradient(135deg, #4a00e0 0%, #8e2de2 100%);
     }
-    /* Style for image button */
-    .view-analytics-img {
-        border: none;
-        background: none;
-        padding: 0;
+    
+    .reviewer3-card {
+        background: linear-gradient(135deg, #141e30 0%, #243b55 100%);
+    }
+    
+    .reviewer-card h5 {
         margin: 0;
-        cursor: pointer;
+        font-size: 1rem;
+        opacity: 0.9;
     }
-    .view-analytics-img:hover {
-        opacity: 0.8;
+    
+    .reviewer-card p {
+        margin: 10px 0 0;
+            font-size: 1.1rem;
+        font-weight: bold;
     }
-    .view-analytics-img img {
-        max-width: 100px;
-        height: auto;
-    }
-</style>
+    
+    .reviewer-card i {
+        margin-right: 8px;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}
 <div class="container">
-    <!-- Student List Table Section -->
-    <div id="studentTableSection">
-        <h2 class="text-center mb-4">Student Marks Analysis</h2>
-        <div class="table-responsive">
-            <table class="table table-striped table-bordered">
-                <thead class="thead-dark">
-                    <tr>
-                        <th style="width: 40%">Student Name</th>
-                        <th style="width: 30%">Register Number</th>
-                        <th style="width: 30%">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for student in students|dictsort:"register_number" %}
-                    <tr>
-                        <td class="text-nowrap text-truncate" style="max-width: 200px;" title="{{ student.student_name }}">
-                            {{ student.student_name }}
-                        </td>
-                        <td class="text-center">{{ student.register_number }}</td>
-                        <td class="text-center">
-                            <button type="button" class="view-analytics-img" data-register="{{ student.register_number }}">
-                                <img src="/static/images/view_analytics.png" alt="View Analytics">
-                            </button>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+                <h2 class="text-center mb-4">Student Marks Analysis</h2>
+                <div class="table-responsive">
+        <table class="table table-striped table-bordered">
+                        <thead class="thead-dark">
+                            <tr>
+                    <th>Student Name</th>
+                    <th>Register Number</th>
+                    <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                {% for student in students %}
+                <tr>
+                    <td>{{ student.student_name }}</td>
+                    <td>{{ student.register_number }}</td>
+                                <td class="text-center">
+                                    <form method="post" action="{% url 'get_review_marks_master' review_number=student.register_number %}" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-chart-bar"></i> View Analyticsss
+                                    </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
     </div>
 
-    <!-- Analytics Section (Initially Hidden) -->
-    <div id="analyticsSection" style="display: none;">
-        <button type="button" class="btn btn-secondary back-button">
-            <i class="fas fa-arrow-left"></i> Back to Student List
-        </button>
+    <!-- Analytics Section -->
+    <div id="analyticsSection" style="display: none;" class="mt-4">
         <div class="card">
             <div class="card-body">
-                <h5 class="card-title text-center">Student Analytics</h5>
-                <div id="studentInfo" class="text-center mb-4">
-                    <h5 class="student-name">Loading...</h5>
-                    <p class="student-details small"></p>
+                <h3 class="card-title text-center" id="studentName"></h3>
+                <p class="text-center text-muted" id="studentRegNo"></p>
+
+                <!-- Reviewer Cards -->
+                <div class="reviewer-cards">
+                    <div class="reviewer-card guide-card">
+                        <h5><i class="fas fa-user-tie"></i>Guide</h5>
+                        <p id="guideName">Not Assigned</p>
+                    </div>
+                    <div class="reviewer-card reviewer1-card">
+                        <h5><i class="fas fa-user-check"></i>Reviewer 1</h5>
+                        <p id="reviewer1Name">Not Assigned</p>
+                    </div>
+                    <div class="reviewer-card reviewer2-card">
+                        <h5><i class="fas fa-user-check"></i>Reviewer 2</h5>
+                        <p id="reviewer2Name">Not Assigned</p>
+                    </div>
+                    <div class="reviewer-card reviewer3-card">
+                        <h5><i class="fas fa-user-check"></i>Reviewer 3</h5>
+                        <p id="reviewer3Name">Not Assigned</p>
+                    </div>
                 </div>
-                <div id="analyticsContent">
-                    <!-- Content will be added here -->
+
+                <!-- Review Tabs -->
+                <ul class="nav nav-tabs" id="reviewTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="review1-tab" data-toggle="tab" href="#review1" role="tab">Review 1</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="review2-tab" data-toggle="tab" href="#review2" role="tab">Review 2</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="review3-tab" data-toggle="tab" href="#review3" role="tab">Review 3</a>
+                    </li>
+                </ul>
+
+                <!-- Tab Content -->
+                <div class="tab-content mt-4" id="reviewTabContent">
+                    <!-- Review 1 Content -->
+                    <div class="tab-pane fade show active" id="review1" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review1CriteriaChart"></canvas>
+                </div>
+            </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review1TotalChart"></canvas>
+                </div>
+                </div>
+                    </div>
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered" id="review1Table">
+                                <thead>
+                                    <tr>
+                                        <th>Criteria</th>
+                                        <th>Guide</th>
+                                        <th>Reviewer 1</th>
+                                        <th>Reviewer 2</th>
+                                        <th>Reviewer 3</th>
+                                        <th>Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Review 2 Content -->
+                    <div class="tab-pane fade" id="review2" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review2CriteriaChart"></canvas>
+                        </div>
+                        </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review2TotalChart"></canvas>
+                    </div>
+                </div>
+                    </div>
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered" id="review2Table">
+                                <thead>
+                                    <tr>
+                                        <th>Criteria</th>
+                                        <th>Guide</th>
+                                        <th>Reviewer 1</th>
+                                        <th>Reviewer 2</th>
+                                        <th>Reviewer 3</th>
+                                        <th>Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Review 3 Content -->
+                    <div class="tab-pane fade" id="review3" role="tabpanel">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review3CriteriaChart"></canvas>
+                        </div>
+                        </div>
+                            <div class="col-md-6">
+                                <div class="chart-container">
+                                    <canvas id="review3TotalChart"></canvas>
+                    </div>
+                </div>
+                    </div>
+                        <div class="table-responsive mt-4">
+                            <table class="table table-bordered" id="review3Table">
+                                <thead>
+                                    <tr>
+                                        <th>Criteria</th>
+                                        <th>Guide</th>
+                                        <th>Reviewer 1</th>
+                                        <th>Reviewer 2</th>
+                                        <th>Reviewer 3</th>
+                                        <th>Average</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+<!-- Loading Spinner -->
+<div id="loadingSpinner" style="display: none;" class="text-center mt-4">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <p class="mt-2">Loading analytics...</p>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM Content Loaded'); // Debug log
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    // Function to show student table
-    function showStudentTable() {
-        document.getElementById('studentTableSection').style.display = 'block';
-        document.getElementById('analyticsSection').style.display = 'none';
-    }
+    <script>
+$(document).ready(function() {
+    console.log('Document ready');
+    
+    let charts = {
+        review1: { criteria: null, total: null },
+        review2: { criteria: null, total: null },
+        review3: { criteria: null, total: null }
+    };
 
-    // Function to show analytics section
-    function showAnalyticsSection() {
-        document.getElementById('studentTableSection').style.display = 'none';
-        document.getElementById('analyticsSection').style.display = 'block';
-    }
-
-    // Function to handle analytics button click
-    function handleAnalyticsClick(event) {
-        console.log('Button clicked'); // Debug log
-        event.preventDefault();
-        event.stopPropagation();
-        
-        // Get the button element (works for both button and image)
-        const button = event.currentTarget;
-        const registerNumber = button.getAttribute('data-register');
-        
-        if (!registerNumber) {
-            console.error('No register number found');
-            return;
-        }
-
-        console.log('Register number:', registerNumber); // Debug log
-
-        // Show loading state
-        document.querySelector('.student-name').textContent = 'Loading...';
-        document.querySelector('.student-details').textContent = '';
-        
-        // Show analytics section
-        showAnalyticsSection();
-    }
-
-    // Add click event listeners to all analytics buttons (both types)
-    const analyticsButtons = document.querySelectorAll('.view-analytics-img, .view-analytics');
-    console.log('Found buttons:', analyticsButtons.length); // Debug log
-
-    analyticsButtons.forEach(button => {
-        button.addEventListener('click', handleAnalyticsClick);
-        console.log('Added click listener to button'); // Debug log
+    $('.view-analytics-btn').on('click', function() {
+        console.log('Button clicked');
+        const registerNumber = $(this).data('register');
+        console.log('Register number:', registerNumber);
+        loadStudentAnalytics(registerNumber);
     });
 
-    // Also add click listeners to the images inside buttons
-    document.querySelectorAll('.view-analytics-img img').forEach(img => {
-        img.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            const button = this.closest('.view-analytics-img');
-            if (button) {
-                button.click();
+    function loadStudentAnalytics(registerNumber) {
+        console.log('Loading analytics for:', registerNumber);
+        $('#loadingSpinner').show();
+        $('#analyticsSection').hide();
+
+        // Fetch student analytics
+        $.ajax({
+            url: `/faculty/get_student_analytics/${registerNumber}/`,
+            method: 'GET',
+            success: function(data) {
+                console.log('Received data:', data);
+                displayAnalytics(data);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('Response:', xhr.responseText);
+                alert('Error loading analytics: ' + error);
+            },
+            complete: function() {
+                $('#loadingSpinner').hide();
             }
         });
-    });
+    }
 
-    // Add click listener for back button
-    const backButton = document.querySelector('.back-button');
-    if (backButton) {
-        backButton.addEventListener('click', function(event) {
-            event.preventDefault();
-            event.stopPropagation();
-            showStudentTable();
+    function displayAnalytics(data) {
+        console.log('Displaying analytics');
+        // Update student info
+        $('#studentName').text(data.student_name);
+        $('#studentRegNo').text(`Register Number: ${data.register_number}`);
+        $('#analyticsSection').show();
+
+        // Reset reviewer cards
+        $('#guideName').text('Not Assigned');
+        $('#reviewer1Name').text('Not Assigned');
+        $('#reviewer2Name').text('Not Assigned');
+        $('#reviewer3Name').text('Not Assigned');
+
+        // Process each review to find reviewer names
+        ['review1_marks', 'review2_marks', 'review3_marks'].forEach((reviewKey) => {
+            const reviewData = data[reviewKey];
+            if (reviewData && reviewData.length > 0) {
+                // Get the first criteria entry to check for reviewer names
+                const firstCriteria = reviewData[0];
+                
+                // Update guide name if available
+                if (firstCriteria.guide_marks !== null && firstCriteria.guide_name) {
+                    $('#guideName').text(firstCriteria.guide_name);
+                }
+                
+                // Update reviewer names if available
+                firstCriteria.reviewer_marks.forEach((reviewer, index) => {
+                    if (reviewer.name) {
+                        $(`#reviewer${index + 1}Name`).text(reviewer.name);
+                    }
+                });
+            }
+        });
+
+        // Process each review
+        ['review1_marks', 'review2_marks', 'review3_marks'].forEach((reviewKey, index) => {
+            const reviewNumber = index + 1;
+            const reviewData = data[reviewKey];
+            console.log(`Processing ${reviewKey}:`, reviewData);
+
+            if (reviewData && reviewData.length > 0) {
+                updateReviewTab(reviewNumber, reviewData);
+            } else {
+                clearReviewTab(reviewNumber);
+            }
         });
     }
+
+    function updateReviewTab(reviewNumber, reviewData) {
+        console.log(`Updating review ${reviewNumber} tab`);
+        const tableId = `review${reviewNumber}Table`;
+        const tbody = $(`#${tableId} tbody`);
+        tbody.empty();
+
+        // Process criteria data
+        const criteriaData = {
+            labels: [],
+            guide: [],
+            reviewer1: [],
+            reviewer2: [],
+            reviewer3: []
+        };
+
+        reviewData.forEach(criteria => {
+            criteriaData.labels.push(criteria.criteria);
+            criteriaData.guide.push(criteria.guide_marks || 0);
+
+            // Process reviewer marks
+            const reviewerMarks = [0, 0, 0]; // Initialize with zeros
+            criteria.reviewer_marks.forEach((reviewer, index) => {
+                reviewerMarks[index] = reviewer.mark;
+            });
+
+            criteriaData.reviewer1.push(reviewerMarks[0]);
+            criteriaData.reviewer2.push(reviewerMarks[1]);
+            criteriaData.reviewer3.push(reviewerMarks[2]);
+
+            // Add row to table
+            const row = $('<tr>');
+            row.append(`<td>${criteria.criteria}</td>`);
+            row.append(`<td>${criteria.guide_marks || '-'}</td>`);
+            row.append(`<td>${reviewerMarks[0] || '-'}</td>`);
+            row.append(`<td>${reviewerMarks[1] || '-'}</td>`);
+            row.append(`<td>${reviewerMarks[2] || '-'}</td>`);
+
+            // Calculate average
+            const validMarks = [criteria.guide_marks, ...reviewerMarks].filter(m => m > 0);
+            const average = validMarks.length > 0 ? 
+                (validMarks.reduce((a, b) => a + b, 0) / validMarks.length).toFixed(2) : 
+                '-';
+            row.append(`<td>${average}</td>`);
+
+            tbody.append(row);
+        });
+
+        // Update charts
+        updateCharts(reviewNumber, criteriaData);
+    }
+
+    function updateCharts(reviewNumber, data) {
+        console.log(`Updating charts for review ${reviewNumber}`);
+        // Destroy existing charts
+        if (charts[`review${reviewNumber}`].criteria) {
+            charts[`review${reviewNumber}`].criteria.destroy();
+        }
+        if (charts[`review${reviewNumber}`].total) {
+            charts[`review${reviewNumber}`].total.destroy();
+        }
+
+        // Create criteria chart
+        const criteriaCtx = document.getElementById(`review${reviewNumber}CriteriaChart`).getContext('2d');
+        charts[`review${reviewNumber}`].criteria = new Chart(criteriaCtx, {
+            type: 'bar',
+            data: {
+                labels: data.labels,
+                datasets: [
+                {
+                    label: 'Guide',
+                        data: data.guide,
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Reviewer 1',
+                        data: data.reviewer1,
+                        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Reviewer 2',
+                        data: data.reviewer2,
+                        backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Reviewer 3',
+                        data: data.reviewer3,
+                        backgroundColor: 'rgba(255, 206, 86, 0.5)',
+                        borderColor: 'rgba(255, 206, 86, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Review ${reviewNumber} - Criteria-wise Marks`
+                    }
+                }
+            }
+        });
+
+        // Calculate totals for pie chart
+        const totals = {
+            guide: data.guide.reduce((a, b) => a + b, 0),
+            reviewer1: data.reviewer1.reduce((a, b) => a + b, 0),
+            reviewer2: data.reviewer2.reduce((a, b) => a + b, 0),
+            reviewer3: data.reviewer3.reduce((a, b) => a + b, 0)
+        };
+
+        // Create total marks chart
+        const totalCtx = document.getElementById(`review${reviewNumber}TotalChart`).getContext('2d');
+        charts[`review${reviewNumber}`].total = new Chart(totalCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Guide', 'Reviewer 1', 'Reviewer 2', 'Reviewer 3'],
+                datasets: [{
+                    data: [totals.guide, totals.reviewer1, totals.reviewer2, totals.reviewer3],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.5)',
+                        'rgba(255, 99, 132, 0.5)',
+                        'rgba(75, 192, 192, 0.5)',
+                        'rgba(255, 206, 86, 0.5)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `Review ${reviewNumber} - Total Marks Distribution`
+                    }
+                }
+            }
+        });
+    }
+
+    function clearReviewTab(reviewNumber) {
+        console.log(`Clearing review ${reviewNumber} tab`);
+        $(`#review${reviewNumber}Table tbody`).html(
+            '<tr><td colspan="6" class="text-center">No marks available for this review</td></tr>'
+        );
+
+        // Clear charts
+        if (charts[`review${reviewNumber}`].criteria) {
+            charts[`review${reviewNumber}`].criteria.destroy();
+        }
+        if (charts[`review${reviewNumber}`].total) {
+            charts[`review${reviewNumber}`].total.destroy();
+        }
+    }
 });
-</script>
+    </script>
 {% endblock %}

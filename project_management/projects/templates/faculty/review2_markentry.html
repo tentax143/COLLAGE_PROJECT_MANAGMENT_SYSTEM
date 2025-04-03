@@ -1,0 +1,260 @@
+{% extends 'faculty/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-success text-white">
+            <h4 class="mb-0">Review 2 Mark Entry</h4>
+        </div>
+        <div class="card-body">
+            <form method="post" id="markEntryForm">
+                {% csrf_token %}
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th>Register Number</th>
+                                <th>Student Name</th>
+                                <th>Project Title</th>
+                                <th>Guide</th>
+                                <th>Reviewer 1</th>
+                                <th>Reviewer 2</th>
+                                <th>Reviewer 3</th>
+                                <th>Average</th>
+                                <th>Outcome</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in projects %}
+                            <tr>
+                                <td>{{ project.reg_no }}</td>
+                                <td>{{ project.student_name }}</td>
+                                <td>{{ project.title }}</td>
+                                <td>
+                                    <div class="guide-marks">
+                                        {% for criteria in review_criteria %}
+                                        <div class="form-group mb-2">
+                                            <label for="guide_criteria_{{ project.id }}_{{ forloop.counter }}" class="small mb-1">
+                                                {{ criteria.review_criteria }}
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control form-control-sm guide-mark-input" 
+                                                   id="guide_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   name="guide_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   min="0" 
+                                                   max="10" 
+                                                   step="0.1"
+                                                   value="{{ project.guide_marks|get_item:forloop.counter|default:'' }}"
+                                                   data-project-id="{{ project.id }}"
+                                                   data-criteria="{{ forloop.counter }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reviewer1-marks">
+                                        {% for criteria in review_criteria %}
+                                        <div class="form-group mb-2">
+                                            <label for="reviewer1_criteria_{{ project.id }}_{{ forloop.counter }}" class="small mb-1">
+                                                {{ criteria.review_criteria }}
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control form-control-sm reviewer1-mark-input" 
+                                                   id="reviewer1_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   name="reviewer1_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   min="0" 
+                                                   max="10" 
+                                                   step="0.1"
+                                                   value="{{ project.reviewer1_marks|get_item:forloop.counter|default:'' }}"
+                                                   data-project-id="{{ project.id }}"
+                                                   data-criteria="{{ forloop.counter }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reviewer2-marks">
+                                        {% for criteria in review_criteria %}
+                                        <div class="form-group mb-2">
+                                            <label for="reviewer2_criteria_{{ project.id }}_{{ forloop.counter }}" class="small mb-1">
+                                                {{ criteria.review_criteria }}
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control form-control-sm reviewer2-mark-input" 
+                                                   id="reviewer2_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   name="reviewer2_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   min="0" 
+                                                   max="10" 
+                                                   step="0.1"
+                                                   value="{{ project.reviewer2_marks|get_item:forloop.counter|default:'' }}"
+                                                   data-project-id="{{ project.id }}"
+                                                   data-criteria="{{ forloop.counter }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="reviewer3-marks">
+                                        {% for criteria in review_criteria %}
+                                        <div class="form-group mb-2">
+                                            <label for="reviewer3_criteria_{{ project.id }}_{{ forloop.counter }}" class="small mb-1">
+                                                {{ criteria.review_criteria }}
+                                            </label>
+                                            <input type="number" 
+                                                   class="form-control form-control-sm reviewer3-mark-input" 
+                                                   id="reviewer3_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   name="reviewer3_criteria_{{ project.id }}_{{ forloop.counter }}"
+                                                   min="0" 
+                                                   max="10" 
+                                                   step="0.1"
+                                                   value="{{ project.reviewer3_marks|get_item:forloop.counter|default:'' }}"
+                                                   data-project-id="{{ project.id }}"
+                                                   data-criteria="{{ forloop.counter }}">
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </td>
+                                <td class="average-marks" data-project-id="{{ project.id }}">
+                                    {{ project.average_marks|default:"-" }}
+                                </td>
+                                <td class="outcome" data-project-id="{{ project.id }}">
+                                    {% if project.outcome %}
+                                        <span class="badge {% if project.achieved == 'Yes' %}badge-success{% else %}badge-danger{% endif %}">
+                                            {{ project.outcome }}
+                                        </span>
+                                    {% else %}
+                                        -
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center">No projects found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success">Save Marks</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 0.5rem;
+    }
+    .form-control-sm {
+        height: calc(1.5em + 0.5rem + 2px);
+        padding: 0.25rem 0.5rem;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        border-radius: 0.2rem;
+    }
+    .small {
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    .mb-1 {
+        margin-bottom: 0.25rem;
+    }
+    .mb-2 {
+        margin-bottom: 0.5rem;
+    }
+    .table td {
+        vertical-align: middle;
+    }
+    .guide-marks, .reviewer1-marks, .reviewer2-marks, .reviewer3-marks {
+        min-width: 150px;
+    }
+    .badge {
+        font-size: 0.875rem;
+        padding: 0.35em 0.65em;
+    }
+    .badge-success {
+        background-color: #28a745;
+        color: white;
+    }
+    .badge-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('markEntryForm');
+    const markInputs = document.querySelectorAll('input[type="number"]');
+
+    // Function to calculate average marks for a project
+    function calculateAverageMarks(projectId) {
+        const inputs = document.querySelectorAll(`input[data-project-id="${projectId}"]`);
+        let totalMarks = 0;
+        let count = 0;
+
+        inputs.forEach(input => {
+            if (input.value !== '') {
+                totalMarks += parseFloat(input.value);
+                count++;
+            }
+        });
+
+        const average = count > 0 ? (totalMarks / count).toFixed(2) : '-';
+        const averageCell = document.querySelector(`.average-marks[data-project-id="${projectId}"]`);
+        averageCell.textContent = average;
+
+        // Update outcome
+        const outcomeCell = document.querySelector(`.outcome[data-project-id="${projectId}"]`);
+        if (average !== '-') {
+            const achieved = parseFloat(average) >= 5;
+            outcomeCell.innerHTML = `
+                <span class="badge ${achieved ? 'badge-success' : 'badge-danger'}">
+                    ${achieved ? 'Achieved' : 'Not Achieved'}
+                </span>
+            `;
+        } else {
+            outcomeCell.innerHTML = '-';
+        }
+    }
+
+    // Add event listeners to all mark inputs
+    markInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const projectId = this.dataset.projectId;
+            calculateAverageMarks(projectId);
+        });
+    });
+
+    // Form submission handler
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const formData = new FormData(form);
+        
+        fetch('', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Marks saved successfully!');
+            } else {
+                alert('Error saving marks: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error saving marks. Please try again.');
+        });
+    });
+});
+</script>
+{% endblock %} 

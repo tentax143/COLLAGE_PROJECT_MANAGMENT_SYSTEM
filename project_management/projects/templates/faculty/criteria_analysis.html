@@ -80,6 +80,7 @@
 <input type="hidden" id="departmentValue" value="{{ department }}">
 
 <div class="container-fluid">
+    <!-- Department Filter -->
     <div class="row">
         <div class="col-12">
             <div class="card department-filter-card">
@@ -110,6 +111,7 @@
         </div>
     </div>
         
+    <!-- Review Analysis Options -->
     <div class="row">
         <div class="col-12">
             <div class="card analysis-options-card">
@@ -137,146 +139,253 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="content-sections">
-            <!-- Review 1 Container -->
-            <div id="review1Content" class="content-section mb-4" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h3 class="mb-0">Review 1 Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                    <div class="criteria-analysis">
-                        <h4 class="mb-3">Criteria-wise Analysis</h4>
-                        <div id="review1CriteriaCharts"></div>
-                    </div>
-
-                    <div class="outcome-analysis">
-                        <h4 class="mb-3">Project Outcome Analysis</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="outcome-chart">
-                                    <canvas id="review1OutcomeChart"></canvas>
-                                 </div>
-                                </div>
-                            <div class="col-md-6">
-                                <div id="review1OutcomeStats" class="outcome-stats"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="marks-table mt-4">
-                        <h4 class="mb-3">Detailed Marks Analysis</h4>
-                        <div id="review1MarksTable"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Review 2 Container -->
-            <div id="review2Content" class="content-section mb-4" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h3 class="mb-0">Review 2 Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                    <div class="criteria-analysis">
-                        <h4 class="mb-3">Criteria-wise Analysis</h4>
-                        <div id="review2CriteriaCharts"></div>
-                                        </div>
-
-                    <div class="outcome-analysis">
-                        <h4 class="mb-3">Project Outcome Analysis</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="outcome-chart">
-                                    <canvas id="review2OutcomeChart"></canvas>
+    <!-- Publication/Conference Analysis -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="card-title text-center mb-4" style="font-size: 2rem; font-weight: bold;">Publication/Conference Analysis</h3>
+                    <div class="row">
+                        <div class="col-md-2-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center" style="font-size: 1.2rem;">National Conference</h5>
+                                    <canvas id="nationalChart"></canvas>
+                                    <div class="text-center mt-3">
+                                        <h6 style="font-size: 1.1rem;">Achieved: {{ national_achieved }} / {{ national_total }}</h6>
                                     </div>
                                 </div>
-                            <div class="col-md-6">
-                                <div id="review2OutcomeStats" class="outcome-stats"></div>
                             </div>
-                                        </div>
-                                    </div>
-
-                    <div class="marks-table mt-4">
-                        <h4 class="mb-3">Detailed Marks Analysis</h4>
-                        <div id="review2MarksTable"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Review 3 Container -->
-            <div id="review3Content" class="content-section mb-4" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h3 class="mb-0">Review 3 Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                    <div class="criteria-analysis">
-                        <h4 class="mb-3">Criteria-wise Analysis</h4>
-                        <div id="review3CriteriaCharts"></div>
-                                        </div>
-
-                    <div class="outcome-analysis">
-                        <h4 class="mb-3">Project Outcome Analysis</h4>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="outcome-chart">
-                                    <canvas id="review3OutcomeChart"></canvas>
+                        <div class="col-md-2-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center" style="font-size: 1.2rem;">International Conference</h5>
+                                    <canvas id="internationalChart"></canvas>
+                                    <div class="text-center mt-3">
+                                        <h6 style="font-size: 1.1rem;">Achieved: {{ international_achieved }} / {{ international_total }}</h6>
                                     </div>
                                 </div>
-                            <div class="col-md-6">
-                                <div id="review3OutcomeStats" class="outcome-stats"></div>
                             </div>
-                                        </div>
-                                    </div>
-
-                    <div class="marks-table mt-4">
-                        <h4 class="mb-3">Detailed Marks Analysis</h4>
-                        <div id="review3MarksTable"></div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- All Reviews Container -->
-            <div id="allReviewsContent" class="content-section mb-4" style="display: none;">
-                <div class="card">
-                    <div class="card-header bg-dark text-white">
-                        <h3 class="mb-0">All Reviews Combined Analysis</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="criteria-analysis">
-                            <h4 class="mb-3">Criteria-wise Analysis (All Reviews)</h4>
-                            <div id="allReviewsCriteriaCharts"></div>
-            </div>
-
-                        <div class="outcome-analysis">
-                            <h4 class="mb-3">Project Outcome Analysis</h4>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                    <div class="outcome-chart">
-                                        <canvas id="allReviewsOutcomeChart"></canvas>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                    <div id="allReviewsOutcomeStats" class="outcome-stats"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                        <div class="marks-table mt-4">
-                            <h4 class="mb-3">Detailed Marks Analysis</h4>
-                            <div id="allReviewsMarksTable"></div>
+                        <div class="col-md-2-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center" style="font-size: 1.2rem;">SCI Journal</h5>
+                                    <canvas id="sciChart"></canvas>
+                                    <div class="text-center mt-3">
+                                        <h6 style="font-size: 1.1rem;">Achieved: {{ sci_achieved }} / {{ sci_total }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center" style="font-size: 1.2rem;">SCIE Journal</h5>
+                                    <canvas id="scieChart"></canvas>
+                                    <div class="text-center mt-3">
+                                        <h6 style="font-size: 1.1rem;">Achieved: {{ scie_achieved }} / {{ scie_total }}</h6>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title text-center" style="font-size: 1.2rem;">UGC Journal</h5>
+                                    <canvas id="ugcChart"></canvas>
+                                    <div class="text-center mt-3">
+                                        <h6 style="font-size: 1.1rem;">Achieved: {{ ugc_achieved }} / {{ ugc_total }}</h6>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Project Outcome Analysis -->
+    <div class="content-sections">
+        <!-- Review 1 Container -->
+        <div id="review1Content" class="content-section mb-4" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">Review 1 Analysis</h3>
+                </div>
+                <div class="card-body">
+                <div class="criteria-analysis">
+                    <h4 class="mb-3">Criteria-wise Analysis</h4>
+                    <div id="review1CriteriaCharts"></div>
+                </div>
+
+                <!-- <div class="outcome-analysis">
+                    <h4 class="mb-3">Project Outcome Analysis</h4>
+                    <div class="row">
+                             <div class="col-md-6">
+                                <div class="outcome-chart">
+                                    <canvas id="review1OutcomeChart"></canvas>
+                                </div>
+                                </div> -->
+                            <!-- <div class="col-md-6">
+                                <div id="review1OutcomeStats" class="outcome-stats"></div>
+                            </div> -->
+                    <!-- </div>
+                </div> --> 
+
+                <div class="marks-table mt-4">
+                    <h4 class="mb-3">Detailed Marks Analysis</h4>
+                    <div id="review1MarksTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 2 Container -->
+        <div id="review2Content" class="content-section mb-4" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h3 class="mb-0">Review 2 Analysis</h3>
+                </div>
+                <div class="card-body">
+                <div class="criteria-analysis">
+                    <h4 class="mb-3">Criteria-wise Analysis</h4>
+                    <div id="review2CriteriaCharts"></div>
+                                    </div>
+
+                <!-- <div class="outcome-analysis">
+                    <h4 class="mb-3">Project Outcome Analysis</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="outcome-chart">
+                                <canvas id="review2OutcomeChart"></canvas>
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div id="review2OutcomeStats" class="outcome-stats"></div>
+                        </div>
+                                    </div>
+                                </div> -->
+
+                <div class="marks-table mt-4">
+                    <h4 class="mb-3">Detailed Marks Analysis</h4>
+                    <div id="review2MarksTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Review 3 Container -->
+        <div id="review3Content" class="content-section mb-4" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h3 class="mb-0">Review 3 Analysis</h3>
+                </div>
+                <div class="card-body">
+                <div class="criteria-analysis">
+                    <h4 class="mb-3">Criteria-wise Analysis</h4>
+                    <div id="review3CriteriaCharts"></div>
+                                    </div>
+
+                <!-- <div class="outcome-analysis">
+                    <h4 class="mb-3">Project Outcome Analysis</h4>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="outcome-chart">
+                                <canvas id="review3OutcomeChart"></canvas>
+                                </div>
+                            </div>
+                        <div class="col-md-6">
+                            <div id="review3OutcomeStats" class="outcome-stats"></div>
+                        </div>
+                                    </div>
+                                </div> -->
+
+                <div class="marks-table mt-4">
+                    <h4 class="mb-3">Detailed Marks Analysis</h4>
+                    <div id="review3MarksTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- All Reviews Container -->
+        <div id="allReviewsContent" class="content-section mb-4" style="display: none;">
+            <div class="card">
+                <div class="card-header bg-dark text-white">
+                    <h3 class="mb-0">All Reviews Combined Analysis</h3>
+                </div>
+                <div class="card-body">
+                    <div class="criteria-analysis">
+                        <h4 class="mb-3">Criteria-wise Analysis (All Reviews)</h4>
+                        <div id="allReviewsCriteriaCharts"></div>
+                </div>
+
+                    <!-- <div class="outcome-analysis">
+                        <h4 class="mb-3">Project Outcome Analysis</h4>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                <div class="outcome-chart">
+                                    <canvas id="allReviewsOutcomeChart"></canvas>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                <div id="allReviewsOutcomeStats" class="outcome-stats"></div>
+                                                        </div>
+                                                    </div>
+                                                </div> -->
+
+                    <div class="marks-table mt-4">
+                        <h4 class="mb-3">Detailed Marks Analysis</h4>
+                        <div id="allReviewsMarksTable"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+</div>
+
+
+
+<style>
+    @media (min-width: 768px) {
+        .col-md-2-4 {
+            flex: 0 0 20%;
+            max-width: 20%;
+        }
+    }
+    @media (max-width: 767px) {
+        .col-md-2-4 {
+            flex: 0 0 50%;
+            max-width: 50%;
+            margin-bottom: 20px;
+        }
+    }
+    .card {
+        height: 100%;
+    }
+    .card-body {
+        padding: 1rem;
+    }
+    .card-title {
+        font-size: 1.2rem !important;
+        margin-bottom: 1rem;
+        font-weight: bold;
+    }
+    canvas {
+        max-height: 150px;
+    }
+    h6 {
+        font-size: 1.1rem !important;
+        margin-bottom: 0;
+        font-weight: 600;
+    }
+</style>
 
 <script>
 async function fetchReviewData(reviewNumber) {
@@ -416,7 +525,7 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
         const guideMarks = document.createElement('div');
         guideMarks.className = 'guide-marks mb-2';
         guideMarks.style.cssText = `
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             color: #4CAF50;
             font-weight: bold;
             padding: 5px;
@@ -434,7 +543,7 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
         criteriaName.style.cssText = `
             font-weight: bold;
             color: ${reviewColor.primary};
-            font-size: 1rem;
+            font-size: 1.3rem;
             min-height: 40px;
             display: flex;
             align-items: center;
@@ -462,7 +571,7 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
         const cumulativeContainer = document.createElement('div');
         cumulativeContainer.className = 'cumulative-percentages mt-2';
         cumulativeContainer.style.cssText = `
-            font-size: 0.9rem;
+            font-size: 1.2rem;
             color: #666;
             padding: 5px;
             background: #f8f9fa;
@@ -479,9 +588,9 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
             ((criteriaData.reviewer3.total / criteriaData.reviewer3.count) * 10).toFixed(1) : 0;
 
         cumulativeContainer.innerHTML = `
-            <div><small>R1: ${reviewer1Percentage}%</small></div>
-            <div><small>R2: ${reviewer2Percentage}%</small></div>
-            <div><small>R3: ${reviewer3Percentage}%</small></div>
+            <div><small style="font-size: 1.1rem;">R1: ${reviewer1Percentage}%</small></div>
+            <div><small style="font-size: 1.1rem;">R2: ${reviewer2Percentage}%</small></div>
+            <div><small style="font-size: 1.1rem;">R3: ${reviewer3Percentage}%</small></div>
         `;
         chartWrapper.appendChild(cumulativeContainer);
 
@@ -546,8 +655,8 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
                     const ctx = chart.ctx;
                     ctx.restore();
                     
-                    // Draw percentage
-                    const fontSize = (height / 100).toFixed(2);
+                    // Increase main percentage text size
+                    const fontSize = (height / 80).toFixed(2);
                     ctx.font = `bold ${fontSize}em Arial`;
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
@@ -558,8 +667,8 @@ function updateCriteriaCharts(reviewNumber, analysis, criteriaData) {
                     ctx.fillStyle = reviewColor.primary;
                     ctx.fillText(text, width / 2, textY);
 
-                    // Draw evaluator counts
-                    ctx.font = `${fontSize * 0.3}em Arial`;
+                    // Increase evaluator count text size
+                    ctx.font = `${fontSize * 0.4}em Arial`;
                     ctx.fillStyle = '#666';
                     const countText = `${totalCount} evals`;
                     ctx.fillText(countText, width / 2, textY + (fontSize * 15));
@@ -658,18 +767,18 @@ function updateOutcomeAnalysis(reviewNumber, marksData) {
         }
     });
 
-    // Update outcome stats
-    const statsContainer = document.getElementById(`review${reviewNumber}OutcomeStats`);
-    statsContainer.innerHTML = `
-        <div class="card">
-            <div class="card-body">
-                <h5 class="card-title">Outcome Statistics</h5>
-                <p>Total Students: ${outcomeStats.total}</p>
-                <p>Achieved: ${outcomeStats.achieved} (${((outcomeStats.achieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
-                <p>Not Achieved: ${outcomeStats.notAchieved} (${((outcomeStats.notAchieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
-            </div>
-        </div>
-    `;
+    // // Update outcome stats
+    // const statsContainer = document.getElementById(`review${reviewNumber}OutcomeStats`);
+    // statsContainer.innerHTML = `
+    //     <div class="card">
+    //         <div class="card-body">
+    //             <h5 class="card-title">Outcome Statistics</h5>
+    //             <p>Total Students: ${outcomeStats.total}</p>
+    //             <p>Achieved: ${outcomeStats.achieved} (${((outcomeStats.achieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+    //             <p>Not Achieved: ${outcomeStats.notAchieved} (${((outcomeStats.notAchieved / outcomeStats.total) * 100).toFixed(1)}%)</p>
+    //         </div>
+    //     </div>
+    // `;
 }
 
 function updateDetailedTable(reviewNumber, marksData, criteriaData) {
@@ -970,7 +1079,7 @@ function updateCombinedCharts(analysis, criteriaData) {
                     const ctx = chart.ctx;
                     ctx.restore();
                     
-                    const fontSize = (height / 100).toFixed(2);
+                    const fontSize = (height / 80).toFixed(2);
                     ctx.font = `bold ${fontSize}em Arial`;
                     ctx.textBaseline = "middle";
                     ctx.textAlign = "center";
@@ -981,7 +1090,7 @@ function updateCombinedCharts(analysis, criteriaData) {
                     ctx.fillStyle = '#343a40';
                     ctx.fillText(text, width / 2, textY);
                     
-                    ctx.font = `${fontSize * 0.3}em Arial`;
+                    ctx.font = `${fontSize * 0.4}em Arial`;
                     ctx.fillStyle = '#666';
                     const countText = `${totalCount} evals`;
                     ctx.fillText(countText, width / 2, textY + (fontSize * 15));
@@ -1154,6 +1263,7 @@ function showContent(section) {
     const selectedContent = document.getElementById(section + 'Content');
     if (selectedContent) {
         selectedContent.style.display = 'block';
+        updateCriteriaAnalysisTitle();
         if (section === 'allReviews') {
             fetchAllReviewsData();
         } else {
@@ -1167,6 +1277,58 @@ function showContent(section) {
 document.addEventListener('DOMContentLoaded', function() {
     showContent('review1');
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to create half-circle chart
+    function createHalfCircleChart(canvasId, achieved, total, color) {
+        const ctx = document.getElementById(canvasId).getContext('2d');
+        const percentage = total > 0 ? (achieved / total) * 100 : 0;
+        
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Achieved', 'Remaining'],
+                datasets: [{
+                    data: [percentage, 100 - percentage],
+                    backgroundColor: [color, '#e9ecef'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                circumference: 180,
+                rotation: -90,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                responsive: true,
+                maintainAspectRatio: true
+            }
+        });
+    }
+
+    // Create charts for each outcome type
+    createHalfCircleChart('nationalChart', {{ national_achieved }}, {{ national_total }}, '#FF6384');
+    createHalfCircleChart('internationalChart', {{ international_achieved }}, {{ international_total }}, '#36A2EB');
+    createHalfCircleChart('sciChart', {{ sci_achieved }}, {{ sci_total }}, '#FFCE56');
+    createHalfCircleChart('scieChart', {{ scie_achieved }}, {{ scie_total }}, '#4BC0C0');
+    createHalfCircleChart('ugcChart', {{ ugc_achieved }}, {{ ugc_total }}, '#9966FF');
+});
+
+// Update the section title font size
+function updateCriteriaAnalysisTitle() {
+    const titles = document.querySelectorAll('.criteria-analysis h4');
+    titles.forEach(title => {
+        title.style.fontSize = '1.8rem';
+        title.style.fontWeight = 'bold';
+        title.style.marginBottom = '1.5rem';
+    });
+}
 </script>
 {% endblock %}
 
