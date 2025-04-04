@@ -21,17 +21,15 @@
         }
 
         .vertical-nav {
-            min-width: 17rem;
-            width: 20rem;
+            width: 23rem;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
             box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
-            transition: all 0.4s;
-            background-color: white;
-            z-index: 1;
-        }
+            background-color: #fff;
+            z-index: 1000;
+    }
 
         .page-content {
             width: calc(100% - 17rem);
@@ -45,10 +43,17 @@
             margin-left: -17rem;
         }
 
+
         #content.active {
             width: 100%;
             margin: 0;
         }
+        #sidebarCollapse {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+    }
 
         .criteria-container {
             max-width: 800px;
@@ -188,21 +193,9 @@
             }
         }
 
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #00407b;
-            text-align: center;
-            padding: 10px 0;
-            border-top: 1px solid #dee2e6;
-            z-index: 1000;
-        }
-        .footer p {
-            color: white;
-            margin: 0;
-        }
+        
     </style>
+
 </head>
 <body>
     <div class="vertical-nav" id="sidebar">
@@ -210,7 +203,7 @@
             <div class="media d-flex align-items-center">
                 <div class="media-body">
                     <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                    <h4 class="m-0">RIT</h4>
+                 
                     <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
                 </div>
             </div>
@@ -312,7 +305,7 @@
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter
+                Filter-Project outcome
             </a>
         </li>
         
@@ -347,6 +340,8 @@
         </ul>  
     </div>
     {% endif %}
+
+
 
     <!-- Main Content -->
     <div class="page-content">
@@ -405,9 +400,7 @@
         </div>
     </div>
 
-    <div class="footer">
-        <p>&copy; 2024 Ramco Institute of Technology. All rights reserved.</p>
-    </div>
+   
 
     <script>
         let currentReview = null;

@@ -14,6 +14,8 @@ from io import BytesIO
 from django.db.models import Count
 import json
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ObjectDoesNotExist
+from traceback import format_exc
 
 def encrypt_password(password: str) -> str:
     return hashlib.sha256(password.encode()).hexdigest()
@@ -192,35 +194,36 @@ def get_review_preview(request, review_number):
     try:
         department = request.session.get('department')
         
-        # First get all students from the Project model for this department
-        all_students = Project.objects.filter(department=department)
+        # Get all review marks for this department
+        if review_number == 4:
+            # For all reviews, get data from all review numbers
+            review_marks = review_marks_master.objects.filter(department=department)
+        else:
+            # For specific review, filter by review number
+            review_marks = review_marks_master.objects.filter(
+                department=department,
+                review_number=review_number
+            )
         
-        # Initialize student data dictionary with all students
-        student_data = {
-            student.reg_no: {
-                'student_name': student.student_name,
-                'reg_no': student.reg_no,
-                'guide_total': None,
-                'guide_name': None,
-                'reviewer1_total': None,
-                'reviewer1_name': None,
-                'reviewer2_total': None,
-                'reviewer2_name': None,
-                'reviewer3_total': None,
-                'reviewer3_name': None,
-                'average': None
-            }
-            for student in all_students
-        }
+        # Group marks by student registration number
+        student_data = {}
         
-        # Get all review marks for this department and review number
-        review_marks = review_marks_master.objects.filter(
-            department=department,
-            review_number=review_number
-        )
-        
-        # Update marks for students who have them
         for mark in review_marks:
+            if mark.reg_no not in student_data:
+                student_data[mark.reg_no] = {
+                    'student_name': mark.student_name,
+                    'reg_no': mark.reg_no,
+                    'guide_total': None,
+                    'guide_name': None,
+                    'reviewer1_total': None,
+                    'reviewer1_name': None,
+                    'reviewer2_total': None,
+                    'reviewer2_name': None,
+                    'reviewer3_total': None,
+                    'reviewer3_name': None,
+                    'average': None
+                }
+            
             # Calculate total marks for this review
             criteria_marks = [
                 mark.criteria_1 or 0,
@@ -236,22 +239,43 @@ def get_review_preview(request, review_number):
             ]
             total_marks = sum(criteria_marks)
             
-            # Assign total marks and faculty names based on reviewer type
-            if mark.reviewer_type == 'Guide':
-                student_data[mark.reg_no]['guide_total'] = total_marks
-                student_data[mark.reg_no]['guide_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 1':
-                student_data[mark.reg_no]['reviewer1_total'] = total_marks
-                student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 2':
-                student_data[mark.reg_no]['reviewer2_total'] = total_marks
-                student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 3':
-                student_data[mark.reg_no]['reviewer3_total'] = total_marks
-                student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
+            # For all reviews (review_number == 4), update with highest marks
+            if review_number == 4:
+                if mark.reviewer_type == 'Guide':
+                    if student_data[mark.reg_no]['guide_total'] is None or total_marks > student_data[mark.reg_no]['guide_total']:
+                        student_data[mark.reg_no]['guide_total'] = total_marks
+                        student_data[mark.reg_no]['guide_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 1':
+                    if student_data[mark.reg_no]['reviewer1_total'] is None or total_marks > student_data[mark.reg_no]['reviewer1_total']:
+                        student_data[mark.reg_no]['reviewer1_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 2':
+                    if student_data[mark.reg_no]['reviewer2_total'] is None or total_marks > student_data[mark.reg_no]['reviewer2_total']:
+                        student_data[mark.reg_no]['reviewer2_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 3':
+                    if student_data[mark.reg_no]['reviewer3_total'] is None or total_marks > student_data[mark.reg_no]['reviewer3_total']:
+                        student_data[mark.reg_no]['reviewer3_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
+            else:
+                # For specific review, just update the marks
+                if mark.reviewer_type == 'Guide':
+                    student_data[mark.reg_no]['guide_total'] = total_marks
+                    student_data[mark.reg_no]['guide_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 1':
+                    student_data[mark.reg_no]['reviewer1_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 2':
+                    student_data[mark.reg_no]['reviewer2_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 3':
+                    student_data[mark.reg_no]['reviewer3_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
         
-        # Calculate averages for all students
+        # Convert dictionary to list and calculate averages
+        preview_data = []
         for student in student_data.values():
+            # Calculate average from non-None values
             totals = [
                 student['guide_total'],
                 student['reviewer1_total'],
@@ -260,9 +284,11 @@ def get_review_preview(request, review_number):
             ]
             valid_totals = [t for t in totals if t is not None]
             average = sum(valid_totals) / len(valid_totals) if valid_totals else None
+            
             student['average'] = round(average, 2) if average is not None else None
+            preview_data.append(student)
         
-        return JsonResponse(list(student_data.values()), safe=False)
+        return JsonResponse(preview_data, safe=False)
         
     except Exception as e:
         print(f"Error in get_review_preview: {str(e)}")
@@ -1970,38 +1996,67 @@ def export_to_excel(request):
     data = []
     
     for project in projects:
-        # Get all review marks for this project (both Guide and Reviewer)
-        review_marks_list = review_marks_master.objects.filter(
+        # Get all review marks for this project
+        review_marks = review_marks_master.objects.filter(
             reg_no=project.reg_no,
-            department=department,
-            review_number=review_number
+            department=department
         )
         
-        if review_marks_list.exists():
-            # Calculate average marks
-            total_marks = 0
-            count = 0
+        if review_number != '4':  # For specific review
+            review_marks = review_marks.filter(review_number=review_number)
+        
+        if review_marks.exists():
+            # Initialize marks for each review
+            guide_totals = []
+            reviewer1_totals = []
+            reviewer2_totals = []
+            reviewer3_totals = []
             
-            for marks in review_marks_list:
-                total_marks += marks.total
-                count += 1
+            # Process each review mark
+            for mark in review_marks:
+                # Calculate total marks for this review
+                criteria_marks = [
+                    mark.criteria_1 or 0,
+                    mark.criteria_2 or 0,
+                    mark.criteria_3 or 0,
+                    mark.criteria_4 or 0,
+                    mark.criteria_5 or 0,
+                    mark.criteria_6 or 0,
+                    mark.criteria_7 or 0,
+                    mark.criteria_8 or 0,
+                    mark.criteria_9 or 0,
+                    mark.criteria_10 or 0
+                ]
+                total_marks = sum(criteria_marks)
+                
+                if mark.reviewer_type == 'Guide':
+                    guide_totals.append(total_marks)
+                elif mark.reviewer_type == 'Reviewer 1':
+                    reviewer1_totals.append(total_marks)
+                elif mark.reviewer_type == 'Reviewer 2':
+                    reviewer2_totals.append(total_marks)
+                elif mark.reviewer_type == 'Reviewer 3':
+                    reviewer3_totals.append(total_marks)
             
-            average_total = round(total_marks / count, 2) if count > 0 else 0
+            # Get the highest marks for each reviewer type
+            guide_total = max(guide_totals) if guide_totals else None
+            reviewer1_total = max(reviewer1_totals) if reviewer1_totals else None
+            reviewer2_total = max(reviewer2_totals) if reviewer2_totals else None
+            reviewer3_total = max(reviewer3_totals) if reviewer3_totals else None
             
-            # Create row with only required data
+            # Calculate average from non-null values
+            valid_marks = [m for m in [guide_total, reviewer1_total, reviewer2_total, reviewer3_total] if m is not None]
+            average = sum(valid_marks) / len(valid_marks) if valid_marks else None
+            
+            # Create row with all data
             row = {
-                'Registration Number': project.reg_no,
                 'Student Name': project.student_name,
-                'Average Total Marks': average_total
-            }
-            
-            data.append(row)
-        else:
-            # If no review marks exist, add basic project data with empty marks
-            row = {
                 'Registration Number': project.reg_no,
-                'Student Name': project.student_name,
-                'Average Total Marks': 'No marks entered'
+                'Guide Total': f"{guide_total:.2f}" if guide_total is not None else '-',
+                'Reviewer 1 Total': f"{reviewer1_total:.2f}" if reviewer1_total is not None else '-',
+                'Reviewer 2 Total': f"{reviewer2_total:.2f}" if reviewer2_total is not None else '-',
+                'Reviewer 3 Total': f"{reviewer3_total:.2f}" if reviewer3_total is not None else '-',
+                'Average': f"{average:.2f}" if average is not None else '-'
             }
             data.append(row)
     
@@ -2011,16 +2066,27 @@ def export_to_excel(request):
     # Create Excel file in memory
     excel_file = BytesIO()
     with pd.ExcelWriter(excel_file, engine='xlsxwriter') as writer:
-        df.to_excel(writer, sheet_name=f'Review {review_number} Marks', index=False)
+        sheet_name = 'All Reviews Marks' if review_number == '4' else f'Review {review_number} Marks'
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
         
         # Get workbook and worksheet objects
         workbook = writer.book
-        worksheet = writer.sheets[f'Review {review_number} Marks']
+        worksheet = writer.sheets[sheet_name]
         
-        # Add some formatting
+        # Add formatting
         header_format = workbook.add_format({
             'bold': True,
-            'bg_color': '#D3D3D3',
+            'bg_color': '#00407b',  # Matching the table header color
+            'font_color': 'white',
+            'border': 1,
+            'align': 'center',
+            'valign': 'vcenter'
+        })
+        
+        # Format cells
+        cell_format = workbook.add_format({
+            'align': 'center',
+            'valign': 'vcenter',
             'border': 1
         })
         
@@ -2028,6 +2094,11 @@ def export_to_excel(request):
         for col_num, value in enumerate(df.columns.values):
             worksheet.write(0, col_num, value, header_format)
             worksheet.set_column(col_num, col_num, 20)  # Set column width
+        
+        # Format data cells
+        for row_num in range(len(df)):
+            for col_num in range(len(df.columns)):
+                worksheet.write(row_num + 1, col_num, df.iloc[row_num, col_num], cell_format)
     
     # Set up the response
     excel_file.seek(0)
@@ -2035,7 +2106,9 @@ def export_to_excel(request):
         excel_file.read(),
         content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     )
-    response['Content-Disposition'] = f'attachment; filename=review_{review_number}_marks_{department}_{datetime.now().strftime("%Y%m%d")}.xlsx'
+    
+    filename = 'all_reviews_marks' if review_number == '4' else f'review_{review_number}_marks'
+    response['Content-Disposition'] = f'attachment; filename={filename}_{department}_{datetime.now().strftime("%Y%m%d")}.xlsx'
     
     return response
 
@@ -2141,11 +2214,16 @@ def get_review_preview(request, review_number):
     try:
         department = request.session.get('department')
         
-        # Get all review marks for this department and review number
-        review_marks = review_marks_master.objects.filter(
-            department=department,
-            review_number=review_number
-        )
+        # Get all review marks for this department
+        if review_number == 4:
+            # For all reviews, get data from all review numbers
+            review_marks = review_marks_master.objects.filter(department=department)
+        else:
+            # For specific review, filter by review number
+            review_marks = review_marks_master.objects.filter(
+                department=department,
+                review_number=review_number
+            )
         
         # Group marks by student registration number
         student_data = {}
@@ -2181,19 +2259,38 @@ def get_review_preview(request, review_number):
             ]
             total_marks = sum(criteria_marks)
             
-            # Assign total marks and faculty names based on reviewer type
-            if mark.reviewer_type == 'Guide':
-                student_data[mark.reg_no]['guide_total'] = total_marks
-                student_data[mark.reg_no]['guide_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 1':
-                student_data[mark.reg_no]['reviewer1_total'] = total_marks
-                student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 2':
-                student_data[mark.reg_no]['reviewer2_total'] = total_marks
-                student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
-            elif mark.reviewer_type == 'Reviewer 3':
-                student_data[mark.reg_no]['reviewer3_total'] = total_marks
-                student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
+            # For all reviews (review_number == 4), update with highest marks
+            if review_number == 4:
+                if mark.reviewer_type == 'Guide':
+                    if student_data[mark.reg_no]['guide_total'] is None or total_marks > student_data[mark.reg_no]['guide_total']:
+                        student_data[mark.reg_no]['guide_total'] = total_marks
+                        student_data[mark.reg_no]['guide_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 1':
+                    if student_data[mark.reg_no]['reviewer1_total'] is None or total_marks > student_data[mark.reg_no]['reviewer1_total']:
+                        student_data[mark.reg_no]['reviewer1_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 2':
+                    if student_data[mark.reg_no]['reviewer2_total'] is None or total_marks > student_data[mark.reg_no]['reviewer2_total']:
+                        student_data[mark.reg_no]['reviewer2_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 3':
+                    if student_data[mark.reg_no]['reviewer3_total'] is None or total_marks > student_data[mark.reg_no]['reviewer3_total']:
+                        student_data[mark.reg_no]['reviewer3_total'] = total_marks
+                        student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
+            else:
+                # For specific review, just update the marks
+                if mark.reviewer_type == 'Guide':
+                    student_data[mark.reg_no]['guide_total'] = total_marks
+                    student_data[mark.reg_no]['guide_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 1':
+                    student_data[mark.reg_no]['reviewer1_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer1_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 2':
+                    student_data[mark.reg_no]['reviewer2_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer2_name'] = mark.faculty_name
+                elif mark.reviewer_type == 'Reviewer 3':
+                    student_data[mark.reg_no]['reviewer3_total'] = total_marks
+                    student_data[mark.reg_no]['reviewer3_name'] = mark.faculty_name
         
         # Convert dictionary to list and calculate averages
         preview_data = []
@@ -2267,15 +2364,19 @@ def analysis_student_mark(request):
         department = request.session.get('department')
         name = request.session.get('name')
 
+        print(f"[DEBUG] Fetching students for department: {department}")
         # Get all students from the department
         students = Project.objects.filter(department=department).values(
             'student_name', 'reg_no', 'batch'
         ).distinct()
+        print(f"[DEBUG] Found {students.count()} students")
 
-        # Add semester information (you might need to adjust this based on your logic)
+        # Add semester information and rename reg_no to register_number
         for student in students:
             student['semester'] = '8'  # Default to 8th semester for final year students
-            student['register_number'] = student.pop('reg_no')  # Rename reg_no to register_number
+            # Keep both reg_no and register_number
+            student['register_number'] = student['reg_no']
+            print(f"[DEBUG] Student: {student['student_name']}, reg_no: {student['reg_no']}")
 
         context = {
             'role': role,
@@ -2286,82 +2387,286 @@ def analysis_student_mark(request):
         return render(request, 'faculty/review/analysis_student_mark.html', context)
     else:
         return redirect('home_page')
-    
+
+def student_review_analysis(request, register_number, review_number):
+    if request.session.get('role') == 'HOD':
+        try:
+            print(f"[DEBUG] Looking for student with reg_no={register_number}")
+            # Get student details
+            student = Project.objects.get(reg_no=register_number)
+            print(f"[DEBUG] Found student: {student.student_name}")
+            
+            # Convert review_number to integer if it's a string
+            review_number = int(review_number)
+            
+            # Get review marks
+            review_marks_query = review_marks_master.objects.filter(reg_no=register_number)
+            print(f"[DEBUG] Found {review_marks_query.count()} review marks")
+            
+            if review_number != 4:
+                review_marks_query = review_marks_query.filter(review_number=review_number)
+                print(f"[DEBUG] After filtering for review {review_number}, found {review_marks_query.count()} review marks")
+            
+            review_marks = review_marks_query.order_by('review_number', 'reviewer_type')
+            
+            # Get criteria list based on review number
+            if review_number == 4:
+                # For "All Reviews", get criteria from all reviews
+                criteria_list = []
+                for rev_num in range(1, 4):
+                    criteria = review_assasment_criteria_master.objects.filter(review_number=rev_num).order_by('id')
+                    criteria_list.append({
+                        'review_number': rev_num,
+                        'criteria': list(criteria)
+                    })
+            else:
+                # For specific reviews, get criteria for that review
+                criteria = review_assasment_criteria_master.objects.filter(review_number=review_number).order_by('id')
+                criteria_list = [{
+                    'review_number': review_number,
+                    'criteria': list(criteria)
+                }]
+            
+            print(f"[DEBUG] Found criteria for reviews: {[c['review_number'] for c in criteria_list]}")
+            
+            # Initialize data structures
+            review_data = []
+            
+            # Process each review's data
+            for review_info in criteria_list:
+                rev_num = review_info['review_number']
+                rev_criteria = review_info['criteria']
+                
+                print(f"[DEBUG] Processing review {rev_num}")
+                
+                # Get marks for this review
+                rev_marks = review_marks_query.filter(review_number=rev_num)
+                guide_marks = rev_marks.filter(reviewer_type='Guide').first()
+                reviewer_marks = rev_marks.filter(reviewer_type__startswith='Reviewer').first()
+                
+                # Process criteria marks
+                criteria_marks = []
+                review_total = {
+                    'guide_total': 0,
+                    'reviewer_total': 0
+                }
+                
+                for idx, criteria in enumerate(rev_criteria, 1):
+                    print(f"[DEBUG] Processing criteria {idx} for review {rev_num}")
+                    
+                    criteria_data = {
+                        'name': criteria.review_criteria,
+                        'guide_mark': None,
+                        'reviewer_mark': None
+                    }
+                    
+                    # Get guide marks
+                    if guide_marks:
+                        mark_value = getattr(guide_marks, f'criteria_{idx}', None)
+                        if mark_value is not None:
+                            criteria_data['guide_mark'] = float(mark_value)
+                            review_total['guide_total'] += float(mark_value)
+                    
+                    # Get reviewer marks
+                    if reviewer_marks:
+                        mark_value = getattr(reviewer_marks, f'criteria_{idx}', None)
+                        if mark_value is not None:
+                            criteria_data['reviewer_mark'] = float(mark_value)
+                            review_total['reviewer_total'] += float(mark_value)
+                    
+                    # Calculate average
+                    valid_marks = [v for v in [criteria_data['guide_mark'], criteria_data['reviewer_mark']] if v is not None]
+                    criteria_data['average'] = sum(valid_marks) / len(valid_marks) if valid_marks else None
+                    
+                    criteria_marks.append(criteria_data)
+                
+                # Calculate review averages
+                valid_totals = [v for v in review_total.values() if v > 0]
+                review_total['average'] = sum(valid_totals) / len(valid_totals) if valid_totals else None
+                
+                # Format totals
+                for key in review_total:
+                    if isinstance(review_total[key], (int, float)) and review_total[key] > 0:
+                        review_total[key] = f"{review_total[key]:.2f}"
+                    else:
+                        review_total[key] = "-"
+                
+                review_data.append({
+                    'review_number': rev_num,
+                    'criteria_marks': criteria_marks,
+                    'totals': review_total,
+                    'guide_name': guide_marks.faculty_name if guide_marks else None,
+                    'reviewer_name': reviewer_marks.faculty_name if reviewer_marks else None
+                })
+            
+            # Calculate grand totals for all reviews
+            grand_totals = {
+                'guide_total': 0,
+                'reviewer_total': 0,
+                'average_total': 0
+            }
+            
+            valid_review_count = 0
+            for review in review_data:
+                guide_total = float(review['totals']['guide_total']) if review['totals']['guide_total'] != '-' else 0
+                reviewer_total = float(review['totals']['reviewer_total']) if review['totals']['reviewer_total'] != '-' else 0
+                
+                if guide_total > 0 or reviewer_total > 0:
+                    valid_review_count += 1
+                    grand_totals['guide_total'] += guide_total
+                    grand_totals['reviewer_total'] += reviewer_total
+                    if guide_total > 0 and reviewer_total > 0:
+                        grand_totals['average_total'] += (guide_total + reviewer_total) / 2
+            
+            # Format grand totals
+            if valid_review_count > 0:
+                for key in grand_totals:
+                    if grand_totals[key] > 0:
+                        grand_totals[key] = f"{grand_totals[key] / valid_review_count:.2f}"
+                    else:
+                        grand_totals[key] = "-"
+            else:
+                grand_totals = {key: "-" for key in grand_totals}
+            
+            context = {
+                'student': {
+                    'student_name': student.student_name,
+                    'register_number': register_number
+                },
+                'review_number': str(review_number),
+                'review_data': review_data,
+                'grand_totals': grand_totals
+            }
+            
+            print(f"[DEBUG] Rendering template with context: {context}")
+            return render(request, 'faculty/review/student_review_analysis.html', context)
+            
+        except Project.DoesNotExist:
+            print(f"[DEBUG] Student not found with reg_no={register_number}")
+            messages.error(request, 'Student not found')
+            return redirect('analysis_student_mark')
+        except Exception as e:
+            print(f"[DEBUG] Error in student_review_analysis: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            messages.error(request, f'Error: {str(e)}')
+            return redirect('analysis_student_mark')
+    else:
+        return redirect('home_page')
+
 @login_required
 def get_student_analytics(request, register_number):
     try:
-        # Get student details
-        student = Student.objects.get(register_number=register_number)
+        print(f"[DEBUG] Fetching analytics for student: {register_number}")
+        review_number = request.GET.get('review_number')
+        print(f"[DEBUG] Review number requested: {review_number}")
+        
+        if not review_number:
+            return JsonResponse({'error': 'Review number is required'}, status=400)
+        
+        # Get student details from Project model
+        try:
+            student = Project.objects.get(reg_no=register_number)
+            print(f"[DEBUG] Found student: {student.student_name}")
+        except Project.DoesNotExist:
+            print(f"[DEBUG] Student not found: {register_number}")
+            return JsonResponse({'error': 'Student not found'}, status=404)
         
         # Initialize response data
         response_data = {
             'student_name': student.student_name,
-            'register_number': student.register_number,
-            'batch': student.batch,
-            'semester': student.semester,
-            'review1_marks': [],
-            'review2_marks': [],
-            'review3_marks': []
+            'register_number': register_number,
+            'guide_marks': {},
+            'review1_marks': {},
+            'review2_marks': {},
+            'review3_marks': {},
+            'guide_name': None,
+            'reviewer1_name': None,
+            'reviewer2_name': None,
+            'reviewer3_name': None,
+            'detailed_marks': []
         }
         
-        # Process each review
-        for review_number in [1, 2, 3]:
-            # Get marks for this review
-            marks = review_marks_master.objects.filter(
-                reg_no=register_number,
-                review_number=review_number
+        # Get all review marks for this student
+        review_marks_query = review_marks_master.objects.filter(reg_no=register_number)
+        print(f"[DEBUG] Initial query count: {review_marks_query.count()}")
+        
+        if review_number != '4':
+            # Filter for specific review
+            review_marks_query = review_marks_query.filter(review_number=int(review_number))
+            print(f"[DEBUG] Fetching marks for review {review_number}")
+        else:
+            print("[DEBUG] Fetching marks for all reviews")
+        
+        review_marks = review_marks_query.order_by('review_number', 'reviewer_type')
+        print(f"[DEBUG] Found {review_marks.count()} review marks")
+        
+        # Process each review mark
+        for mark in review_marks:
+            print(f"[DEBUG] Processing mark: Review {mark.review_number}, {mark.reviewer_type}")
+            
+            # Create marks dictionary
+            marks_dict = {}
+            for i in range(1, 11):
+                criteria_value = getattr(mark, f'criteria_{i}')
+                if criteria_value is not None:
+                    marks_dict[f'criteria_{i}'] = float(criteria_value)
+            
+            # Calculate total
+            valid_marks = [v for v in marks_dict.values() if v is not None]
+            total = sum(valid_marks) if valid_marks else None
+            print(f"[DEBUG] Calculated total for {mark.reviewer_type}: {total}")
+            
+            # Update response data based on reviewer type and review number
+            if mark.reviewer_type == 'Guide':
+                response_data['guide_marks'].update(marks_dict)
+                response_data['guide_name'] = mark.faculty_name
+                print(f"[DEBUG] Updated guide marks, guide name: {mark.faculty_name}")
+            else:
+                review_key = f'review{mark.review_number}_marks'
+                reviewer_key = f'reviewer{mark.review_number}_name'
+                response_data[review_key].update(marks_dict)
+                response_data[reviewer_key] = mark.faculty_name
+                print(f"[DEBUG] Updated {review_key}, reviewer name: {mark.faculty_name}")
+            
+            # Add to detailed marks
+            detailed_mark = {
+                'review_number': mark.review_number,
+                'guide_total': total if mark.reviewer_type == 'Guide' else None,
+                'reviewer_total': total if mark.reviewer_type.startswith('Reviewer') else None
+            }
+            
+            # Check if we already have a record for this review number
+            existing_mark = next(
+                (m for m in response_data['detailed_marks'] if m['review_number'] == mark.review_number),
+                None
             )
             
-            if marks.exists():
-                # Get criteria for this review
-                criteria_list = review_assasment_criteria_master.objects.filter(
-                    review_number=review_number
-                ).order_by('id')
+            if existing_mark:
+                if mark.reviewer_type == 'Guide':
+                    existing_mark['guide_total'] = total
+                else:
+                    existing_mark['reviewer_total'] = total
                 
-                # Process each criteria
-                for criteria in criteria_list:
-                    criteria_num = criteria.id
-                    criteria_data = {
-                        'criteria': criteria.review_criteria,
-                        'guide_marks': None,
-                        'reviewer_marks': [],
-                        'average': None
-                    }
-                    
-                    # Get guide marks
-                    guide_marks = marks.filter(reviewer_type='Guide').first()
-                    if guide_marks:
-                        guide_value = getattr(guide_marks, f'criteria_{criteria_num}', None)
-                        if guide_value is not None:
-                            criteria_data['guide_marks'] = float(guide_value)
-                    
-                    # Get reviewer marks
-                    for reviewer_type in ['Reviewer 1', 'Reviewer 2', 'Reviewer 3']:
-                        reviewer_marks = marks.filter(reviewer_type=reviewer_type).first()
-                        if reviewer_marks:
-                            reviewer_value = getattr(reviewer_marks, f'criteria_{criteria_num}', None)
-                            if reviewer_value is not None:
-                                criteria_data['reviewer_marks'].append({
-                                    'type': reviewer_type,
-                                    'mark': float(reviewer_value)
-                                })
-                    
-                    # Calculate average
-                    marks_list = []
-                    if criteria_data['guide_marks'] is not None:
-                        marks_list.append(criteria_data['guide_marks'])
-                    marks_list.extend([m['mark'] for m in criteria_data['reviewer_marks']])
-                    
-                    if marks_list:
-                        criteria_data['average'] = sum(marks_list) / len(marks_list)
-                    
-                    response_data[f'review{review_number}_marks'].append(criteria_data)
+                # Calculate average if both totals are available
+                if existing_mark['guide_total'] is not None and existing_mark['reviewer_total'] is not None:
+                    existing_mark['average_total'] = (existing_mark['guide_total'] + existing_mark['reviewer_total']) / 2
+                print(f"[DEBUG] Updated existing mark for review {mark.review_number}")
+            else:
+                response_data['detailed_marks'].append(detailed_mark)
+                print(f"[DEBUG] Added new detailed mark for review {mark.review_number}")
         
+        print("[DEBUG] Response data prepared successfully")
+        print("[DEBUG] Response data:", response_data)
         return JsonResponse(response_data)
     
-    except Student.DoesNotExist:
+    except Project.DoesNotExist:
+        print(f"[DEBUG] Student not found: {register_number}")
         return JsonResponse({'error': 'Student not found'}, status=404)
     except Exception as e:
+        print(f"[DEBUG] Error in get_student_analytics: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)
 
 def get_student_analytics_all(request):
@@ -2497,13 +2802,11 @@ from traceback import format_exc
 
 def get_review_marks_master(request, review_number):
     try:
-
         department = request.GET.get('department', None)
         print(f"Fetching marks for review {review_number}, department: {department}")
         
-        # Filter marks by review number
-        marks_query = review_marks_master.objects.filter(reg_no=review_number)
-        print(marks_query)
+        # Filter marks by review number and department
+        marks_query = review_marks_master.objects.filter(review_number=review_number)
         if department:
             marks_query = marks_query.filter(department=department)
         
@@ -2517,11 +2820,16 @@ def get_review_marks_master(request, review_number):
         
         for mark in marks_query:
             try:
-                criteria_marks = {f'criteria_{i}': getattr(mark, f'criteria_{i}', None) for i in range(1, 11)}
+                # Convert criteria marks to float and handle None values
+                criteria_marks = {}
+                for i in range(1, 11):
+                    value = getattr(mark, f'criteria_{i}', None)
+                    criteria_marks[f'criteria_{i}'] = float(value) if value is not None else None
                 
                 if mark.reg_no not in marks_data:
                     marks_data[mark.reg_no] = {
                         'register_number': mark.reg_no,
+                        'student_name': mark.student_name,
                         'guide_marks': None,
                         'reviewer1_marks': None,
                         'reviewer2_marks': None,
@@ -2541,9 +2849,24 @@ def get_review_marks_master(request, review_number):
                 print(f"Error processing mark {mark.reg_no}: {e}\n{format_exc()}")
                 continue
         
+        # Convert the dictionary to a list of values
         result = list(marks_data.values())
         print(f"Successfully processed {len(result)} marks records")
-        return JsonResponse(result, safe=False)
+        
+        # Ensure all values are JSON serializable
+        serializable_result = []
+        for item in result:
+            serializable_item = {
+                'register_number': str(item['register_number']),
+                'student_name': str(item['student_name']),
+                'guide_marks': item['guide_marks'],
+                'reviewer1_marks': item['reviewer1_marks'],
+                'reviewer2_marks': item['reviewer2_marks'],
+                'reviewer3_marks': item['reviewer3_marks']
+            }
+            serializable_result.append(serializable_item)
+        
+        return JsonResponse(serializable_result, safe=False)
     
     except ObjectDoesNotExist:
         return JsonResponse({'error': 'Requested data not found'}, status=404)

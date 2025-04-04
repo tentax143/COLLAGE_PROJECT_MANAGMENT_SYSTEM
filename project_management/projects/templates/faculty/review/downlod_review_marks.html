@@ -80,20 +80,7 @@
         .download-card p {
             margin-bottom: 10px;
         }
-        .footer {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #00407b;
-            text-align: center;
-            padding: 10px 0;
-            border-top: 1px solid #dee2e6;
-            z-index: 1000;
-        }
-        .footer p {
-            color: white;
-            margin: 0;
-        }
+       
         #previewTable {
             display: none;
             margin-top: 20px;
@@ -359,10 +346,9 @@
 
     <div class="vertical-nav" id="sidebar">
         <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="media d-flex align-items-center">
-                <div class="media-body">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                    <h4 class="m-0">RIT</h4>
+            <div class="media d-flex flex-column align-items-center text-center">
+                <div class="media-body d-flex flex-column align-items-center">
+                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mb-3 rounded-bottom img-thumbnail shadow-sm">
                     <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
                 </div>
             </div>
@@ -691,15 +677,23 @@ function showPreviewAndDownload(reviewNumber) {
     loadingIndicator.style.display = 'block';
     tbody.innerHTML = '<tr><td colspan="7" class="text-center">Loading...</td></tr>';
     
+    // Update page title based on review number
+    const reviewTitle = document.querySelector('h2.text-center');
+    if (reviewNumber === 4) {
+        reviewTitle.textContent = 'All Review Average Marks';
+    } else {
+        reviewTitle.textContent = `Review ${reviewNumber}`;
+    }
+
     // Set the excel download link
     excelBtn.style.display = 'none';
     excelBtn.href = `/export_to_excel/?review=${reviewNumber}`;
 
-    // Fetch data from server
+    // Fetch data from server with proper URL
     fetch(`/get_review_preview/${reviewNumber}/`)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
             return response.json();
         })
@@ -718,13 +712,12 @@ function showPreviewAndDownload(reviewNumber) {
 
             // Update reviewer info
             if (reviewNumber === 4) {
-                reviewerInfo.textContent = 'All Reviews';
+                reviewerInfo.textContent = 'All Reviews Average';
             } else {
                 reviewerInfo.textContent = `Review ${reviewNumber}`;
             }
             reviewerInfo.style.display = 'block';
 
-            // Display data in table
             // Sort data by registration number in ascending order
             data.sort((a, b) => {
                 const regA = a.reg_no || '';
@@ -734,6 +727,18 @@ function showPreviewAndDownload(reviewNumber) {
 
             // Display sorted data in table
             data.forEach(student => {
+                // Calculate average only from non-null and non-zero values
+                const marks = [
+                    student.guide_total,
+                    student.reviewer1_total,
+                    student.reviewer2_total,
+                    student.reviewer3_total
+                ].filter(mark => mark !== null && mark !== undefined && mark !== 0);
+                
+                const average = marks.length > 0 
+                    ? (marks.reduce((sum, mark) => sum + mark, 0) / marks.length).toFixed(2)
+                    : '-';
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${student.student_name || '-'}</td>
@@ -742,7 +747,7 @@ function showPreviewAndDownload(reviewNumber) {
                     <td>${student.reviewer1_total !== null ? student.reviewer1_total.toFixed(2) : '-'}</td>
                     <td>${student.reviewer2_total !== null ? student.reviewer2_total.toFixed(2) : '-'}</td>
                     <td>${student.reviewer3_total !== null ? student.reviewer3_total.toFixed(2) : '-'}</td>
-                    <td>${student.average !== null ? student.average.toFixed(2) : '-'}</td>
+                    <td>${average}</td>
                 `;
                 tbody.appendChild(row);
             });
@@ -753,16 +758,11 @@ function showPreviewAndDownload(reviewNumber) {
         .catch(error => {
             console.error('Error:', error);
             loadingIndicator.style.display = 'none';
-            tbody.innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error loading data. Please try again.</td></tr>';
+            tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger">Error loading data: ${error.message}</td></tr>`;
             excelBtn.style.display = 'none';
         });
 }
-
 </script>
-    
 
-
-       
-    <div class="footer">
-        <p>&copy; 2024 RIT Project Management System. All rights reserved.</p>
-    </div>
+</body>
+</html>

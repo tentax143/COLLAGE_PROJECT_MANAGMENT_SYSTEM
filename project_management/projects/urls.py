@@ -39,9 +39,11 @@ urlpatterns = [
     path('get_review<int:review_number>_marks/', views.get_review_marks, name='get_review_marks'),
     path('update-criteria/', views.update_criteria, name='update_criteria'),
     path('analysis_student_mark/', views.analysis_student_mark, name='analysis_student_mark'),
+    path('student_review_analysis/<str:register_number>/<int:review_number>/', views.student_review_analysis, name='student_review_analysis'),
     path('get_student_analytics/all/', views.get_student_analytics_all, name='get_student_analytics_all'),
     path('get_student_analytics/<str:register_number>/', views.get_student_analytics, name='get_student_analytics'),
     path('get-review-marks-master/<int:review_number>/', views.get_review_marks_master, name='get_review_marks_master'),
+    path('get_review_preview/<int:review_number>/', get_review_preview, name='get_review_preview'),
     path('get_review_preview/<int:review_number>/', get_review_preview, name='get_review_preview'),
 ]
 

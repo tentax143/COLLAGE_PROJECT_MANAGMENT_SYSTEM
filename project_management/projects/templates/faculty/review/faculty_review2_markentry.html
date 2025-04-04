@@ -4,20 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RIT PROJECT MANAGMENT</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" 
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  <title>Review 2 Mark Entry</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.5.0/font/bootstrap-icons.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
   <style>
-    /* Page container styles */
     body {
       min-height: 100vh;
       overflow-x: hidden;
@@ -26,7 +19,7 @@
       margin: 0;
       padding: 0;
     }
-    /* Sidebar Navigation */
+
     .vertical-nav {
       width: 23rem;
       height: 100vh;
@@ -36,243 +29,150 @@
       box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
       transition: all 0.4s;
       background-color: #fff;
+      z-index: 1000;
+      overflow-y: auto;
     }
-    /* Page Content */
+
     .page-content {
       width: calc(100% - 23rem);
       margin-left: 23rem;
       padding: 2rem;
       transition: all 0.4s;
     }
-    /* Button styling */
-    #sidebarCollapse {
-      background: #fff;
+
+    .card {
       border: none;
-      outline: none;
-    }
-    /* Table styling */
-    h2 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 1.5rem;
-    }
-    table {
-      width: 50%;
-      border-collapse: collapse;
-      background: #fff;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
       border-radius: 10px;
-      overflow: hidden;
-      margin-bottom: 2rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      margin-bottom: 20px;
     }
-    th, td {
-      border: 1px solid #ddd;
-      padding: 15px;
-      text-align: left;
+
+    .card-header {
+      border-radius: 10px 10px 0 0;
+      padding: 1rem;
     }
-    th {
-      background-color: #17a2b8;
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    .table th {
+      background-color: #00407b;
       color: white;
-      text-align: center;
+      border: 1px solid #dee2e6;
     }
-    tr:nth-child(even) {
-      background-color: #f2f2f2;
+
+    .table td {
+      vertical-align: middle;
+      border: 1px solid #dee2e6;
     }
-    input {
-      width: 60px;
-      padding: 5px;
-      font-size: 16px;
-      text-align: center;
-      border: 1px solid #ccc;
+
+    .btn {
+      border-radius: 5px;
+      padding: 0.5rem 1rem;
+    }
+
+    .btn-primary {
+      background-color: #00407b;
+      border-color: #00407b;
+    }
+
+    .btn-success {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    .modal-content {
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+
+    .modal-header {
+      background-color: #00407b;
+      color: white;
+      border-radius: 10px 10px 0 0;
+    }
+
+    .modal-title {
+      color: white;
+    }
+
+    .close {
+      color: white;
+    }
+
+    .form-control {
       border-radius: 5px;
     }
-    input:focus {
-      border-color: #4CAF50;
-      outline: none;
+
+    .d-none {
+      display: none !important;
     }
-    /* Remove spin buttons in number inputs */
-    input::-webkit-outer-spin-button,
-    input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
+
+    @media (max-width: 768px) {
+      .vertical-nav {
+        margin-left: -23rem;
+      }
+      .page-content {
+        width: 100%;
+        margin-left: 0;
+      }
     }
   </style>
 </head>
 <body>
-
-    <div class="vertical-nav" id="sidebar">
+  <!-- Sidebar Navigation -->
+  <div class="vertical-nav" id="sidebar">
     <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="py-4 px-3 mb-4 bg-light border-bottom text-center">
-                <div class="d-flex flex-column align-items-center">
-                    <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="rounded-bottom img-thumbnail shadow-sm mb-2">
+      <div class="media d-flex align-items-center">
+        <div class="media-body">
+          <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
           <h4 class="m-0">RIT</h4>
           <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
         </div>
       </div>
     </div>
-        <div class="border-bottom mb-2">
+    <div class="border-bottom mb-2">
       <div class="card-body text-center">
         <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-                <h5 class="card-title">{{ name }}</h5>
-                <p class="card-text">{{ department }}</p>
-                <p class="card-text">{{ role }}</p>
+        <h5 class="card-title">{{ name }}</h5>
+        <p class="card-text">{{ department }}</p>
+        <p class="card-text">{{ role }}</p>
       </div>
     </div>
 
-        {% if role == 'HOD' %}
-            <ul class="nav flex-column bg-white mb-0">
-                <li class="nav-item">
-                    <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
-                        <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                        Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                        Allocate Committee Members
-                    </a>
-                    <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
-                        <li class="nav-item">
-                            <a href="{% url 'review1' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 1
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'review2' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 2
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="{% url 'review3' %}" class="nav-link text-dark">
-                                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                                Review 3
-                            </a>
-                        </li>
-                    </ul>
-                <li class="nav-item">
-                    <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-                        <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                        Allocate Guide
-                    </a>
-                </li>
-            </ul>  
-            <li class="nav-item">
-                <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-                    <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Review Mark Entry
-                </a>
-                <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
-                    <li class="nav-item">
-                        <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 1
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark bg-info text-white">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 2
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
-                            <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                            Review 3
-                        </a>
-                    </li>
-                </ul>
-            </li>
-            
-            <li class="nav-item">
-                <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                    Final Outcome Entry
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-                    <i class="fa fa-Download-alt mr-3 text-primary fa-fw"></i>
-                    Download Review Marks
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Criteria Entry
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'filter' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Filter
-                </a>
-            </li>
-            
-            <li class="nav-item">
-                <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Criteria Analysis
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
-                    <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                    Students Mark Analysis
-                </a>
-            </li>
-            
-            {% load static %}
-                <li class="nav-item">
-                    <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                        <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                        Manual
-                    </a>
-                </li>
-    
-            
-                <li class="nav-item">
-                    <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                        Logout
-                    </a>
-                </li>
-            </ul>  
-        </div>
-        {% elif role == 'Staff' or role == 'Faculty' %}
+    {% if role == 'Staff' or role == 'Faculty' %}
     <ul class="nav flex-column bg-white mb-0">
       <li class="nav-item">
-                <a href="{% url 'faculty_dashboard' %}" class="nav-link text-dark">
+        <a href="{% url 'faculty_dashboard' %}" class="nav-link text-dark">
           <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    View Student
+          View Student
         </a>
       </li>
       <li class="nav-item">
         <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-            Review Mark Entry
+          <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+          Review Mark Entry
         </a>
         <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
-            <li class="nav-item">
-                <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 1
-                </a>
-            </li>
-            <li class="nav-item">
-                        <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark bg-info text-white">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 2
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 3
-                </a>
-            </li>
+          <li class="nav-item">
+            <a href="{% url 'faculty_review1_markentry' %}" class="nav-link text-dark">
+              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+              Review 1
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'faculty_review2_markentry' %}" class="nav-link text-dark bg-info text-white">
+              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+              Review 2
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'faculty_review3_markentry' %}" class="nav-link text-dark">
+              <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+              Review 3
+            </a>
+          </li>
         </ul>
       </li>
       <li class="nav-item">
@@ -293,32 +193,63 @@
           Logout
         </a>
       </li>
-    </ul>  
-        {% endif %}
-  <!-- Page Content Wrapper -->
+    </ul>
+    {% endif %}
+  </div>
+
+  <!-- Page Content -->
   <div class="page-content">
-    <div class="container">
-      <h2 class="text-center mb-4">Review 2 Mark Entry</h2>
-
-      {% if is_reviewer %}
-      <!-- Role Selection for Reviewers -->
-      <div class="text-center mb-4">
-        <button id="guideBtn" class="btn btn-primary">Guide</button>
-        <button id="reviewerBtn" class="btn btn-secondary">Reviewer</button>
+    <h2>Review 2 Mark Entry</h2>
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }}">
+        {{ message }}
       </div>
+      {% endfor %}
+    </div>
+    {% endif %}
 
-      <!-- Guide Section -->
-      <div id="guideSection" class="mt-4">
-        <h3>Student List (Guide)</h3>
+    {% if is_reviewer %}
+    <!-- Role Selection Buttons -->
+    <div class="card mb-4" id="roleSelection">
+      <div class="card-body text-center">
+        <h3 class="mb-4">Select Role for Mark Entry</h3>
+        {% if role == "HOD" or is_guide %}
+        <button class="btn btn-primary btn-lg mx-2 role-btn" data-role="guide">
+          <i class="fa fa-user-tie mr-2"></i>Enter as Guide
+        </button>
+        {% endif %}
+        
+        {% if role == "HOD" or is_reviewer %}
+        <button class="btn btn-success btn-lg mx-2 role-btn" data-role="reviewer">
+          <i class="fa fa-users mr-2"></i>Enter as Reviewer
+        </button>
+        {% endif %}
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- Guide Students Table -->
+    <div class="card mb-4" id="guideTable">
+      <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">
+          <i class="fa fa-user-tie mr-2"></i>Guide Role - Student List
+          {% if is_reviewer %}
+          <button class="btn btn-light float-right" onclick="showRoleSelection()">
+            <i class="fa fa-arrow-left mr-2"></i>Back to Role Selection
+          </button>
+          {% endif %}
+        </h3>
+      </div>
+      <div class="card-body">
         <table class="table table-bordered">
           <thead class="thead-dark">
             <tr>
               <th>Student Name</th>
               <th>Reg No</th>
               <th>Project Title</th>
-              <th>Course Code</th>
-              <th>Course Title</th>
-              <th>Mark</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -327,37 +258,45 @@
               <td>{{ project.student_name }}</td>
               <td>{{ project.reg_no }}</td>
               <td>{{ project.title }}</td>
-              <td class="course-code">{{ project.course_code }}</td>
-              <td class="course-title">{{ project.course_title }}</td>
               <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                  data-student="{{ project.student_name }}" 
-                  data-reg="{{ project.reg_no }}">
+                <button class="btn btn-primary enter-marks-btn" 
+                        data-student-name="{{ project.student_name }}"
+                        data-reg-no="{{ project.reg_no }}"
+                        data-reviewer-type="Guide"
+                        data-course-code="{{ project.course_code }}"
+                        data-semester="{{ project.semester }}">
                   Enter Marks
                 </button>
               </td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="6" class="text-center">No students found for guide role</td>
+              <td colspan="4" class="text-center">No students found for guide role</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
+    </div>
 
-      <!-- Reviewer Section -->
-      <div id="reviewerSection" class="hidden mt-4">
-        <h3>Student List (Reviewer)</h3>
+    <!-- Reviewer Students Table -->
+    <div class="card mb-4 d-none" id="reviewerTable">
+      <div class="card-header bg-success text-white">
+        <h3 class="mb-0">
+          <i class="fa fa-users mr-2"></i>Reviewer Role - Student List
+          <button class="btn btn-light float-right" onclick="showRoleSelection()">
+            <i class="fa fa-arrow-left mr-2"></i>Back to Role Selection
+          </button>
+        </h3>
+      </div>
+      <div class="card-body">
         <table class="table table-bordered">
           <thead class="thead-dark">
             <tr>
               <th>Student Name</th>
               <th>Reg No</th>
               <th>Project Title</th>
-              <th>Course Code</th>
-              <th>Course Title</th>
-              <th>Mark</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -366,299 +305,122 @@
               <td>{{ project.student_name }}</td>
               <td>{{ project.reg_no }}</td>
               <td>{{ project.title }}</td>
-              <td class="course-code">{{ project.course_code }}</td>
-              <td class="course-title">{{ project.course_title }}</td>
               <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                  data-student="{{ project.student_name }}" 
-                  data-reg="{{ project.reg_no }}">
+                <button class="btn btn-success enter-marks-btn" 
+                        data-student-name="{{ project.student_name }}"
+                        data-reg-no="{{ project.reg_no }}"
+                        data-reviewer-type="Reviewer"
+                        data-course-code="{{ project.course_code }}"
+                        data-semester="{{ project.semester }}">
                   Enter Marks
                 </button>
               </td>
             </tr>
             {% empty %}
             <tr>
-              <td colspan="6" class="text-center">No students found for reviewer role</td>
+              <td colspan="4" class="text-center">No students found for reviewer role</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
       </div>
-      {% else %}
-      <!-- Non-Reviewer View -->
-      <div class="mt-4">
-        <h3>Student List (Guide)</h3>
-        <table class="table table-bordered">
-          <thead class="thead-dark">
-            <tr>
-              <th>Student Name</th>
-              <th>Reg No</th>
-              <th>Project Title</th>
-              <th>Course Code</th>
-              <th>Course Title</th>
-              <th>Mark</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for project in guide_students %}
-            <tr class="guide-student">
-              <td>{{ project.student_name }}</td>
-              <td>{{ project.reg_no }}</td>
-              <td>{{ project.title }}</td>
-              <td class="course-code">{{ project.course_code }}</td>
-              <td class="course-title">{{ project.course_title }}</td>
-              <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
-                  data-student="{{ project.student_name }}" 
-                  data-reg="{{ project.reg_no }}">
-                  Enter Marks
-                </button>
-              </td>
-            </tr>
-            {% empty %}
-            <tr>
-              <td colspan="6" class="text-center">No students found</td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      {% endif %}
     </div>
 
     <!-- Mark Entry Modal -->
-    <div class="modal fade" id="markEntryModal" tabindex="-1" aria-labelledby="markEntryModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
+    <div class="modal" id="markEntryModal" tabindex="-1" role="dialog" aria-labelledby="markEntryModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="markEntryModalLabel">Enter Marks</h5>
+            <h5 class="modal-title" id="markEntryModalLabel">Enter Review 2 Marks</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <form id="markEntryForm" method="POST">
+            <form method="POST" id="markEntryForm">
               {% csrf_token %}
               <input type="hidden" name="student_name" id="modal_student_name">
               <input type="hidden" name="reg_no" id="modal_reg_no">
+              <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
               <input type="hidden" name="course_code" id="modal_course_code">
-              <input type="hidden" name="course_title" id="modal_course_title">
-              <input type="hidden" name="reviewer_type" id="modal_reviewer_type" value="{% if is_reviewer %}Reviewer{% else %}Guide{% endif %}">
+              <input type="hidden" name="semester" id="modal_semester">
               
-            <p><strong>Student Name:</strong> <span id="modalStudentName"></span></p>
-            <p><strong>Reg No:</strong> <span id="modalRegNo"></span></p>
-
-            <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">Assessment Criteria</th>
-                    <th scope="col">Marks (10)</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for criteria in review_criteria %}
-                  <tr>
-                    <td><label for="criteria_{{ forloop.counter }}">{{ criteria.review_criteria }}</label></td>
-                    <td><input type="number" id="criteria_{{ forloop.counter }}" name="criteria_{{ forloop.counter }}" min="0" max="10" class="form-control mark-input" required></td>
-              </tr>
-                  {% endfor %}
-                </tbody>
-            </table>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Save Marks</button>
+              {% for criterion in review_criteria %}
+              <div class="form-group">
+                <label>{{ criterion.review_criteria }} (10)</label>
+                <input type="number" name="criteria_{{ forloop.counter }}" class="form-control" min="0" max="10" required>
               </div>
+              {% endfor %}
+
+              <button type="submit" class="btn btn-primary">Submit Marks</button>
             </form>
           </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <!-- Outcome Entry Modal -->
-    <div class="modal fade" id="outcomeEntryModal" tabindex="-1" aria-labelledby="outcomeEntryModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="outcomeEntryModalLabel">Enter Project Outcome</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form id="outcomeEntryForm" method="POST">
-              {% csrf_token %}
-              <input type="hidden" name="student_name" id="outcome_student_name">
-              <input type="hidden" name="reg_no" id="outcome_reg_no">
-              <input type="hidden" name="form_type" value="outcome">
-              
-              <p><strong>Student Name:</strong> <span id="outcomeStudentName"></span></p>
-              <p><strong>Reg No:</strong> <span id="outcomeRegNo"></span></p>
-
-              <div class="form-group">
-                <label for="project_outcome_type">Project Outcome Type</label>
-                <select class="form-control" id="project_outcome_type" name="project_outcome_type" required>
-                  <option value="">Select Type</option>
-                  <option value="Application">Application</option>
-                  <option value="Product">Product</option>
-                  <option value="Research">Research</option>
-                  <option value="Patent">Patent</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="outcome">Outcome</label>
-                <select class="form-control" id="outcome" name="outcome" required>
-                  <option value="">Select Outcome</option>
-                  <option value="National Conference">National Conference</option>
-                  <option value="International Conference">International Conference</option>
-                  <option value="Scopus">Scopus</option>
-                  <option value="SCIE">SCIE</option>
-                  <option value="SCI">SCI</option>
-                  <option value="UGC">UGC</option>
-                  <option value="Otheres">Others</option>
-                </select>
-              </div>
-
-              <div class="form-group">
-                <label for="outcome_certificate">Outcome Certificate</label>
-                <input type="file" class="form-control-file" id="outcome_certificate" name="outcome_certificate" accept=".pdf,.jpg,.jpeg,.png">
-              </div>
-
-              <div class="form-group">
-                <label for="achieved">Achieved</label>
-                <select class="form-control" id="achieved" name="achieved" required>
-                  <option value="">Select Status</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                </select>
-              </div>
-
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-success">Save Outcome</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <script>
-    $(document).ready(function(){
-      // Initially show guide section if not a reviewer
-      if (!$('#reviewerBtn').length) {
-        $('#guideSection').removeClass('hidden');
-      }
-
-      // Handle role selection buttons
-      $('#guideBtn').click(function() {
-        $('#guideSection').removeClass('hidden');
-        $('#reviewerSection').addClass('hidden');
-        $(this).addClass('btn-primary').removeClass('btn-secondary');
-        $('#reviewerBtn').addClass('btn-secondary').removeClass('btn-primary');
-        $('#modal_reviewer_type').val('Guide');
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <script>
+    $(document).ready(function() {
+      // Show/hide tables based on role selection
+      $('.role-btn').click(function() {
+        var role = $(this).data('role');
+        $('#roleSelection').addClass('d-none');
+        if (role === 'guide') {
+          $('#guideTable').removeClass('d-none');
+          $('#reviewerTable').addClass('d-none');
+        } else {
+          $('#reviewerTable').removeClass('d-none');
+          $('#guideTable').addClass('d-none');
+        }
       });
 
-      $('#reviewerBtn').click(function() {
-        $('#reviewerSection').removeClass('hidden');
-        $('#guideSection').addClass('hidden');
-        $(this).addClass('btn-primary').removeClass('btn-secondary');
-        $('#guideBtn').addClass('btn-secondary').removeClass('btn-primary');
-        $('#modal_reviewer_type').val('Reviewer');
+      // Handle mark entry button click
+      $('.enter-marks-btn').click(function() {
+        var btn = $(this);
+        $('#modal_student_name').val(btn.data('student-name'));
+        $('#modal_reg_no').val(btn.data('reg-no'));
+        $('#modal_reviewer_type').val(btn.data('reviewer-type'));
+        $('#modal_course_code').val(btn.data('course-code'));
+        $('#modal_semester').val(btn.data('semester'));
+        
+        $('#markEntryModalLabel').text('Enter Review 2 Marks - ' + btn.data('reviewer-type'));
+        $('#modalStudentName').text(btn.data('student-name'));
+        $('#modalRegNo').text(btn.data('reg-no'));
+        
+        $('#markEntryModal').modal('show');
       });
 
-      // Mark entry button click
-      $(".mark-btn").click(function(){
-        var studentName = $(this).data("student");
-        var regNo = $(this).data("reg");
-        var courseCode = $(this).closest('tr').find('.course-code').text().trim();
-        var courseTitle = $(this).closest('tr').find('.course-title').text().trim();
-        
-        // Reset form and clear previous values
-        $('#markEntryForm')[0].reset();
-        
-        // Set form values
-        $("#modalStudentName").text(studentName);
-        $("#modalRegNo").text(regNo);
-        $("#modal_student_name").val(studentName);
-        $("#modal_reg_no").val(regNo);
-        $("#modal_course_code").val(courseCode);
-        $("#modal_course_title").val(courseTitle);
-        
-        // Update modal title based on reviewer type
-        var reviewerType = $("#modal_reviewer_type").val();
-        $('#markEntryModalLabel').text('Enter Review 2 Marks as ' + reviewerType);
-      });
-
-      // Handle mark entry form submission
+      // Form submission
       $('#markEntryForm').on('submit', function(e) {
         e.preventDefault();
-        
-        // Validate all required fields
-        var isValid = true;
-        $(this).find('input[required]').each(function() {
-          if (!$(this).val()) {
-            isValid = false;
-            $(this).addClass('is-invalid');
-          } else {
-            $(this).removeClass('is-invalid');
-          }
-        });
-
-        if (!isValid) {
-          alert('Please fill in all required fields');
-          return;
-        }
-
-        // Submit the form
         $.ajax({
           url: window.location.href,
           type: 'POST',
           data: $(this).serialize(),
-          headers: {
-            "X-CSRFToken": $("[name=csrfmiddlewaretoken]").val()
-          },
           success: function(response) {
             if (response.status === 'success') {
-              $('#markEntryModal').modal('hide');
               alert('Marks saved successfully!');
               location.reload();
             } else {
-              alert('Error: ' + (response.message || 'Unknown error occurred'));
+              alert('Error: ' + response.message);
             }
           },
-          error: function(xhr, errmsg, err) {
-            console.error("Error details:", {
-              status: xhr.status,
-              responseText: xhr.responseText,
-              error: err
-            });
+          error: function() {
             alert('Error submitting marks. Please try again.');
           }
         });
       });
     });
-    </script>
-    <script>
-    $(document).ready(function(){
-      $(".mark-btn").click(function(){
-        var studentName = $(this).data("student");
-        var regNo = $(this).data("reg");
-        $("#modalStudentName").text(studentName);
-        $("#modalRegNo").text(regNo);
-      });
-    });
-    </script>
-    <script>
-    document.querySelectorAll('.mark-input').forEach(input => {
-      input.addEventListener('input', function () {
-        if (this.value > 10) {
-          alert('Max marks allowed is 10');
-          this.value = 10; // Reset value to 10
-        }
-      });
-    });
-    </script>
-  </div>
+
+    // Function to show role selection
+    function showRoleSelection() {
+      $('#guideTable, #reviewerTable').addClass('d-none');
+      $('#roleSelection').removeClass('d-none');
+    }
+  </script>
 </body>
 </html>
