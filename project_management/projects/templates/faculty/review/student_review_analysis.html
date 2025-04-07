@@ -47,9 +47,60 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <!-- Chart Canvas -->
-                            <div class="chart-container mb-4" style="position: relative; height:300px; width:100%">
-                                <canvas id="reviewChart{{ review.review_number }}"></canvas>
+                            <!-- Chart Canvases -->
+                            <div class="row mb-4">
+                                <!-- Guide Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Guide Marks - {{ review.guide_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="guideChart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 1 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 1 Marks - {{ review.reviewer1_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer1Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 2 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 2 Marks - {{ review.reviewer2_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer2Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 3 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 3 Marks - {{ review.reviewer3_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer3Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
@@ -172,9 +223,60 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <!-- Chart Canvas -->
-                            <div class="chart-container mb-4" style="position: relative; height:300px; width:100%">
-                                <canvas id="singleReviewChart"></canvas>
+                            <!-- Chart Canvases -->
+                            <div class="row mb-4">
+                                <!-- Guide Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Guide Marks - {{ review.guide_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="guideChart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 1 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 1 Marks - {{ review.reviewer1_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer1Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 2 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 2 Marks - {{ review.reviewer2_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer2Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Reviewer 3 Marks Chart -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card">
+                                        <div class="card-header bg-white">
+                                            <h5 class="mb-0">Reviewer 3 Marks - {{ review.reviewer3_name|default:"Not Assigned" }}</h5>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="chart-container" style="position: relative; height:400px; width:100%">
+                                                <canvas id="reviewer3Chart{{ review.review_number }}"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-hover align-middle mb-0">
@@ -277,39 +379,32 @@
                 maintainAspectRatio: false,
                 indexAxis: 'y',
                 scales: {
-                    x: {
-                        stacked: true,
+                    y: {
+                        beginAtZero: true,
                         grid: {
                             display: false
                         }
                     },
-                    y: {
-                        stacked: true,
+                    x: {
+                        max: 10,
                         grid: {
-                            display: false
+                            display: true
                         }
                     }
                 },
                 plugins: {
                     legend: {
-                        position: 'top',
-                        align: 'start'
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.raw}`;
-                            }
-                        }
+                        display: false
                     }
                 }
             };
 
             {% if review_number == '4' %}
-                // Create charts for each review
+                // Create separate charts for each review
                 {% for review in review_data %}
-                    const ctx{{ review.review_number }} = document.getElementById('reviewChart{{ review.review_number }}').getContext('2d');
-                    new Chart(ctx{{ review.review_number }}, {
+                    // Guide Chart
+                    const ctxGuide{{ review.review_number }} = document.getElementById('guideChart{{ review.review_number }}').getContext('2d');
+                    new Chart(ctxGuide{{ review.review_number }}, {
                         type: 'bar',
                         data: {
                             labels: [{% for criteria in review.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
@@ -320,22 +415,55 @@
                                 borderColor: 'rgb(99, 102, 241)',
                                 borderWidth: 1,
                                 barPercentage: 0.8
-                            }, {
-                                label: 'Reviewer 1',
+                            }]
+                        },
+                        options: chartOptions
+                    });
+
+                    // Reviewer 1 Chart
+                    const ctxReviewer1{{ review.review_number }} = document.getElementById('reviewer1Chart{{ review.review_number }}').getContext('2d');
+                    new Chart(ctxReviewer1{{ review.review_number }}, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for criteria in review.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                            datasets: [{
+                                label: 'Reviewer 1 Marks',
                                 data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer1_mark|default:0 }},{% endfor %}],
                                 backgroundColor: 'rgb(251, 113, 133)',
                                 borderColor: 'rgb(251, 113, 133)',
                                 borderWidth: 1,
                                 barPercentage: 0.8
-                            }, {
-                                label: 'Reviewer 2',
+                            }]
+                        },
+                        options: chartOptions
+                    });
+
+                    // Reviewer 2 Chart
+                    const ctxReviewer2{{ review.review_number }} = document.getElementById('reviewer2Chart{{ review.review_number }}').getContext('2d');
+                    new Chart(ctxReviewer2{{ review.review_number }}, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for criteria in review.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                            datasets: [{
+                                label: 'Reviewer 2 Marks',
                                 data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer2_mark|default:0 }},{% endfor %}],
                                 backgroundColor: 'rgb(52, 211, 153)',
                                 borderColor: 'rgb(52, 211, 153)',
                                 borderWidth: 1,
                                 barPercentage: 0.8
-                            }, {
-                                label: 'Reviewer 3',
+                            }]
+                        },
+                        options: chartOptions
+                    });
+
+                    // Reviewer 3 Chart
+                    const ctxReviewer3{{ review.review_number }} = document.getElementById('reviewer3Chart{{ review.review_number }}').getContext('2d');
+                    new Chart(ctxReviewer3{{ review.review_number }}, {
+                        type: 'bar',
+                        data: {
+                            labels: [{% for criteria in review.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                            datasets: [{
+                                label: 'Reviewer 3 Marks',
                                 data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer3_mark|default:0 }},{% endfor %}],
                                 backgroundColor: 'rgb(251, 191, 36)',
                                 borderColor: 'rgb(251, 191, 36)',
@@ -347,7 +475,7 @@
                     });
                 {% endfor %}
 
-                // Create overall performance chart
+                // Overall performance chart
                 const ctxOverall = document.getElementById('overallChart').getContext('2d');
                 new Chart(ctxOverall, {
                     type: 'bar',
@@ -386,9 +514,9 @@
                     options: chartOptions
                 });
             {% else %}
-                // Create chart for single review
-                const ctxSingle = document.getElementById('singleReviewChart').getContext('2d');
-                new Chart(ctxSingle, {
+                // Single review view - create separate charts
+                const ctxGuide = document.getElementById('guideChart{{ review_data.0.review_number }}').getContext('2d');
+                new Chart(ctxGuide, {
                     type: 'bar',
                     data: {
                         labels: [{% for criteria in review_data.0.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
@@ -399,22 +527,52 @@
                             borderColor: 'rgb(99, 102, 241)',
                             borderWidth: 1,
                             barPercentage: 0.8
-                        }, {
-                            label: 'Reviewer 1',
+                        }]
+                    },
+                    options: chartOptions
+                });
+
+                const ctxReviewer1 = document.getElementById('reviewer1Chart{{ review_data.0.review_number }}').getContext('2d');
+                new Chart(ctxReviewer1, {
+                    type: 'bar',
+                    data: {
+                        labels: [{% for criteria in review_data.0.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                        datasets: [{
+                            label: 'Reviewer 1 Marks',
                             data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer1_mark|default:0 }},{% endfor %}],
                             backgroundColor: 'rgb(251, 113, 133)',
                             borderColor: 'rgb(251, 113, 133)',
                             borderWidth: 1,
                             barPercentage: 0.8
-                        }, {
-                            label: 'Reviewer 2',
+                        }]
+                    },
+                    options: chartOptions
+                });
+
+                const ctxReviewer2 = document.getElementById('reviewer2Chart{{ review_data.0.review_number }}').getContext('2d');
+                new Chart(ctxReviewer2, {
+                    type: 'bar',
+                    data: {
+                        labels: [{% for criteria in review_data.0.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                        datasets: [{
+                            label: 'Reviewer 2 Marks',
                             data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer2_mark|default:0 }},{% endfor %}],
                             backgroundColor: 'rgb(52, 211, 153)',
                             borderColor: 'rgb(52, 211, 153)',
                             borderWidth: 1,
                             barPercentage: 0.8
-                        }, {
-                            label: 'Reviewer 3',
+                        }]
+                    },
+                    options: chartOptions
+                });
+
+                const ctxReviewer3 = document.getElementById('reviewer3Chart{{ review_data.0.review_number }}').getContext('2d');
+                new Chart(ctxReviewer3, {
+                    type: 'bar',
+                    data: {
+                        labels: [{% for criteria in review_data.0.criteria_marks %}'{{ criteria.name }}',{% endfor %}],
+                        datasets: [{
+                            label: 'Reviewer 3 Marks',
                             data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer3_mark|default:0 }},{% endfor %}],
                             backgroundColor: 'rgb(251, 191, 36)',
                             borderColor: 'rgb(251, 191, 36)',
