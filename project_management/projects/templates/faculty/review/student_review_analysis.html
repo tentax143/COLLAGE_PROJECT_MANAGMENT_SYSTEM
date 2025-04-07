@@ -55,10 +55,12 @@
                                 <table class="table table-hover align-middle mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="border-bottom text-center" style="width: 40%">Assessment Criteria</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Guide Mark</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Reviewer Mark</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Average</th>
+                                            <th class="border-bottom text-center" style="width: 30%">Assessment Criteria</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Guide Mark</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 1</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 2</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 3</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Average</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -66,14 +68,18 @@
                                         <tr>
                                             <td class="text-start">{{ criteria.name }}</td>
                                             <td class="text-center">{{ criteria.guide_mark|default:"-" }}</td>
-                                            <td class="text-center">{{ criteria.reviewer_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer1_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer2_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer3_mark|default:"-" }}</td>
                                             <td class="text-center">{{ criteria.average|floatformat:2|default:"-" }}</td>
                                         </tr>
                                         {% endfor %}
                                         <tr class="table-info fw-bold">
                                             <td class="text-start">Total</td>
                                             <td class="text-center">{{ review.totals.guide_total }}</td>
-                                            <td class="text-center">{{ review.totals.reviewer_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer1_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer2_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer3_total }}</td>
                                             <td class="text-center">{{ review.totals.average }}</td>
                                         </tr>
                                     </tbody>
@@ -95,7 +101,9 @@
                                         <tr>
                                             <th class="border-bottom text-center">Review Number</th>
                                             <th class="border-bottom text-center">Guide Total</th>
-                                            <th class="border-bottom text-center">Reviewer Total</th>
+                                            <th class="border-bottom text-center">Reviewer 1 Total</th>
+                                            <th class="border-bottom text-center">Reviewer 2 Total</th>
+                                            <th class="border-bottom text-center">Reviewer 3 Total</th>
                                             <th class="border-bottom text-center">Average Total</th>
                                         </tr>
                                     </thead>
@@ -104,7 +112,9 @@
                                         <tr>
                                             <td class="text-center">Review {{ review.review_number }}</td>
                                             <td class="text-center">{{ review.totals.guide_total }}</td>
-                                            <td class="text-center">{{ review.totals.reviewer_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer1_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer2_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer3_total }}</td>
                                             <td class="text-center">{{ review.totals.average }}</td>
                                         </tr>
                                         {% endfor %}
@@ -170,10 +180,12 @@
                                 <table class="table table-hover align-middle mb-0">
                                     <thead>
                                         <tr>
-                                            <th class="border-bottom text-center" style="width: 40%">Assessment Criteria</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Guide Mark</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Reviewer Mark</th>
-                                            <th class="border-bottom text-center" style="width: 20%">Average</th>
+                                            <th class="border-bottom text-center" style="width: 30%">Assessment Criteria</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Guide Mark</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 1</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 2</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Reviewer 3</th>
+                                            <th class="border-bottom text-center" style="width: 14%">Average</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -181,14 +193,18 @@
                                         <tr>
                                             <td class="text-start">{{ criteria.name }}</td>
                                             <td class="text-center">{{ criteria.guide_mark|default:"-" }}</td>
-                                            <td class="text-center">{{ criteria.reviewer_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer1_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer2_mark|default:"-" }}</td>
+                                            <td class="text-center">{{ criteria.reviewer3_mark|default:"-" }}</td>
                                             <td class="text-center">{{ criteria.average|floatformat:2|default:"-" }}</td>
                                         </tr>
                                         {% endfor %}
                                         <tr class="table-info fw-bold">
                                             <td class="text-start">Total</td>
                                             <td class="text-center">{{ review.totals.guide_total }}</td>
-                                            <td class="text-center">{{ review.totals.reviewer_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer1_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer2_total }}</td>
+                                            <td class="text-center">{{ review.totals.reviewer3_total }}</td>
                                             <td class="text-center">{{ review.totals.average }}</td>
                                         </tr>
                                     </tbody>
@@ -305,10 +321,24 @@
                                 borderWidth: 1,
                                 barPercentage: 0.8
                             }, {
-                                label: 'Reviewer Marks',
-                                data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer_mark|default:0 }},{% endfor %}],
+                                label: 'Reviewer 1',
+                                data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer1_mark|default:0 }},{% endfor %}],
                                 backgroundColor: 'rgb(251, 113, 133)',
                                 borderColor: 'rgb(251, 113, 133)',
+                                borderWidth: 1,
+                                barPercentage: 0.8
+                            }, {
+                                label: 'Reviewer 2',
+                                data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer2_mark|default:0 }},{% endfor %}],
+                                backgroundColor: 'rgb(52, 211, 153)',
+                                borderColor: 'rgb(52, 211, 153)',
+                                borderWidth: 1,
+                                barPercentage: 0.8
+                            }, {
+                                label: 'Reviewer 3',
+                                data: [{% for criteria in review.criteria_marks %}{{ criteria.reviewer3_mark|default:0 }},{% endfor %}],
+                                backgroundColor: 'rgb(251, 191, 36)',
+                                borderColor: 'rgb(251, 191, 36)',
                                 borderWidth: 1,
                                 barPercentage: 0.8
                             }]
@@ -331,10 +361,24 @@
                             borderWidth: 1,
                             barPercentage: 0.8
                         }, {
-                            label: 'Reviewer Total',
-                            data: [{% for review in review_data %}{{ review.totals.reviewer_total|cut:"-"|default:0 }},{% endfor %}],
+                            label: 'Reviewer 1 Total',
+                            data: [{% for review in review_data %}{{ review.totals.reviewer1_total|cut:"-"|default:0 }},{% endfor %}],
                             backgroundColor: 'rgb(251, 113, 133)',
                             borderColor: 'rgb(251, 113, 133)',
+                            borderWidth: 1,
+                            barPercentage: 0.8
+                        }, {
+                            label: 'Reviewer 2 Total',
+                            data: [{% for review in review_data %}{{ review.totals.reviewer2_total|cut:"-"|default:0 }},{% endfor %}],
+                            backgroundColor: 'rgb(52, 211, 153)',
+                            borderColor: 'rgb(52, 211, 153)',
+                            borderWidth: 1,
+                            barPercentage: 0.8
+                        }, {
+                            label: 'Reviewer 3 Total',
+                            data: [{% for review in review_data %}{{ review.totals.reviewer3_total|cut:"-"|default:0 }},{% endfor %}],
+                            backgroundColor: 'rgb(251, 191, 36)',
+                            borderColor: 'rgb(251, 191, 36)',
                             borderWidth: 1,
                             barPercentage: 0.8
                         }]
@@ -356,10 +400,24 @@
                             borderWidth: 1,
                             barPercentage: 0.8
                         }, {
-                            label: 'Reviewer Marks',
-                            data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer_mark|default:0 }},{% endfor %}],
+                            label: 'Reviewer 1',
+                            data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer1_mark|default:0 }},{% endfor %}],
                             backgroundColor: 'rgb(251, 113, 133)',
                             borderColor: 'rgb(251, 113, 133)',
+                            borderWidth: 1,
+                            barPercentage: 0.8
+                        }, {
+                            label: 'Reviewer 2',
+                            data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer2_mark|default:0 }},{% endfor %}],
+                            backgroundColor: 'rgb(52, 211, 153)',
+                            borderColor: 'rgb(52, 211, 153)',
+                            borderWidth: 1,
+                            barPercentage: 0.8
+                        }, {
+                            label: 'Reviewer 3',
+                            data: [{% for criteria in review_data.0.criteria_marks %}{{ criteria.reviewer3_mark|default:0 }},{% endfor %}],
+                            backgroundColor: 'rgb(251, 191, 36)',
+                            borderColor: 'rgb(251, 191, 36)',
                             borderWidth: 1,
                             barPercentage: 0.8
                         }]

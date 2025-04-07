@@ -358,7 +358,7 @@
                                 <button class="btn btn-success enter-marks-btn" 
                                         data-student-name="{{ project.student_name }}"
                                         data-reg-no="{{ project.reg_no }}"
-                                        data-reviewer-type="Reviewer"
+                                        data-reviewer-type="{{ reviewer_type }}"
                                         data-course-code="{{ project.course_code }}"
                                         data-semester="{{ project.semester }}">
                                     Enter Marks
@@ -386,9 +386,9 @@
                             {% csrf_token %}
                             <input type="hidden" name="student_name" id="modal_student_name">
                             <input type="hidden" name="reg_no" id="modal_reg_no">
-                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
                             <input type="hidden" name="course_code" id="modal_course_code">
                             <input type="hidden" name="semester" id="modal_semester">
+                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
                             
                             {% for criterion in review_criteria %}
                             <div class="form-group">
@@ -410,28 +410,35 @@
     
     <script>
     $(document).ready(function() {
-        // Handle role selection buttons
+        // Role selection buttons
         $('.role-btn').click(function() {
-            var role = $(this).data('role');
-            $('#roleSelection').addClass('d-none');
-            
+            const role = $(this).data('role');
             if (role === 'guide') {
                 $('#guideTable').removeClass('d-none');
                 $('#reviewerTable').addClass('d-none');
-            } else {
+                $('#roleSelection').addClass('d-none');
+            } else if (role === 'reviewer') {
                 $('#reviewerTable').removeClass('d-none');
                 $('#guideTable').addClass('d-none');
+                $('#roleSelection').addClass('d-none');
             }
         });
 
-        // Handle mark entry buttons
-        $(document).on('click', '.enter-marks-btn', function() {
-            var studentName = $(this).data('student-name');
-            var regNo = $(this).data('reg-no');
-            var reviewerType = $(this).data('reviewer-type');
-            var courseCode = $(this).data('course-code');
-            var semester = $(this).data('semester');
-            
+        // Back to role selection
+        window.showRoleSelection = function() {
+            $('#roleSelection').removeClass('d-none');
+            $('#guideTable').addClass('d-none');
+            $('#reviewerTable').addClass('d-none');
+        };
+
+        // Mark entry button click
+        $('.enter-marks-btn').click(function() {
+            const studentName = $(this).data('student-name');
+            const regNo = $(this).data('reg-no');
+            const reviewerType = $(this).data('reviewer-type');
+            const courseCode = $(this).data('course-code');
+            const semester = $(this).data('semester');
+
             $('#modal_student_name').val(studentName);
             $('#modal_reg_no').val(regNo);
             $('#modal_reviewer_type').val(reviewerType);
@@ -441,21 +448,30 @@
             // Update modal title based on reviewer type
             $('#markEntryModalLabel').text('Enter Review 3 Marks as ' + reviewerType);
             
+            // Show the modal
             $('#markEntryModal').modal('show');
         });
 
-        // Ensure modal can be closed
-        $('.close').click(function() {
-            $('#markEntryModal').modal('hide');
+        // Form submission
+        $('#markEntryForm').submit(function(e) {
+            e.preventDefault();
+            const formData = $(this).serialize();
+            
+            $.ajax({
+                url: window.location.pathname,
+                type: 'POST',
+                data: formData,
+                success: function(response) {
+                    if (response.status === 'success') {
+                        location.reload();
+                    }
+                },
+                error: function(xhr, errmsg, err) {
+                    alert('Error submitting marks. Please try again.');
+                }
+            });
         });
     });
-
-    // Function to show role selection and hide tables
-    function showRoleSelection() {
-        $('#roleSelection').removeClass('d-none');
-        $('#guideTable').addClass('d-none');
-        $('#reviewerTable').addClass('d-none');
-    }
     </script>
 </body>
 </html>

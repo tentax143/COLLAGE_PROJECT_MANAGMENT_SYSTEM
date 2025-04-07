@@ -336,7 +336,7 @@
       </div>
 
       <!-- Guide Section -->
-      <div id="guideSection" class="mt-4">
+      <div id="guideSection" class="hidden mt-4">
         <h3>Student List (Guide)</h3>
         <table class="table table-bordered">
           <thead class="thead-dark">
@@ -358,9 +358,10 @@
               <td class="course-code">{{ project.course_code }}</td>
               <td class="course-title">{{ project.course_title }}</td>
               <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                <button class="btn btn-primary mark-btn"
                   data-student="{{ project.student_name }}" 
-                  data-reg="{{ project.reg_no }}">
+                  data-reg="{{ project.reg_no }}"
+                  data-reviewer-type="Guide">
                   Enter Marks
                 </button>
               </td>
@@ -397,9 +398,10 @@
               <td class="course-code">{{ project.course_code }}</td>
               <td class="course-title">{{ project.course_title }}</td>
               <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                <button class="btn btn-primary mark-btn"
                   data-student="{{ project.student_name }}" 
-                  data-reg="{{ project.reg_no }}">
+                  data-reg="{{ project.reg_no }}"
+                  data-reviewer-type="{{ reviewer_type }}">
                   Enter Marks
                 </button>
               </td>
@@ -436,7 +438,7 @@
               <td class="course-code">{{ project.course_code }}</td>
               <td class="course-title">{{ project.course_title }}</td>
               <td>
-                <button class="btn btn-primary mark-btn" data-toggle="modal" data-target="#markEntryModal" 
+                <button class="btn btn-primary mark-btn"
                   data-student="{{ project.student_name }}" 
                   data-reg="{{ project.reg_no }}">
                   Enter Marks
@@ -471,7 +473,7 @@
               <input type="hidden" name="reg_no" id="modal_reg_no">
               <input type="hidden" name="course_code" id="modal_course_code">
               <input type="hidden" name="course_title" id="modal_course_title">
-              <input type="hidden" name="reviewer_type" id="modal_reviewer_type" value="{% if is_reviewer %}Reviewer{% else %}Guide{% endif %}">
+              <input name="reviewer_type" id="modal_reviewer_type" value="{% if reviewer_type %}{{ reviewer_type }}{% else %}Guide{% endif %}" readonly >
               
               <div class="form-group">
                 <label><strong>Student Name:</strong> <span id="modalStudentName"></span></label>
@@ -596,13 +598,14 @@
         $('#guideSection').addClass('hidden');
         $(this).addClass('btn-primary').removeClass('btn-secondary');
         $('#guideBtn').addClass('btn-secondary').removeClass('btn-primary');
-        $('#modal_reviewer_type').val('Reviewer');
+        $('#modal_reviewer_type').val('{{ reviewer_type }}');
       });
 
       // Mark entry button click
       $(".mark-btn").click(function(){
         var studentName = $(this).data("student");
         var regNo = $(this).data("reg");
+        var reviewerType = $(this).data("reviewer-type");
         var courseCode = $(this).closest('tr').find('.course-code').text().trim();
         var courseTitle = $(this).closest('tr').find('.course-title').text().trim();
         
@@ -614,15 +617,18 @@
         $("#modalRegNo").text(regNo);
         $("#modal_student_name").val(studentName);
         $("#modal_reg_no").val(regNo);
+        $("#modal_reviewer_type").val(reviewerType);
         $("#modal_course_code").val(courseCode);
         $("#modal_course_title").val(courseTitle);
         
         // Update modal title based on reviewer type
-        var reviewerType = $("#modal_reviewer_type").val();
         $('#markEntryModalLabel').text('Enter Review 3 Marks as ' + reviewerType);
 
         // Remove any previous validation states
         $('.mark-input').removeClass('is-invalid');
+        
+        // Show the modal
+        $('#markEntryModal').modal('show');
       });
 
       // Handle mark entry form submission

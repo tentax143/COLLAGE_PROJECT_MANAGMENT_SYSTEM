@@ -7,9 +7,6 @@
     .btn-group .btn { margin: 0 5px; }
     .table th { background-color: #00407b; color: white; }
     .table td { vertical-align: middle; }
-    .sortable { cursor: pointer; }
-    .sortable:hover { background-color: #003366; }
-    .sortable i { margin-left: 5px; }
     </style>
 {% endblock %}
 
@@ -18,11 +15,11 @@
     <h2 class="text-center mb-4">Student Marks Analysis</h2>
 
     <div class="table-responsive">
-        <table class="table table-bordered" id="studentsTable">
+        <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th class="sortable" onclick="sortTable(0)">Student Name <i class="fas fa-sort"></i></th>
-                    <th class="sortable" onclick="sortTable(1)">Register Number <i class="fas fa-sort"></i></th>
+                    <th>Student Name</th>
+                    <th>Register Number</th>
                     <th>View Analytics</th>
                 </tr>
             </thead>
@@ -33,6 +30,7 @@
                     <td>{{ student.register_number }}</td>
                     <td class="text-center">
                         <div class="btn-group" role="group">
+                            
                             <a href="{% url 'student_review_analysis' register_number=student.reg_no review_number=4 %}" class="btn btn-primary">View review analysis</a>
                         </div>
                     </td>
@@ -42,65 +40,4 @@
         </table>
     </div>
 </div>
-
-<script>
-function sortTable(n) {
-    var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
-    table = document.getElementById("studentsTable");
-    switching = true;
-    dir = "asc";
-    
-    while (switching) {
-        switching = false;
-        rows = table.rows;
-        
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = rows[i].getElementsByTagName("td")[n];
-            y = rows[i + 1].getElementsByTagName("td")[n];
-            
-            if (dir == "asc") {
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            } else if (dir == "desc") {
-                if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-        }
-        
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-            switchcount++;
-        } else {
-            if (switchcount == 0 && dir == "asc") {
-                dir = "desc";
-                switching = true;
-            }
-        }
-    }
-    
-    // Update sort icons
-    var headers = table.getElementsByTagName("th");
-    for (i = 0; i < headers.length; i++) {
-        var icon = headers[i].getElementsByTagName("i")[0];
-        if (icon) {
-            if (i === n) {
-                icon.className = dir === "asc" ? "fas fa-sort-up" : "fas fa-sort-down";
-            } else {
-                icon.className = "fas fa-sort";
-            }
-        }
-    }
-}
-
-// Sort by student name by default when page loads
-document.addEventListener('DOMContentLoaded', function() {
-    sortTable(0);
-});
-</script>
 {% endblock %}
