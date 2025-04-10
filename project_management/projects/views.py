@@ -368,6 +368,7 @@ def faculty_login(request):
     if request.method == "POST":
         username = request.POST.get('username')  # This maps to staff_id
         password = request.POST.get('password')
+        selected_role = request.POST.get('selected_role')
 
         print(f"Attempting to log in with staff_id: {username} and password: {password}")
 
@@ -377,32 +378,49 @@ def faculty_login(request):
         if not users.exists():
             # No user found with this staff_id
             print(f"No user found with staff_id: {username}")
-            return render(request, 'faculty/faculty_login.html', {'error': 'User not found!'})
-        elif users.count() >= 2:
-            user = users[0]  # Select the second user if more than one exists
+            return JsonResponse({'error': 'User not found!'})
+
+        # Get unique roles from all matching users
+        roles = list(set(user.role for user in users))
+        
+        # If this is the initial login attempt (no selected_role)
+        if not selected_role and len(roles) > 1:
+            return JsonResponse({
+                'multiple_roles': True,
+                'roles': roles
+            })
+
+        # If a role is selected or there's only one role
+        if selected_role:
+            # Find the user with the selected role
+            user = users.filter(role=selected_role).first()
         else:
             user = users.first()
         
         print(user, "the selected user is")
         
-        # Check the password (replace encrypt_password with your actual hash comparison)
+        # Check the password
         if encrypt_password(password) == user.Password:
             print("Authentication successful!")
             # Store necessary details in session
             request.session['user_id'] = user.id
             request.session['role'] = user.role
-            request.session['department'] = user.Department  # Faculty department
+            request.session['department'] = user.Department
             request.session['name'] = user.Name
             
+            # Return redirect URL based on role
+            redirect_url = None
             if user.role == 'HOD':
-                return redirect('hod_dashbord')
+                redirect_url = '/hod_dashbord'
             elif user.role == 'Principal':
-                return redirect('principal_dashboard')
+                redirect_url = '/principal_dashboard'
             elif user.role == 'Staff':
-                return redirect('faculty_dashboard')
+                redirect_url = '/faculty_dashboard'
+            
+            return JsonResponse({'redirect_url': redirect_url})
         else:
             print("Authentication failed! Incorrect password.")
-            return render(request, 'faculty/faculty_login.html', {'error': 'Invalid credentials!'})
+            return JsonResponse({'error': 'Invalid credentials!'})
     
     return render(request, 'faculty/faculty_login.html')
 

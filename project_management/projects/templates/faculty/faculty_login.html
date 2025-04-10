@@ -14,6 +14,35 @@
             background-repeat: no-repeat;
             background-attachment: fixed;
         }
+        .modal-content {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        .role-option {
+            display: block;
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            border: 2px solid #e9ecef;
+            border-radius: 5px;
+            background-color: white;
+            transition: all 0.3s ease;
+            text-align: left;
+            font-size: 16px;
+        }
+        .role-option:hover {
+            background-color: #f8f9fa;
+            border-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .role-option.selected {
+            background-color: #e7f1ff;
+            border-color: #0056b3;
+        }
+        .modal-title {
+            color: #0056b3;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -29,7 +58,7 @@
                 <div class="col-md-6">
                     <p style="color:red;">NOTE: USE E-APROVAL LOGIN CREDENTIAL</p>
                     <h2>Login to Final Year Project Dashboard</h2>
-                    <form method="POST" autocomplete="off">
+                    <form method="POST" autocomplete="off" id="loginForm">
                         {% csrf_token %}
                         {% if error %}
                             <div class="alert alert-danger">
@@ -44,6 +73,7 @@
                             <label for="password">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required>
                         </div>
+                        <input type="hidden" name="selected_role" id="selected_role">
                         <button type="submit" class="btn btn-primary">Login</button>
                     </form>
                 </div>
@@ -51,8 +81,98 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <!-- Role Selection Modal -->
+    <div class="modal fade" id="roleSelectionModal" tabindex="-1" role="dialog" aria-labelledby="roleSelectionModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="roleSelectionModalLabel">Select Your Role</h5>
+                </div>
+                <div class="modal-body">
+                    <div id="roleOptions">
+                        <!-- Role options will be dynamically added here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    
+    <script>
+        $(document).ready(function() {
+            let roles = [];
+            
+            $('#loginForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                $.ajax({
+                    url: '{% url "faculty_login" %}',
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        if (response.multiple_roles) {
+                            roles = response.roles;
+                            showRoleSelectionModal(roles);
+                        } else if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        } else if (response.error) {
+                            // Show error message
+                            if (!$('.alert-danger').length) {
+                                $('#loginForm').prepend(
+                                    '<div class="alert alert-danger">' + response.error + '</div>'
+                                );
+                            } else {
+                                $('.alert-danger').text(response.error);
+                            }
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+
+            function showRoleSelectionModal(roles) {
+                // Clear previous options
+                $('#roleOptions').empty();
+                
+                // Add role options
+                roles.forEach(function(role) {
+                    $('#roleOptions').append(`
+                        <button type="button" class="role-option" data-role="${role}">
+                            ${role}
+                        </button>
+                    `);
+                });
+                
+                // Show modal
+                $('#roleSelectionModal').modal('show');
+            }
+
+            // Handle role selection
+            $(document).on('click', '.role-option', function() {
+                const selectedRole = $(this).data('role');
+                $('#selected_role').val(selectedRole);
+                
+                // Submit the form with the selected role
+                $.ajax({
+                    url: '{% url "faculty_login" %}',
+                    method: 'POST',
+                    data: $('#loginForm').serialize(),
+                    success: function(response) {
+                        if (response.redirect_url) {
+                            window.location.href = response.redirect_url;
+                        }
+                    },
+                    error: function() {
+                        alert('An error occurred. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
