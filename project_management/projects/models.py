@@ -208,6 +208,11 @@ class review_marks_master(models.Model):
     criteria_9=models.IntegerField()
     criteria_10=models.IntegerField()
     total=models.IntegerField()
+    review1_comments=models.TextField(null=True,blank=True)
+    review2_comments=models.TextField(null=True,blank=True)
+    review3_comments=models.TextField(null=True,blank=True)
+    overall_comments=models.TextField(null=True,blank=True) 
+    
 
 
 class internal_review_mark(models.Model):
@@ -260,20 +265,7 @@ class review_assasment_criteria_master(models.Model):
     review_number=models.IntegerField()
     review_criteria=models.CharField(max_length=200)
 
-class ProjectsReviewMarksMaster(models.Model):
-    register_number = models.CharField(max_length=20)
-    review_number = models.IntegerField()
-    department = models.CharField(max_length=50)
-    guide_marks = models.TextField(null=True, blank=True)  # JSON field for guide marks
-    reviewer1_marks = models.TextField(null=True, blank=True)  # JSON field for reviewer1 marks
-    reviewer2_marks = models.TextField(null=True, blank=True)  # JSON field for reviewer2 marks
-    reviewer3_marks = models.TextField(null=True, blank=True)  # JSON field for reviewer3 marks
 
-    class Meta:
-        db_table = 'projects_review_marks_master_new'  # Changed table name to avoid conflict
-
-    def __str__(self):
-        return f"Review {self.review_number} marks for {self.register_number}"
 
 
 

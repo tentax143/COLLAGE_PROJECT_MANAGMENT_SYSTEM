@@ -24,7 +24,7 @@
         }
 
         .vertical-nav {
-            width: 25rem;
+            width: 23rem;
             height: 100vh;
             position: fixed;
             top: 0;
@@ -35,7 +35,7 @@
         }
 
         .page-content {
-            margin-left: 25rem;
+            margin-left: 23rem;
             transition: all 0.4s;
             padding: 20px;
             min-height: 100vh;
@@ -73,7 +73,7 @@
 
         @media (max-width: 768px) {
             .vertical-nav {
-                margin-left: -25rem;
+                margin-left: -23rem;
             }
             .vertical-nav.active {
                 margin-left: 0;
@@ -83,7 +83,7 @@
                 margin-left: 0;
             }
             .page-content.active {
-                margin-left: 25rem;
+                margin-left: 23rem;
             }
         }
 
@@ -112,7 +112,7 @@
             <div class="media d-flex align-items-center">
                 <div class="media-body">
                     <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                 
+                    <h4 class="m-0">RIT</h4>
                     <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
                 </div>
             </div>
@@ -126,18 +126,18 @@
             </div>
         </div>
 
-    {% if role == 'HOD' %}
+        <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
         <ul class="nav flex-column bg-white mb-0">
             <li class="nav-item">
                 <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
                     <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-                    Dashboard
+                    View Guide Detail
                 </a>
             </li>
             <li class="nav-item">
                 <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
                     <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
-                    Allocate Committee Members
+                    Allocate commity members
                 </a>
                 <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
                     <li class="nav-item">
@@ -192,53 +192,19 @@
                 </li>
             </ul>
         </li>
-        
         <li class="nav-item">
             <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
-                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                Final Outcome Entry
+              <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+              Final Outcome Entry
             </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-                <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                Download Review Marks
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Criteria Entry
-            </a>
-        </li>
+          </li>
+        </ul>  
         <li class="nav-item">
             <a href="{% url 'filter' %}" class="nav-link text-dark">
                 <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Filter-Project outcome
+                Filter
             </a>
         </li>
-        
-        <li class="nav-item">
-            <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Criteria Analysis
-            </a>
-        </li>
-        <li class="nav-item">
-            <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
-                <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-                Students Mark Analysis
-            </a>
-        </li>
-        
-        {% load static %}
-            <li class="nav-item">
-                <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
-                    <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
-                    Manual
-                </a>
-            </li>
-
         
             <li class="nav-item">
                 <a href="{% url 'home_page' %}" class="nav-link text-dark">
@@ -248,7 +214,6 @@
             </li>
         </ul>  
     </div>
-    {% endif %}
 
     <!-- Main Content -->
     <div class="page-content">
@@ -358,7 +323,7 @@
                                 <button class="btn btn-success enter-marks-btn" 
                                         data-student-name="{{ project.student_name }}"
                                         data-reg-no="{{ project.reg_no }}"
-                                        data-reviewer-type="{{ reviewer_type }}"
+                                        data-reviewer-type="Reviewer"
                                         data-course-code="{{ project.course_code }}"
                                         data-semester="{{ project.semester }}">
                                     Enter Marks
@@ -386,23 +351,51 @@
                             {% csrf_token %}
                             <input type="hidden" name="student_name" id="modal_student_name">
                             <input type="hidden" name="reg_no" id="modal_reg_no">
+                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
                             <input type="hidden" name="course_code" id="modal_course_code">
                             <input type="hidden" name="semester" id="modal_semester">
-                            <input type="hidden" name="reviewer_type" id="modal_reviewer_type">
                             
-                            {% for criterion in review_criteria %}
                             <div class="form-group">
-                                <label>{{ criterion.review_criteria }} (10)</label>
-                                <input type="number" name="criteria_{{ forloop.counter }}" class="form-control" min="0" max="10" required>
+                                <label>Literature Review (10)</label>
+                                <input type="number" name="criteria_1" class="form-control" min="0" max="10" required>
                             </div>
-                        {% endfor %}
-
-                        <div class="form-group">
-                            <label for="review3_comments">Comments:</label>
-                            <textarea class="form-control" id="review3_comments" name="review3_comments" rows="3" placeholder="Enter your comments here..."></textarea>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary">Submit Marks</button>
+                            <div class="form-group">
+                                <label>Problem Identification (10)</label>
+                                <input type="number" name="criteria_2" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Resource Planning (10)</label>
+                                <input type="number" name="criteria_3" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Project Planning (10)</label>
+                                <input type="number" name="criteria_4" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Presentation (10)</label>
+                                <input type="number" name="criteria_5" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Implementation (10)</label>
+                                <input type="number" name="criteria_6" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Results (10)</label>
+                                <input type="number" name="criteria_7" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Documentation (10)</label>
+                                <input type="number" name="criteria_8" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Demonstration (10)</label>
+                                <input type="number" name="criteria_9" class="form-control" min="0" max="10" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Communication (10)</label>
+                                <input type="number" name="criteria_10" class="form-control" min="0" max="10" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit Marks</button>
                         </form>
                     </div>
                 </div>
@@ -415,35 +408,28 @@
     
     <script>
     $(document).ready(function() {
-        // Role selection buttons
+        // Handle role selection buttons
         $('.role-btn').click(function() {
-            const role = $(this).data('role');
+            var role = $(this).data('role');
+            $('#roleSelection').addClass('d-none');
+            
             if (role === 'guide') {
                 $('#guideTable').removeClass('d-none');
                 $('#reviewerTable').addClass('d-none');
-                $('#roleSelection').addClass('d-none');
-            } else if (role === 'reviewer') {
+            } else {
                 $('#reviewerTable').removeClass('d-none');
                 $('#guideTable').addClass('d-none');
-                $('#roleSelection').addClass('d-none');
             }
         });
 
-        // Back to role selection
-        window.showRoleSelection = function() {
-            $('#roleSelection').removeClass('d-none');
-            $('#guideTable').addClass('d-none');
-            $('#reviewerTable').addClass('d-none');
-        };
-
-        // Mark entry button click
-        $('.enter-marks-btn').click(function() {
-            const studentName = $(this).data('student-name');
-            const regNo = $(this).data('reg-no');
-            const reviewerType = $(this).data('reviewer-type');
-            const courseCode = $(this).data('course-code');
-            const semester = $(this).data('semester');
-
+        // Handle mark entry buttons
+        $(document).on('click', '.enter-marks-btn', function() {
+            var studentName = $(this).data('student-name');
+            var regNo = $(this).data('reg-no');
+            var reviewerType = $(this).data('reviewer-type');
+            var courseCode = $(this).data('course-code');
+            var semester = $(this).data('semester');
+            
             $('#modal_student_name').val(studentName);
             $('#modal_reg_no').val(regNo);
             $('#modal_reviewer_type').val(reviewerType);
@@ -453,30 +439,21 @@
             // Update modal title based on reviewer type
             $('#markEntryModalLabel').text('Enter Review 3 Marks as ' + reviewerType);
             
-            // Show the modal
             $('#markEntryModal').modal('show');
         });
 
-        // Form submission
-        $('#markEntryForm').submit(function(e) {
-            e.preventDefault();
-            const formData = $(this).serialize();
-            
-            $.ajax({
-                url: window.location.pathname,
-                type: 'POST',
-                data: formData,
-                success: function(response) {
-                    if (response.status === 'success') {
-                        location.reload();
-                    }
-                },
-                error: function(xhr, errmsg, err) {
-                    alert('Error submitting marks. Please try again.');
-                }
-            });
+        // Ensure modal can be closed
+        $('.close').click(function() {
+            $('#markEntryModal').modal('hide');
         });
     });
+
+    // Function to show role selection and hide tables
+    function showRoleSelection() {
+        $('#roleSelection').removeClass('d-none');
+        $('#guideTable').addClass('d-none');
+        $('#reviewerTable').addClass('d-none');
+    }
     </script>
 </body>
 </html>

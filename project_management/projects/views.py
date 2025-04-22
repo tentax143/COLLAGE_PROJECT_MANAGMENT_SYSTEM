@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect,get_object_or_404
 from django.http import HttpResponse
 import os
 from django.conf import settings
-from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome,review_assasment_criteria_master, ProjectsReviewMarksMaster
+from .models import Student,User,faculty_master,Project,assignreviewers,regulation_master,Student_cgpa,Course,review_marks_master, final_outcome,review_assasment_criteria_master
 from datetime import datetime
 from django.contrib import messages
 import hashlib
@@ -325,7 +325,11 @@ def view_marks(request):
             'criteria_8': mark.criteria_8,
             'criteria_9': mark.criteria_9,
             'criteria_10': mark.criteria_10,
-            'total': mark.total
+            'total': mark.total,
+            'review1_comments': mark.review1_comments,
+            'review2_comments': mark.review2_comments,
+            'review3_comments': mark.review3_comments,
+            'overall_comments': mark.overall_comments
         }
         review_marks[review_num]['individual'].append(mark_dict)
 
@@ -368,7 +372,6 @@ def faculty_login(request):
     if request.method == "POST":
         username = request.POST.get('username')  # This maps to staff_id
         password = request.POST.get('password')
-        selected_role = request.POST.get('selected_role')
 
         print(f"Attempting to log in with staff_id: {username} and password: {password}")
 
@@ -378,49 +381,32 @@ def faculty_login(request):
         if not users.exists():
             # No user found with this staff_id
             print(f"No user found with staff_id: {username}")
-            return JsonResponse({'error': 'User not found!'})
-
-        # Get unique roles from all matching users
-        roles = list(set(user.role for user in users))
-        
-        # If this is the initial login attempt (no selected_role)
-        if not selected_role and len(roles) > 1:
-            return JsonResponse({
-                'multiple_roles': True,
-                'roles': roles
-            })
-
-        # If a role is selected or there's only one role
-        if selected_role:
-            # Find the user with the selected role
-            user = users.filter(role=selected_role).first()
+            return render(request, 'faculty/faculty_login.html', {'error': 'User not found!'})
+        elif users.count() >= 2:
+            user = users[0]  # Select the second user if more than one exists
         else:
             user = users.first()
         
         print(user, "the selected user is")
         
-        # Check the password
+        # Check the password (replace encrypt_password with your actual hash comparison)
         if encrypt_password(password) == user.Password:
             print("Authentication successful!")
             # Store necessary details in session
             request.session['user_id'] = user.id
             request.session['role'] = user.role
-            request.session['department'] = user.Department
+            request.session['department'] = user.Department  # Faculty department
             request.session['name'] = user.Name
             
-            # Return redirect URL based on role
-            redirect_url = None
             if user.role == 'HOD':
-                redirect_url = '/hod_dashbord'
+                return redirect('hod_dashbord')
             elif user.role == 'Principal':
-                redirect_url = '/principal_dashboard'
+                return redirect('principal_dashboard')
             elif user.role == 'Staff':
-                redirect_url = '/faculty_dashboard'
-            
-            return JsonResponse({'redirect_url': redirect_url})
+                return redirect('faculty_dashboard')
         else:
             print("Authentication failed! Incorrect password.")
-            return JsonResponse({'error': 'Invalid credentials!'})
+            return render(request, 'faculty/faculty_login.html', {'error': 'Invalid credentials!'})
     
     return render(request, 'faculty/faculty_login.html')
 
@@ -760,6 +746,7 @@ def review3(request):
         industrial_expert_name = request.POST.get("industrial_expert_name")
         company_name = request.POST.get("company_name")
         designation = request.POST.get("designation")
+        review3_comments = request.POST.get('review3_comments', '')  # Get comments from form
 
         # Fetch faculty names based on selected IDs
         reviewer1 = User.objects.using('rit_e_approval').filter(id=reviewer1_id).first()
@@ -805,7 +792,8 @@ def review3(request):
                 'sem': sem,
                 'expname': industrial_expert_name,
                 'company_name': company_name,
-                'desegnation': designation
+                'desegnation': designation,
+                'review3_comments': review3_comments,  # Add comments to the model
             }
         )
 
@@ -882,12 +870,52 @@ def guide_alocation(request):
         'faculty_list': faculty_list,
     })
 
-
-
-
-
-
-
+def update_guide(request):
+    if request.method == "POST":
+        project_id = request.POST.get("project_id")
+        faculty_id = request.POST.get("faculty_id")
+        
+        if not project_id or not faculty_id:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Missing required parameters'
+            })
+            
+        try:
+            # Get the project and faculty
+            project = Project.objects.get(id=project_id)
+            faculty = User.objects.using('rit_e_approval').get(id=faculty_id)
+            
+            # Update the project with the new guide
+            project.internal_guide_name = faculty.Name
+            project.hod_assigned_reviewer = True  # Ensure this is marked as assigned
+            project.save()
+            
+            return JsonResponse({
+                'status': 'success',
+                'message': f'Successfully updated guide to {faculty.Name}'
+            })
+            
+        except Project.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Project not found'
+            })
+        except User.DoesNotExist:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Faculty member not found'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': str(e)
+            })
+    
+    return JsonResponse({
+        'status': 'error',
+        'message': 'Invalid request method'
+    })
 
 def review_mark_allotment(request):
     return(request,"faculty/review_mark_allotment.html")
@@ -1138,6 +1166,7 @@ def review3_markentry(request):
         reg_no = request.POST.get('reg_no')
         semester_value = request.POST.get('semester')
         reviewer_type = request.POST.get('reviewer_type')
+        review3_comments = request.POST.get('review3_comments', '')  # Get comments from form
 
         try:
             semester = int(semester_value) if semester_value not in [None, ''] else 0
@@ -1175,6 +1204,7 @@ def review3_markentry(request):
                 company_guide_name=company_guide_name,
                 internal_guide_name=faculty_name,
                 total=total,
+                review3_comments=review3_comments,  # Add comments to the model
                 **{f'criteria_{i+1}': criteria_scores[i] for i in range(10)}
             )
         
@@ -1300,6 +1330,8 @@ def faculty_review1_markentry(request):
         reg_no = request.POST.get('reg_no')
         semester_value = request.POST.get('semester')
         reviewer_type = request.POST.get('reviewer_type')
+        if not reviewer_type:
+            reviewer_type = 'Guide'
 
         try:
             semester = int(semester_value) if semester_value not in [None, ''] else 0
@@ -1420,6 +1452,8 @@ def faculty_review2_markentry(request):
         reg_no = request.POST.get('reg_no')
         semester_value = request.POST.get('semester')
         reviewer_type = request.POST.get('reviewer_type')
+        if not reviewer_type:
+            reviewer_type = 'Guide'
 
         try:
             semester = int(semester_value) if semester_value not in [None, ''] else 0
@@ -1541,6 +1575,10 @@ def faculty_review3_markentry(request):
         semester_value = request.POST.get('semester')
         reviewer_type = request.POST.get('reviewer_type')
 
+        # If reviewer_type is not provided, default to 'Guide'
+        if not reviewer_type:
+            reviewer_type = 'Guide'
+
         try:
             semester = int(semester_value) if semester_value not in [None, ''] else 0
         except ValueError:
@@ -1585,22 +1623,15 @@ def faculty_review3_markentry(request):
     # Handling GET request
     projects_list = Project.objects.filter(department=department)
 
-    # Check if the faculty is a reviewer for Review 3 and determine which reviewer number
+    # Check if the faculty is a reviewer for Review 3
     assigned_projects = assignreviewers.objects.filter(
         department=department,
         review_type="Review 3"
+    ).filter(
+        Q(reviewer1=name) | Q(reviewer2=name) | Q(reviewer3=name)
     )
-    
-    # Determine which reviewer position the faculty holds
-    reviewer_position = None
-    if assigned_projects.filter(reviewer1=name).exists():
-        reviewer_position = "Reviewer 1"
-    elif assigned_projects.filter(reviewer2=name).exists():
-        reviewer_position = "Reviewer 2"
-    elif assigned_projects.filter(reviewer3=name).exists():
-        reviewer_position = "Reviewer 3"
-    
-    is_reviewer = reviewer_position is not None
+
+    is_reviewer = assigned_projects.exists()
 
     # Get students this faculty has already marked as guide
     students_marked_as_guide = review_marks_master.objects.filter(
@@ -1633,8 +1664,8 @@ def faculty_review3_markentry(request):
     # Get review criteria for Review 3
     review_criteria = review_assasment_criteria_master.objects.filter(review_number=3).order_by('id')
 
-    # Use the determined reviewer position or default to "Guide"
-    reviewer_type = reviewer_position if is_reviewer else "Guide"
+    # Determine reviewer type for display
+    reviewer_type = "Reviewer 1" if is_reviewer else "Guide"
 
     return render(request, 'faculty/review/faculty_review3_markentry.html', {
         'projects_list': projects_list,
@@ -1647,6 +1678,8 @@ def faculty_review3_markentry(request):
         'review_criteria': review_criteria,
         'reviewer_type': reviewer_type
     })
+
+
 
 
 
@@ -2367,11 +2400,11 @@ def update_criteria(request):
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'}, status=405)
 def analysis_student_mark(request):
-    if request.session.get('role') == 'HOD':
-        role = request.session.get('role')
-        department = request.session.get('department')
-        name = request.session.get('name')
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
 
+    if role == 'HOD':
         print(f"[DEBUG] Fetching students for department: {department}")
         # Get all students from the department
         students = Project.objects.filter(department=department).values(
@@ -2392,210 +2425,247 @@ def analysis_student_mark(request):
             'name': name,
             'students': students
         }
+        
         return render(request, 'faculty/review/analysis_student_mark.html', context)
     else:
-        return redirect('home_page')
+        # Check if faculty is a guide
+        guide_students = Project.objects.filter(
+            department=department,
+            internal_guide_name=name
+        ).values(
+            'student_name', 'reg_no', 'batch'
+        ).distinct()
+
+        # Add semester information and rename reg_no to register_number
+        for student in guide_students:
+            student['semester'] = '8'  # Default to 8th semester for final year students
+            student['register_number'] = student['reg_no']
+
+        context = {
+            'role': role,
+            'department': department,
+            'name': name,
+            'students': guide_students,
+            'is_guide': True
+        }
+        
+        return render(request, 'faculty/review/analysis_student_mark.html', context)
 
 def student_review_analysis(request, register_number, review_number):
-    if request.session.get('role') == 'HOD':
-        try:
-            print(f"[DEBUG] Looking for student with reg_no={register_number}")
-            # Get student details
-            student = Project.objects.get(reg_no=register_number)
-            print(f"[DEBUG] Found student: {student.student_name}")
-            
-            # Convert review_number to integer if it's a string
-            review_number = int(review_number)
-            
-            # Get review marks
-            review_marks_query = review_marks_master.objects.filter(reg_no=register_number)
-            print(f"[DEBUG] Found {review_marks_query.count()} review marks")
-            
-            if review_number != 4:
-                review_marks_query = review_marks_query.filter(review_number=review_number)
-                print(f"[DEBUG] After filtering for review {review_number}, found {review_marks_query.count()} review marks")
-            
-            review_marks = review_marks_query.order_by('review_number', 'reviewer_type')
-            
-            # Get criteria list based on review number
-            if review_number == 4:
-                # For "All Reviews", get criteria from all reviews
-                criteria_list = []
-                for rev_num in range(1, 4):
-                    criteria = review_assasment_criteria_master.objects.filter(review_number=rev_num).order_by('id')
-                    criteria_list.append({
-                        'review_number': rev_num,
-                        'criteria': list(criteria)
-                    })
-            else:
-                # For specific reviews, get criteria for that review
-                criteria = review_assasment_criteria_master.objects.filter(review_number=review_number).order_by('id')
-                criteria_list = [{
-                    'review_number': review_number,
-                    'criteria': list(criteria)
-                }]
-            
-            print(f"[DEBUG] Found criteria for reviews: {[c['review_number'] for c in criteria_list]}")
-            
-            # Initialize data structures
-            review_data = []
-            
-            # Process each review's data
-            for review_info in criteria_list:
-                rev_num = review_info['review_number']
-                rev_criteria = review_info['criteria']
-                
-                print(f"[DEBUG] Processing review {rev_num}")
-                
-                # Get marks for this review
-                rev_marks = review_marks_query.filter(review_number=rev_num)
-                guide_marks = rev_marks.filter(reviewer_type='Guide').first()
-                reviewer1_marks = rev_marks.filter(reviewer_type='Reviewer 1').first()
-                reviewer2_marks = rev_marks.filter(reviewer_type='Reviewer 2').first()
-                reviewer3_marks = rev_marks.filter(reviewer_type='Reviewer 3').first()
-                
-                # Process criteria marks
-                criteria_marks = []
-                review_total = {
-                    'guide_total': 0,
-                    'reviewer1_total': 0,
-                    'reviewer2_total': 0,
-                    'reviewer3_total': 0
-                }
-                
-                for idx, criteria in enumerate(rev_criteria, 1):
-                    print(f"[DEBUG] Processing criteria {idx} for review {rev_num}")
-                    
-                    criteria_data = {
-                        'name': criteria.review_criteria,
-                        'guide_mark': None,
-                        'reviewer1_mark': None,
-                        'reviewer2_mark': None,
-                        'reviewer3_mark': None
-                    }
-                    
-                    # Get guide marks
-                    if guide_marks:
-                        mark_value = getattr(guide_marks, f'criteria_{idx}', None)
-                        if mark_value is not None:
-                            criteria_data['guide_mark'] = float(mark_value)
-                            review_total['guide_total'] += float(mark_value)
-                    
-                    # Get reviewer 1 marks
-                    if reviewer1_marks:
-                        mark_value = getattr(reviewer1_marks, f'criteria_{idx}', None)
-                        if mark_value is not None:
-                            criteria_data['reviewer1_mark'] = float(mark_value)
-                            review_total['reviewer1_total'] += float(mark_value)
-                    
-                    # Get reviewer 2 marks
-                    if reviewer2_marks:
-                        mark_value = getattr(reviewer2_marks, f'criteria_{idx}', None)
-                        if mark_value is not None:
-                            criteria_data['reviewer2_mark'] = float(mark_value)
-                            review_total['reviewer2_total'] += float(mark_value)
-                    
-                    # Get reviewer 3 marks
-                    if reviewer3_marks:
-                        mark_value = getattr(reviewer3_marks, f'criteria_{idx}', None)
-                        if mark_value is not None:
-                            criteria_data['reviewer3_mark'] = float(mark_value)
-                            review_total['reviewer3_total'] += float(mark_value)
-                    
-                    # Calculate average
-                    valid_marks = [v for v in [
-                        criteria_data['guide_mark'],
-                        criteria_data['reviewer1_mark'],
-                        criteria_data['reviewer2_mark'],
-                        criteria_data['reviewer3_mark']
-                    ] if v is not None]
-                    criteria_data['average'] = sum(valid_marks) / len(valid_marks) if valid_marks else None
-                    
-                    criteria_marks.append(criteria_data)
-                
-                # Calculate review averages
-                valid_totals = [v for v in review_total.values() if v > 0]
-                review_total['average'] = sum(valid_totals) / len(valid_totals) if valid_totals else None
-                
-                # Format totals
-                for key in review_total:
-                    if isinstance(review_total[key], (int, float)) and review_total[key] > 0:
-                        review_total[key] = f"{review_total[key]:.2f}"
-                    else:
-                        review_total[key] = "-"
-                
-                review_data.append({
+    role = request.session.get('role')
+    department = request.session.get('department')
+    name = request.session.get('name')
+
+    # Check if user is HOD or a guide for this student
+    is_guide = False
+    if role != 'HOD':
+        # Check if faculty is a guide for this student
+        is_guide = Project.objects.filter(
+            reg_no=register_number,
+            department=department,
+            internal_guide_name=name
+        ).exists()
+        
+        if not is_guide:
+            return redirect('home_page')
+
+    try:
+        print(f"[DEBUG] Looking for student with reg_no={register_number}")
+        # Get student details
+        student = Project.objects.get(reg_no=register_number)
+        print(f"[DEBUG] Found student: {student.student_name}")
+        
+        # Convert review_number to integer if it's a string
+        review_number = int(review_number)
+        
+        # Get review marks
+        review_marks_query = review_marks_master.objects.filter(reg_no=register_number)
+        print(f"[DEBUG] Found {review_marks_query.count()} review marks")
+        
+        if review_number != 4:
+            review_marks_query = review_marks_query.filter(review_number=review_number)
+            print(f"[DEBUG] After filtering for review {review_number}, found {review_marks_query.count()} review marks")
+        
+        review_marks = review_marks_query.order_by('review_number', 'reviewer_type')
+        
+        # Get criteria list based on review number
+        if review_number == 4:
+            # For "All Reviews", get criteria from all reviews
+            criteria_list = []
+            for rev_num in range(1, 4):
+                criteria = review_assasment_criteria_master.objects.filter(review_number=rev_num).order_by('id')
+                criteria_list.append({
                     'review_number': rev_num,
-                    'criteria_marks': criteria_marks,
-                    'totals': review_total,
-                    'guide_name': guide_marks.faculty_name if guide_marks else None,
-                    'reviewer1_name': reviewer1_marks.faculty_name if reviewer1_marks else None,
-                    'reviewer2_name': reviewer2_marks.faculty_name if reviewer2_marks else None,
-                    'reviewer3_name': reviewer3_marks.faculty_name if reviewer3_marks else None
+                    'criteria': list(criteria)
                 })
+        else:
+            # For specific reviews, get criteria for that review
+            criteria = review_assasment_criteria_master.objects.filter(review_number=review_number).order_by('id')
+            criteria_list = [{
+                'review_number': review_number,
+                'criteria': list(criteria)
+            }]
+        
+        print(f"[DEBUG] Found criteria for reviews: {[c['review_number'] for c in criteria_list]}")
+        
+        # Initialize data structures
+        review_data = []
+        
+        # Process each review's data
+        for review_info in criteria_list:
+            rev_num = review_info['review_number']
+            rev_criteria = review_info['criteria']
             
-            # Calculate grand totals for all reviews
-            grand_totals = {
+            print(f"[DEBUG] Processing review {rev_num}")
+            
+            # Get marks for this review
+            rev_marks = review_marks_query.filter(review_number=rev_num)
+            guide_marks = rev_marks.filter(reviewer_type='Guide').first()
+            reviewer1_marks = rev_marks.filter(reviewer_type='Reviewer 1').first()
+            reviewer2_marks = rev_marks.filter(reviewer_type='Reviewer 2').first()
+            reviewer3_marks = rev_marks.filter(reviewer_type='Reviewer 3').first()
+            
+            # Process criteria marks
+            criteria_marks = []
+            review_total = {
                 'guide_total': 0,
                 'reviewer1_total': 0,
                 'reviewer2_total': 0,
-                'reviewer3_total': 0,
-                'average_total': 0
+                'reviewer3_total': 0
             }
             
-            valid_review_count = 0
-            for review in review_data:
-                guide_total = float(review['totals']['guide_total']) if review['totals']['guide_total'] != '-' else 0
-                reviewer1_total = float(review['totals']['reviewer1_total']) if review['totals']['reviewer1_total'] != '-' else 0
-                reviewer2_total = float(review['totals']['reviewer2_total']) if review['totals']['reviewer2_total'] != '-' else 0
-                reviewer3_total = float(review['totals']['reviewer3_total']) if review['totals']['reviewer3_total'] != '-' else 0
+            for idx, criteria in enumerate(rev_criteria, 1):
+                print(f"[DEBUG] Processing criteria {idx} for review {rev_num}")
                 
-                if any([guide_total > 0, reviewer1_total > 0, reviewer2_total > 0, reviewer3_total > 0]):
-                    valid_review_count += 1
-                    grand_totals['guide_total'] += guide_total
-                    grand_totals['reviewer1_total'] += reviewer1_total
-                    grand_totals['reviewer2_total'] += reviewer2_total
-                    grand_totals['reviewer3_total'] += reviewer3_total
-                    
-                    valid_marks = [m for m in [guide_total, reviewer1_total, reviewer2_total, reviewer3_total] if m > 0]
-                    if valid_marks:
-                        grand_totals['average_total'] += sum(valid_marks) / len(valid_marks)
+                criteria_data = {
+                    'name': criteria.review_criteria,
+                    'guide_mark': None,
+                    'reviewer1_mark': None,
+                    'reviewer2_mark': None,
+                    'reviewer3_mark': None
+                }
+                
+                # Get guide marks
+                if guide_marks:
+                    mark_value = getattr(guide_marks, f'criteria_{idx}', None)
+                    if mark_value is not None:
+                        criteria_data['guide_mark'] = float(mark_value)
+                        review_total['guide_total'] += float(mark_value)
+                
+                # Get reviewer 1 marks
+                if reviewer1_marks:
+                    mark_value = getattr(reviewer1_marks, f'criteria_{idx}', None)
+                    if mark_value is not None:
+                        criteria_data['reviewer1_mark'] = float(mark_value)
+                        review_total['reviewer1_total'] += float(mark_value)
+                
+                # Get reviewer 2 marks
+                if reviewer2_marks:
+                    mark_value = getattr(reviewer2_marks, f'criteria_{idx}', None)
+                    if mark_value is not None:
+                        criteria_data['reviewer2_mark'] = float(mark_value)
+                        review_total['reviewer2_total'] += float(mark_value)
+                
+                # Get reviewer 3 marks
+                if reviewer3_marks:
+                    mark_value = getattr(reviewer3_marks, f'criteria_{idx}', None)
+                    if mark_value is not None:
+                        criteria_data['reviewer3_mark'] = float(mark_value)
+                        review_total['reviewer3_total'] += float(mark_value)
+                
+                # Calculate average
+                valid_marks = [v for v in [
+                    criteria_data['guide_mark'],
+                    criteria_data['reviewer1_mark'],
+                    criteria_data['reviewer2_mark'],
+                    criteria_data['reviewer3_mark']
+                ] if v is not None]
+                criteria_data['average'] = sum(valid_marks) / len(valid_marks) if valid_marks else None
+                
+                criteria_marks.append(criteria_data)
             
-            # Format grand totals
-            if valid_review_count > 0:
-                for key in grand_totals:
-                    if grand_totals[key] > 0:
-                        grand_totals[key] = f"{grand_totals[key] / valid_review_count:.2f}"
-                    else:
-                        grand_totals[key] = "-"
-            else:
-                grand_totals = {key: "-" for key in grand_totals}
+            # Calculate review averages
+            valid_totals = [v for v in review_total.values() if v > 0]
+            review_total['average'] = sum(valid_totals) / len(valid_totals) if valid_totals else None
             
-            context = {
-                'student': {
-                    'student_name': student.student_name,
-                    'register_number': register_number
-                },
-                'review_number': str(review_number),
-                'review_data': review_data,
-                'grand_totals': grand_totals
-            }
+            # Format totals
+            for key in review_total:
+                if isinstance(review_total[key], (int, float)) and review_total[key] > 0:
+                    review_total[key] = f"{review_total[key]:.2f}"
+                else:
+                    review_total[key] = "-"
             
-            print(f"[DEBUG] Rendering template with context: {context}")
-            return render(request, 'faculty/review/student_review_analysis.html', context)
+            review_data.append({
+                'review_number': rev_num,
+                'criteria_marks': criteria_marks,
+                'totals': review_total,
+                'guide_name': guide_marks.faculty_name if guide_marks else None,
+                'reviewer1_name': reviewer1_marks.faculty_name if reviewer1_marks else None,
+                'reviewer2_name': reviewer2_marks.faculty_name if reviewer2_marks else None,
+                'reviewer3_name': reviewer3_marks.faculty_name if reviewer3_marks else None
+            })
+        
+        # Calculate grand totals for all reviews
+        grand_totals = {
+            'guide_total': 0,
+            'reviewer1_total': 0,
+            'reviewer2_total': 0,
+            'reviewer3_total': 0,
+            'average_total': 0
+        }
+        
+        valid_review_count = 0
+        for review in review_data:
+            guide_total = float(review['totals']['guide_total']) if review['totals']['guide_total'] != '-' else 0
+            reviewer1_total = float(review['totals']['reviewer1_total']) if review['totals']['reviewer1_total'] != '-' else 0
+            reviewer2_total = float(review['totals']['reviewer2_total']) if review['totals']['reviewer2_total'] != '-' else 0
+            reviewer3_total = float(review['totals']['reviewer3_total']) if review['totals']['reviewer3_total'] != '-' else 0
             
-        except Project.DoesNotExist:
-            print(f"[DEBUG] Student not found with reg_no={register_number}")
-            messages.error(request, 'Student not found')
-            return redirect('analysis_student_mark')
-        except Exception as e:
-            print(f"[DEBUG] Error in student_review_analysis: {str(e)}")
-            import traceback
-            traceback.print_exc()
-            messages.error(request, f'Error: {str(e)}')
-            return redirect('analysis_student_mark')
-    else:
-        return redirect('home_page')
+            if any([guide_total > 0, reviewer1_total > 0, reviewer2_total > 0, reviewer3_total > 0]):
+                valid_review_count += 1
+                grand_totals['guide_total'] += guide_total
+                grand_totals['reviewer1_total'] += reviewer1_total
+                grand_totals['reviewer2_total'] += reviewer2_total
+                grand_totals['reviewer3_total'] += reviewer3_total
+                
+                valid_marks = [m for m in [guide_total, reviewer1_total, reviewer2_total, reviewer3_total] if m > 0]
+                if valid_marks:
+                    grand_totals['average_total'] += sum(valid_marks) / len(valid_marks)
+        
+        # Format grand totals
+        if valid_review_count > 0:
+            for key in grand_totals:
+                if grand_totals[key] > 0:
+                    grand_totals[key] = f"{grand_totals[key] / valid_review_count:.2f}"
+                else:
+                    grand_totals[key] = "-"
+        else:
+            grand_totals = {key: "-" for key in grand_totals}
+        
+        context = {
+            'student': {
+                'student_name': student.student_name,
+                'register_number': register_number
+            },
+            'review_number': str(review_number),
+            'review_data': review_data,
+            'grand_totals': grand_totals,
+            'is_guide': is_guide
+        }
+        
+        print(f"[DEBUG] Rendering template with context: {context}")
+        return render(request, 'faculty/review/student_review_analysis.html', context)
+        
+    except Project.DoesNotExist:
+        print(f"[DEBUG] Student not found with reg_no={register_number}")
+        messages.error(request, 'Student not found')
+        return redirect('analysis_student_mark')
+    except Exception as e:
+        print(f"[DEBUG] Error in student_review_analysis: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        messages.error(request, f'Error: {str(e)}')
+        return redirect('analysis_student_mark')
 
 @login_required
 def get_student_analytics(request, register_number):

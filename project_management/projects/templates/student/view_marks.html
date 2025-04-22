@@ -1,13 +1,11 @@
-<!DOCTYPE html>
 {% load static %}
+<!DOCTYPE html>
 <html>
 <head>
     <title>RIT PROJECT MANAGMENT</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-    {% comment %} <link rel="stylesheet" href="{% static 'css/samplefromstyle.css' %}">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}"> {% endcomment %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -23,7 +21,7 @@
         #Column_container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center; /* Center the columns */
+            justify-content: center;
             gap: 20px;
             margin-bottom: 20px;
             width: 100%;
@@ -35,11 +33,11 @@
             background-color: #f9f9f9;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center the content horizontally */
-            width: 90%; /* Set a specific width */
-            max-width: 1200px; /* Maximum width */
-            margin: 0 auto; /* Center the container */
-            max-height: none; /* Remove fixed height */
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            max-height: none;
         }
         .table-responsive {
             width: 100%;
@@ -47,15 +45,15 @@
         }
         table {
             width: 100%;
-            max-width: 1100px; /* Maximum width for tables */
-            margin: 0 auto; /* Center tables */
+            max-width: 1100px;
+            margin: 0 auto;
             border-collapse: collapse;
         }
         .page-content {
             padding: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center; /* Center content horizontally */
+            align-items: center;
         }
         h3, h4 {
             width: 100%;
@@ -63,13 +61,13 @@
             margin-bottom: 20px;
         }
         .table-columns h3 {
-            position: -webkit-sticky; /* For Safari */
+            position: -webkit-sticky;
             position: sticky;
             top: 0;
             background-color: #f9f9f9;
             padding: 10px;
-            margin: -10px -10px 10px -10px; /* Adjust to make it fit well with the table */
-            z-index: 1; /* Ensure it stays on top of the content */
+            margin: -10px -10px 10px -10px;
+            z-index: 1;
         }
         th, td {
             border: 1px solid #ddd;
@@ -79,57 +77,46 @@
         th {
             background-color: #f4f4f4;
         }
-        /* Remove spin buttons in number inputs */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
-
         .form-all {
-            padding: 20px; /* Ensure padding to avoid overlap */
-            margin-left: 23rem; /* Ensure it aligns correctly next to the sidebar */
+            padding: 20px;
+            margin-left: 23rem;
             background-color: #f8f9fa;
             border-radius: 5px;
             transition: all 0.4s;
         }
-
         .admission {
             margin-top: 20px;
         }
-
         th {
             background-color: #00407b;
             color: #fff;
             padding-left: 3px;
             line-height: 2;
         }
-
         td {
             height: 30px;
         }
-
         .heading {
             font-size: 24px;
             font-weight: bold;
             margin-bottom: 20px;
         }
-
         .title {
             font-size: 20px;
             font-weight: bold;
             margin-bottom: 15px;
             display: block;
         }
-
-        /* General page styles */
         body {
             min-height: 100vh;
             overflow-x: hidden;
             font-family: Arial, Helvetica, sans-serif;
         }
-
-        /* Sidebar Navigation */
         .vertical-nav {
             width: 23rem;
             height: 100vh;
@@ -140,42 +127,31 @@
             transition: all 0.4s;
             background-color: #fff;
         }
-    
-        /* Sidebar Toggle (on smaller screens) */
         #sidebar.active {
             margin-left: -23rem;
         }
-    
-        /* Page Content */
         .page-content {
             width: calc(100% - 23rem);
             margin-left: 23rem;
             transition: all 0.4s;
         }
-    
         #content.active {
             width: 100%;
             margin: 0;
         }
-    
-        /* Menu and Link Styles */
         .nav-link {
             text-transform: capitalize;
             color: #333;
         }
-    
         .nav-link:hover {
             background: #f3f2f2;
         }
-    
         .text-primary {
             color: #a82707 !important;
         }
         #coCuricularSubMenu .nav-link {
-            padding-left: 2.5rem; /* Indent sub-menu items */
+            padding-left: 2.5rem;
         }
-    
-        /* Mobile view adjustments */
         @media (max-width: 768px) {
             #sidebar {
                 margin-left: -23rem;
@@ -206,6 +182,15 @@
             color: white;
             margin: 0;
         }
+        .comments-section {
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .comments-section p {
+            margin-bottom: 5px;
+        }
     </style>
 </head>
 <body>
@@ -213,21 +198,21 @@
         <button id="sidebarCollapse" type="button" class="btn btn-light bg-white rounded-pill shadow-sm px-4 mb-4"><i class="fa fa-bars mr-2"></i><small class="text-uppercase font-weight-bold">Menu</small></button>
         <div class="vertical-nav bg-white" id="sidebar">
             <div class="py-4 px-3 mb-4 bg-light border-bottom">
-            <div class="media d-flex align-items-center">
-                <div class="media-body">
-                <img decoding="async" src="{% static 'images/image.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
-                <h4 class="m-0">RIT</h4>
-                <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                <div class="media d-flex align-items-center">
+                    <div class="media-body">
+                        <img decoding="async" src="{% static 'images/image.png' %}" alt="..." width="80" height="80" class="mr-3 rounded-bottom img-thumbnail shadow-sm">
+                        <h4 class="m-0">RIT</h4>
+                        <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+                    </div>
                 </div>
             </div>
-            </div>
             <div class="border-bottom mb-2" style="width: 23rem;">
-            <div class="card-body text-center">
-                <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
-                <h5 class="card-title">{{name}}</h5>
-                <p class="card-text">{{department}}</p>
-                <p class="card-text">{{student_regno}}</p>
-            </div>
+                <div class="card-body text-center">
+                    <i class="bi bi-person-circle" style="font-size: 2rem;"></i>
+                    <h5 class="card-title">{{name}}</h5>
+                    <p class="card-text">{{department}}</p>
+                    <p class="card-text">{{student_regno}}</p>
+                </div>
             </div>
 
             <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
@@ -245,17 +230,14 @@
                     </a>
                 </li>
             </ul>
-                <li class="nav-item">
-                    <a href="{% url 'home_page' %}" class="nav-link text-dark">
-                        <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-                        Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
+            <li class="nav-item">
+                <a href="{% url 'home_page' %}" class="nav-link text-dark">
+                    <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
+                    Logout
+                </a>
+            </li>
         </div>
         <div class="page-content" id="content">
-            <!-- Add Review Selection Buttons -->
             <div class="text-center mb-4">
                 <button class="btn btn-primary review-btn" data-review="1">Review 1</button>
                 <button class="btn btn-secondary review-btn" data-review="2">Review 2</button>
@@ -268,7 +250,6 @@
                     <h3 class="text-center mb-4">Review {{ review_number }} Marks</h3>
                     {% if review_data.individual %}
                     <div class="table-responsive">
-                        <!-- Individual Marks Table -->
                         <h4>Individual Evaluations</h4>
                         <table class="table table-bordered">
                             <thead>
@@ -346,10 +327,31 @@
                                     <td><strong>{{ mark.total }}</strong></td>
                                     {% endfor %}
                                 </tr>
+                                {% for mark in review_data.individual %}
+                                {% if mark.review1_comments or mark.review2_comments or mark.review3_comments or mark.overall_comments %}
+                                <tr>
+                                    <td colspan="{{ review_data.individual|length|add:1 }}">
+                                        <div class="comments-section">
+                                            {% if mark.review1_comments and review_number == 1 %}
+                                            <p><strong>Review 1 Comments:</strong> {{ mark.review1_comments }}</p>
+                                            {% endif %}
+                                            {% if mark.review2_comments and review_number == 2 %}
+                                            <p><strong>Review 2 Comments:</strong> {{ mark.review2_comments }}</p>
+                                            {% endif %}
+                                            {% if mark.review3_comments and review_number == 3 %}
+                                            <p><strong>Review 3 Comments:</strong> {{ mark.review3_comments }}</p>
+                                            {% endif %}
+                                            {% if mark.overall_comments %}
+                                            <p><strong>Overall Comments:</strong> {{ mark.overall_comments }}</p>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
                             </tbody>
                         </table>
 
-                        <!-- Cumulative Marks Table -->
                         <h4 class="mt-4">Cumulative Marks</h4>
                         <table class="table table-bordered table-success">
                             <thead>
@@ -413,30 +415,23 @@
                 {% endfor %}
             </div>
         </div>
-    
-        <footer class="footer">
-            <div class="container">
-                <p class="mb-0">Developed by Manish Kumar, Dept of Artificial Intelligence and Data Science, 2023-2027 batch</p>
-            </div>
-        </footer>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="mb-0">Developed by Manish Kumar, Dept of Artificial Intelligence and Data Science, 2023-2027 batch</p>
+        </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         $(document).ready(function() {
-            // Handle review button clicks
             $('.review-btn').click(function() {
-                // Get the review number
                 var reviewNum = $(this).data('review');
-                
-                // Hide all review sections
                 $('.review-section').hide();
-                
-                // Show the selected review section
                 $('#review' + reviewNum).show();
-                
-                // Update button styles
                 $('.review-btn').removeClass('btn-primary').addClass('btn-secondary');
                 $(this).removeClass('btn-secondary').addClass('btn-primary');
             });

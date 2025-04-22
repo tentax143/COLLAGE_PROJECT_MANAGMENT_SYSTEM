@@ -342,6 +342,63 @@
 
                 <button type="submit" class="btn btn-primary mt-3">Assign Guide</button>
             </form>
+            <button type="button" class="btn btn-warning mt-3 ml-2" data-toggle="modal" data-target="#editGuideModal">Edit Assigned Guide</button>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Guide Modal -->
+<div class="modal fade" id="editGuideModal" tabindex="-1" role="dialog" aria-labelledby="editGuideModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editGuideModalLabel">Edit Assigned Guides</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Registration Number</th>
+                                <th>Project Title</th>
+                                <th>Current Guide</th>
+                                <th>New Guide</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for project in projects %}
+                            <tr>
+                                <td>{{ project.student_name }}</td>
+                                <td>{{ project.reg_no }}</td>
+                                <td>{{ project.title }}</td>
+                                <td>{{ project.internal_guide_name|default:"Not Assigned" }}</td>
+                                <td>
+                                    <select class="form-control guide-selector" id="guide-select-{{ project.id }}">
+                                        <option value="">Select a faculty member</option>
+                                        {% for faculty in faculty_list %}
+                                        <option value="{{ faculty.id }}" {% if faculty.Name == project.internal_guide_name %}selected{% endif %}>{{ faculty.Name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-success btn-sm reassign-guide" data-project-id="{{ project.id }}">Reassign</button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="6" class="text-center">No projects found.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>
@@ -358,6 +415,44 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.getElementById('select-all-external').addEventListener('change', function() {
         document.querySelectorAll('.student-checkbox-external').forEach(checkbox => checkbox.checked = this.checked);
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    // Handle reassign button clicks
+    $('.reassign-guide').click(function() {
+        const projectId = $(this).data('project-id');
+        const facultyId = $(`#guide-select-${projectId}`).val();
+        
+        if (!facultyId) {
+            alert('Please select a faculty member');
+            return;
+        }
+        
+        // Send AJAX request to update the guide
+        $.ajax({
+            url: "{% url 'update_guide' %}",
+            type: "POST",
+            data: {
+                'project_id': projectId,
+                'faculty_id': facultyId,
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+            success: function(data) {
+                if (data.status === 'success') {
+                    alert('Guide updated successfully');
+                    // Refresh the page to show updated data
+                    location.reload();
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred while updating the guide');
+            }
+        });
     });
 });
 </script>

@@ -28,7 +28,7 @@
     }
     /* Sidebar Navigation */
     .vertical-nav {
-      width: 26rem;
+      width: 23rem;
       height: 100vh;
       position: fixed;
       top: 0;
@@ -132,13 +132,15 @@
   <div class="vertical-nav bg-white" id="sidebar">
     <!-- Header Section -->
     <div class="py-4 px-3 mb-4 bg-light border-bottom">
-      <div class="media d-flex flex-column align-items-center text-center">
-          <div class="media-body d-flex flex-column align-items-center">
-              <img src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" class="mb-3 rounded-bottom img-thumbnail shadow-sm">
-              <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
-          </div>
+      <div class="media d-flex align-items-center">
+        <div class="media-body">
+          <img decoding="async" src="{% static 'images/image.png' %}" alt="RIT Logo" width="80" height="80" 
+               class="mr-3 rounded-bottom img-thumbnail shadow-sm">
+          <h4 class="m-0">RIT</h4>
+          <p class="font-weight-normal text-muted mb-0">Ramco Institute of Technology</p>
+        </div>
       </div>
-  </div>
+    </div>
     <!-- User Info -->
     <div class="border-bottom mb-2" style="width: 23rem;">
       <div class="card-body text-center">
@@ -151,126 +153,105 @@
     
     <!-- Menu -->
     <p class="text-gray font-weight-bold text-uppercase px-3 small pb-4 mb-0">Menu</p>
-<ul class="nav flex-column bg-white mb-0">
-  {% if role == 'HOD' %}
-    <li class="nav-item">
-        <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
+    <ul class="nav flex-column bg-white mb-0">
+      {% if role == 'HOD' %}
+        <!-- HOD Specific Navigation -->
+        <li class="nav-item">
+          <a href="{% url 'hod_dashbord' %}" class="nav-link bg-info text-white">
             <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
-            Dashboard
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="#marksSubMenu" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+            View Guide Detail
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#hodCommittee" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
             Allocate Committee Members
-        </a>
-        <ul class="collapse list-unstyled ml-4" id="marksSubMenu">
+          </a>
+          <ul class="collapse list-unstyled ml-4" id="hodCommittee">
             <li class="nav-item">
-                <a href="{% url 'review1' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 1
-                </a>
+              <a href="{% url 'review1' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 1
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review2' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 2
-                </a>
+              <a href="{% url 'review2' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 2
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review3' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 3
-                </a>
+              <a href="{% url 'review3' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 3
+              </a>
             </li>
-        </ul>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
-            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'guide_alocation' %}" class="nav-link text-dark">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
             Allocate Guide
-        </a>
-    </li>
-
-    <li class="nav-item">
-        <a href="#marksSubMenu2" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
-            <i class="fa fa-plus S mr-3 text-primary fa-fw"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#hodReviewMark" data-toggle="collapse" aria-expanded="false" class="nav-link text-dark dropdown-toggle">
+            <i class="fa fa-plus mr-3 text-primary fa-fw"></i>
             Review Mark Entry
-        </a>
-        <ul class="collapse list-unstyled ml-4" id="marksSubMenu2">
+          </a>
+          <ul class="collapse list-unstyled ml-4" id="hodReviewMark">
             <li class="nav-item">
-                <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 1
-                </a>
+              <a href="{% url 'review1_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 1
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 2
-                </a>
+              <a href="{% url 'review2_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 2
+              </a>
             </li>
             <li class="nav-item">
-                <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
-                    <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
-                    Review 3
-                </a>
+              <a href="{% url 'review3_markentry' %}" class="nav-link text-dark">
+                <i class="fa fa-circle mr-3 text-primary fa-fw"></i>
+                Review 3
+              </a>
             </li>
-        </ul>
-    </li>
-
-    <li class="nav-item">
-        <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'final_outcome_entry' %}" class="nav-link text-dark">
             <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
             Final Outcome Entry
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'downlod_review_marks' %}" class="nav-link text-dark">
-            <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
-            Download Review Marks
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'criteria_entry' %}" class="nav-link text-dark">
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'filter' %}" class="nav-link text-dark">
             <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-            Criteria Entry
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'filter' %}" class="nav-link text-dark">
-            <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-            Filter-Project outcome
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
+            Filter
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'criteria_analysis' %}" class="nav-link text-dark">
             <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
             Criteria Analysis
-        </a>
-    </li>
-    <li class="nav-item">
-      <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
-          <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-          Students Mark Analysis
-      </a>
-  </li>
-    
-    <li class="nav-item">
-        <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
             <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
             Manual
-        </a>
-    </li>
-    <li class="nav-item">
-        <a href="{% url 'home_page' %}" class="nav-link text-dark">
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{% url 'home_page' %}" class="nav-link text-dark">
             <i class="fa fa-sign-out-alt mr-3 text-primary fa-fw"></i>
             Logout
-        </a>
-    </li>
-  {% endif %}
-</ul>
-        {% if role == 'Faculty' or role == 'Staff' %}
+          </a>
+        </li>
+      {% else %}
+        <!-- Faculty Specific Navigation -->
         <li class="nav-item">
           <a href="{% url 'faculty_dashboard' %}" class="nav-link bg-info text-white">
             <i class="fa fa-chart-line mr-3 text-primary fa-fw"></i>
@@ -310,12 +291,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="{% url 'analysis_student_mark' %}" class="nav-link text-dark">
-              <i class="fa fa-filter mr-3 text-primary fa-fw"></i>
-              Students Mark Analysis
-          </a>
-      </li>
-        <li class="nav-item">
           <a href="{% static 'pdf/project_managment_manual.pdf' %}" class="nav-link text-dark" target="_blank">
             <i class="fa fa-file-pdf mr-3 text-primary fa-fw"></i>
             Manual
@@ -327,7 +302,7 @@
             Logout
           </a>
         </li>
-        {% endif %}
+      {% endif %}
     </ul>
   </div>
   <div class="page-content">

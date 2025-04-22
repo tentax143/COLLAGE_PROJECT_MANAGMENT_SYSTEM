@@ -16,6 +16,7 @@ urlpatterns = [
     path('review2/', views.review2, name='review2'),
     path('review3/', views.review3, name='review3'),
     path('guide_alocation/', views.guide_alocation, name='guide_alocation'),
+    path('update_guide/', views.update_guide, name='update_guide'),
     path('review_mark_allotment/', views.review_mark_allotment, name='review_mark_allotment'),
     path('review1_markentry/', views.review1_markentry, name='review1_markentry'),
     path('review2_markentry/', views.review2_markentry, name='review2_markentry'),
