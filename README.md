@@ -27,4 +27,20 @@ A web-based application designed to streamline the management of college project
 
 <details>
 <summary>Click to expand</summary>
+├── db.sqlite3
+├── manage.py
+├── media/
+│ └── outcome_certificates/
+│ └── 2021-2025/
+├── projects/
+│ ├── admin.py
+│ ├── static/
+│ ├── templates/
+│ ├── models.py
+│ ├── views.py
+│ └── ...
+├── project_management/
+│ ├── settings.py
+│ ├── urls.py
+│ └── wsgi.py
 
